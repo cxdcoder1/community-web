@@ -2,6 +2,7 @@
   <div>
     home页
     111
+    222
   </div>
 </template>
 
