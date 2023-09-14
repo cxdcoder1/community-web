@@ -1,6 +1,7 @@
 <template>
   <div>
     home页
+    222(whx)
   </div>
 </template>
 
