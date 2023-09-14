@@ -1,7 +1,6 @@
 <template>
   <div>
     home页
-    111222
   </div>
 </template>
 
