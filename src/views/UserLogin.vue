@@ -38,7 +38,7 @@ export default {
   data() {
     return {
       loginForm: {
-        phonenumber: '15888888888',
+        phonenumber: '15666666666',
         password: '123456'
       },
 
@@ -87,19 +87,26 @@ export default {
           return this.$message.error('登录失败:' + res.msg) //console.log("登录失败:"+res.meta.msg)
         }
 
-        this.$message.success('登录成功');
-        //保存当前登录的用户
-        window.sessionStorage.setItem('user', JSON.stringify(res.data));
-        //保存token
-        window.sessionStorage.setItem('token', res.token);
-        //导航至/home
-        return this.$router.push({name:'/home',params:{user:res.data}})
+      this.$message.success('登录成功');
+//保存当前登录的用户
+      window.sessionStorage.setItem('user', JSON.stringify(res.user));
+//保存token
+
+      window.sessionStorage.setItem('token', res.JWT);
+
+//导航至/home
+      return this.$router.push({ path: '/home', query: { res: res.user}});
+// console.log(res)
+// return this.$router.push('/home');
+// console.log(res.data);
+// return this.$router.push({name:'/home',params:{user:res.user}});
+    },
       },
     // 用户点击遮罩层，应该关闭模态框
     close() {
       this.isShow = false;
     },
-  }
+
 };
 </script>
 
