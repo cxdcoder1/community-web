@@ -6,7 +6,7 @@ import './plugins/element.js'
 import axios from 'axios'
 
 //接口前缀
-axios.defaults.baseURL = ''
+axios.defaults.baseURL = 'http://127.0.0.1:8081/';
 //请求在到达服务器之前，先会调用use中的这个回调函数来添加请求头信息
 axios.interceptors.request.use(config=>{
   //为请求头对象，添加token验证的Authorization字段
