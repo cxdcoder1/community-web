@@ -7,7 +7,7 @@
       <!-- 登录表单 -->
       <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
         <!-- 用户名 -->
-        <el-form-item  prop="username">
+        <el-form-item prop="phonenumber">
           <el-input v-model="loginForm.phonenumber" prefix-icon="el-icon-user-solid"></el-input>
         </el-form-item>
 
@@ -41,10 +41,9 @@ export default {
         phonenumber: '15666666666',
         password: '123456'
       },
-
-      userInfo:{
-        phoneNumber:'',
-        passWord:''
+      userInfo: {
+        phoneNumber: '',
+        passWord: ''
       },
 
 
@@ -53,11 +52,19 @@ export default {
       loginFormRules: {
         phonenumber: [
           {required: true, message: '请输入登录名', trigger: 'blur'},
-          {min: 3, max: 11, message: '登录名长度在 3 到 10 个字符', trigger: 'blur'}
+          {
+            pattern: /^[0-9]{3,11}$/,
+            message: '登录名必须为 3 到 11 个数字',
+            trigger: 'blur'
+          }
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 6, max: 15, message: '密码长度在 6 到 15 个字符', trigger: 'blur'}
+          {
+            pattern: /^.{6,15}$/,
+            message: '密码长度在 6 到 15 个字符',
+            trigger: 'blur'
+          }
         ]
       }
     };
@@ -69,7 +76,7 @@ export default {
 
   },
   methods: {
-    resetLoginForm() {
+    resetLoginForm(){
       this.$refs.LoginFormRef.resetFields()
     },
     async login() {
@@ -79,8 +86,9 @@ export default {
     async success() {
         this.isShow = false; // 通过验证后，需要手动隐藏模态框console.log(res)
 
-      this.userInfo.phonenumber = this.loginForm.phonenumber;
-      this.userInfo.password = this.loginForm.password;
+      this.userInfo.phoneNumber = this.loginForm.phonenumber;
+      this.userInfo.passWord = this.loginForm.password;
+      console.log(this.userInfo)
 
       const {data: res} = await this.$http.post('sysUser/login', this.userInfo);
         if (res.status != 200) {
@@ -88,25 +96,22 @@ export default {
         }
 
       this.$message.success('登录成功');
-//保存当前登录的用户
+      //保存当前登录的用户
       window.sessionStorage.setItem('user', JSON.stringify(res.user));
-//保存token
-
-      window.sessionStorage.setItem('token', res.JWT);
-
-//导航至/home
-      return this.$router.push({ path: '/home', query: { res: res.user}});
-// console.log(res)
-// return this.$router.push('/home');
-// console.log(res.data);
-// return this.$router.push({name:'/home',params:{user:res.user}});
+      //保存token
+      window.sessionStorage.setItem('token', res.token);
+      //导航至/home
+      return this.$router.push({ path: '/home', query: { res: res.user }});
+      // console.log(res)
+      // return this.$router.push('/home');
+      // console.log(res.data);
+      // return this.$router.push({name:'/home',params:{user:res.user}});
     },
-      },
     // 用户点击遮罩层，应该关闭模态框
     close() {
       this.isShow = false;
     },
-
+  }
 };
 </script>
 
