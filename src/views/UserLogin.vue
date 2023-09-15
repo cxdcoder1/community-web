@@ -69,6 +69,10 @@ export default {
 
   },
   methods: {
+    // 用户点击遮罩层，应该关闭模态框
+    close() {
+      this.isShow = false;
+    },
     resetLoginForm() {
       this.$refs.LoginFormRef.resetFields()
     },
@@ -103,10 +107,8 @@ export default {
 // return this.$router.push({name:'/home',params:{user:res.user}});
     },
       },
-    // 用户点击遮罩层，应该关闭模态框
-    close() {
-      this.isShow = false;
-    },
+
+
 
 };
 </script>
