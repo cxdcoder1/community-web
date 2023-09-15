@@ -5,6 +5,8 @@ import store from './store'
 import './plugins/element.js'
 import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css';
+
+
 //接口前缀
 axios.defaults.baseURL = 'http://localhost:8080/'
 //请求在到达服务器之前，先会调用use中的这个回调函数来添加请求头信息
@@ -21,3 +23,12 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount('#app')
+
+Vue.filter('dateFormat', function(value) {
+  // 自定义日期格式化逻辑
+  const date = new Date(value);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+});

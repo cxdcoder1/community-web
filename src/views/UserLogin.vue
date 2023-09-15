@@ -96,7 +96,6 @@ export default {
 //       window.sessionStorage.setItem('user', JSON.stringify(res.user));
       window.sessionStorage.setItem('user', JSON.stringify(res.user));
 //保存token
-
       window.sessionStorage.setItem('token', res.JWT);
 
 //导航至/home

@@ -1,5 +1,5 @@
 <template>
-  <div>欢迎进入智慧社区管理系统</div>
+  <div>欢迎来到智慧社区管理系统</div>
 </template>
 
 <script>

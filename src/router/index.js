@@ -4,10 +4,12 @@ import UserLogin from "@/views/UserLogin";
 import Home from "@/views/Home";
 import SysWelcome1 from "@/views/SysWelcome1.vue";
 import userInfo from "@/components/userInfo/index.vue";
+import system from "@/components/system/menu.vue";
 
 
 
 Vue.use(VueRouter)
+
 
 const routes = [
   {path: '/', redirect: '/login'},
@@ -17,6 +19,7 @@ const routes = [
     children: [
       { path: '/welcome', component: SysWelcome1 },
       { path: '/userInfo', component: userInfo },
+      { path: '/menu', component: system},
     ]
   },
 ]
