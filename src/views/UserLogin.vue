@@ -89,6 +89,7 @@ export default {
 
       this.$message.success('登录成功');
 //保存当前登录的用户
+//       window.sessionStorage.setItem('user', JSON.stringify(res.user));
       window.sessionStorage.setItem('user', JSON.stringify(res.user));
 //保存token
 

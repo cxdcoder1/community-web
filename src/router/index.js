@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import UserLogin from "@/views/UserLogin";
-import SysWelcome from "@/views/SysWelcome";
-import Homes from "@/views/HomeM.vue";
+import Home from "@/views/Home";
+import SysWelcome1 from "@/views/SysWelcome1.vue";
+import userInfo from "@/components/userInfo/index.vue";
 
 
 
@@ -12,9 +13,10 @@ const routes = [
   {path: '/', redirect: '/login'},
   {path: '/login', component: UserLogin},
   {
-    path: '/home', component: SysWelcome,  redirect: '/welcome',
+    path: '/home', component: Home,  redirect: '/welcome',
     children: [
-      { path: '/welcome', component: Homes },
+      { path: '/welcome', component: SysWelcome1 },
+      { path: '/userInfo', component: userInfo },
     ]
   },
 ]
