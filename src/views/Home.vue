@@ -153,10 +153,26 @@ export default {
 }
 </script>
 
+
+
 <style lang="less" scoped>
+
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .container{
-  height: 100vh;
-  width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+
 }
 .el-main{
   height: auto;

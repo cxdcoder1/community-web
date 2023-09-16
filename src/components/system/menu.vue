@@ -20,7 +20,7 @@
       </el-form-item>
     </el-form>
 
-    <el-button type="primary" icon="el-icon-plus" size="small" >添加角色</el-button>
+    <el-button type="primary" icon="el-icon-plus" size="small" >添加</el-button>
 
     <el-table
         ref="multipleTable"
@@ -34,8 +34,8 @@
         <template slot-scope="scope">{{ scope.row.menuName }}</template>
       </el-table-column>
       <el-table-column prop="icon" label="图标" align="center" width="100">
-        <template slot-scope="">
-          <v-icon>{{icons}}</v-icon>
+        <template slot-scope="scope">
+          <el-icon :class=" 'el-icon-'+scope.row.icon"></el-icon>
         </template>
       </el-table-column>
       <el-table-column label="排序" width="120">
@@ -48,7 +48,7 @@
         <template slot-scope="scope">{{ scope.row.component }}</template>
       </el-table-column>
       <el-table-column label="状态" width="120">
-        <template slot-scope="scope"> {{ scope.row.status === '0' ? '正常' : '禁用' }}</template>
+        <template slot-scope="scope"><el-tag> {{ scope.row.status === '0' ? '正常' : '禁用' }}</el-tag></template>
       </el-table-column>
       <el-table-column label="创建时间" width="200">
         <template slot-scope="scope">{{ scope.row.createTime | dateFormat }}</template>
@@ -62,23 +62,6 @@
       </el-table-column>
     </el-table>
 
-    <!-- 分配权限对话框 -->
-    <el-dialog title="分配权限" :visible.sync="setRightDialogVisible" width="50%">
-      <el-tree
-          v-if="rightsList && rightsList.length"
-          :data="rightsList"
-          :props="treeProps"
-          show-checkbox
-          node-key="id"
-          default-expand-all
-          :default-checked-keys="defKeys"
-          ref="treeRef"
-      ></el-tree>
-      <span slot="footer" class="dialog-footer">
-        <el-button >取消</el-button>
-        <el-button type="primary" >确定</el-button>
-      </span>
-    </el-dialog>
 
     <el-dialog title="新增用户" :visible.sync="show" width="30%">
       <!-- 新增用户表单 -->
@@ -87,18 +70,19 @@
 </template>
 
 <script>
+
+
 export default {
   name: 'e-icon',
 
   data() {
     return {
-      setRightDialogVisible: false,
-      rightsList: [], // 权限列表数据
+
       treeProps: {}, // 树组件属性配置
       defKeys: [], // 默认选中项
-      show: false, // 是否显示新增用户对话框
+      show:false,
 
-      icons:"",
+      icons:"", //icon小图标
 
       sysMenu: {
         menuName: '',
@@ -123,10 +107,10 @@ created() {
 
         const {data:res} = await this.$http.post("sysMenu/menuList", this.sysMenu);
 
-        // let _this=this;
-        // _this.icon=res.data.icon
+        this.icons=res.data.icon
         //
-        // console.log(res.data.icon);
+        console.log(res.data[0].icon);
+        console.log(res);
 
         this.sysMenuList =res.data;
       } catch (error) {
@@ -154,9 +138,7 @@ created() {
     // deleteRole() {
     //   // 删除角色逻辑
     // },
-    // formatDateTime() {
-    //   // 格式化日期时间
-    // }
+
   }
 };
 </script>
