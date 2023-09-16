@@ -7,6 +7,8 @@ import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css';
 import iconPicker from 'e-icon-picker';
 import "./assets/fonts/iconfont/iconfont.css"
+import {MessageBox} from 'element-ui'
+
 
 import {analyzingIconForIconfont} from "e-icon-picker/src/utils";//引入解析json函数
 import iconfont from "./assets/fonts/iconfont/iconfont.json" //解析class
@@ -25,6 +27,7 @@ axios.interceptors.request.use(config=>{
 })
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
+Vue.prototype.$messagebox = MessageBox
 
 new Vue({
   router,

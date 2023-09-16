@@ -16,6 +16,7 @@
           </el-dropdown-menu>
         </template>
       </el-dropdown>
+
     </el-header>
 
     <el-container>
@@ -65,14 +66,11 @@
             </template>
           </el-submenu>
         </el-menu>
-
       </el-aside>
       <!-- 主体结构 -->
       <el-main>
         <router-view></router-view>
       </el-main>
-
-
     </el-container>
   </el-container>
 
@@ -163,6 +161,8 @@ export default {
 
 }
 </script>
+
+
 
 <style lang="less" scoped>
 

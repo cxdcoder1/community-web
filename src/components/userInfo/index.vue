@@ -106,6 +106,7 @@ export default {
     this.userId1=user.userId
     this.imageUrl=user.avatar
     this.getUser();
+    console.log(this.imageUrl)
   },
   methods: {
     getUser:async function () {
