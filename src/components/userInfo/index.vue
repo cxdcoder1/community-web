@@ -68,7 +68,7 @@
       </el-col>
       <el-col :span="18" :xs="24">
         <el-card>
-          <div slot="header" class="clearfix">
+          <div slot="header">
             <span>基本资料</span>
           </div>
           <el-tabs v-model="activeTab">
