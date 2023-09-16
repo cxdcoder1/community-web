@@ -35,7 +35,7 @@
       </el-table-column>
       <el-table-column prop="icon" label="图标" align="center" width="100">
         <template slot-scope="scope">
-          <el-icon :class=" 'el-icon-'+scope.row.icon"></el-icon>
+          <i :class="'icon iconfont icon-'+scope.row.icon">&nbsp;&nbsp;</i>
         </template>
       </el-table-column>
       <el-table-column label="排序" width="120">
@@ -48,8 +48,12 @@
         <template slot-scope="scope">{{ scope.row.component }}</template>
       </el-table-column>
       <el-table-column label="状态" width="120">
-        <template slot-scope="scope"><el-tag> {{ scope.row.status === '0' ? '正常' : '禁用' }}</el-tag></template>
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === '0'">正常</el-tag>
+          <el-tag type="danger" v-else>禁用</el-tag>
+        </template>
       </el-table-column>
+
       <el-table-column label="创建时间" width="200">
         <template slot-scope="scope">{{ scope.row.createTime | dateFormat }}</template>
       </el-table-column>
@@ -62,22 +66,18 @@
       </el-table-column>
     </el-table>
 
-
     <el-dialog title="新增用户" :visible.sync="show" width="30%">
       <!-- 新增用户表单 -->
     </el-dialog>
   </div>
 </template>
-
 <script>
-
 
 export default {
   name: 'e-icon',
 
   data() {
     return {
-
       treeProps: {}, // 树组件属性配置
       defKeys: [], // 默认选中项
       show:false,
@@ -107,12 +107,13 @@ created() {
 
         const {data:res} = await this.$http.post("sysMenu/menuList", this.sysMenu);
 
-        this.icons=res.data.icon
+
         //
-        console.log(res.data[0].icon);
-        console.log(res);
+        // console.log(res.data[0].icon);
+        // console.log(res);
 
         this.sysMenuList =res.data;
+        this.icons=res.data.icon
       } catch (error) {
         console.error(error);
         this.$message.error("获取数据失败");
