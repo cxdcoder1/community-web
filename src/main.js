@@ -5,6 +5,7 @@ import store from './store'
 import './plugins/element.js'
 import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css';
+import {MessageBox} from 'element-ui'
 
 
 //接口前缀
@@ -17,6 +18,7 @@ axios.interceptors.request.use(config=>{
 })
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
+Vue.prototype.$messagebox = MessageBox
 
 new Vue({
   router,
