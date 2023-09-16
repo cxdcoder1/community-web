@@ -2,7 +2,7 @@
   <div>
     <el-form :model="sysMenu" ref="queryForm" size="small" :inline="true" v-show="showSearch">
       <el-form-item label="菜单名称" prop="menuName">
-        <el-input v-model="sysMenu.menuName" placeholder="请输入菜单名称" clearable @keyup.enter.native="handleQuery" />
+        <el-input v-model="sysMenu.menuName" placeholder="请输入菜单名称" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="sysMenu.status" placeholder="菜单状态" clearable>
@@ -39,8 +39,8 @@
         <template slot-scope="scope">{{ scope.row.menuName }}</template>
       </el-table-column>
       <el-table-column prop="icon" label="图标" align="center" width="100">
-        <template slot-scope="">
-          <v-icon>{{icons}}</v-icon>
+        <template slot-scope="scope">
+          <i :class="'icon iconfont icon-'+scope.row.icon">&nbsp;&nbsp;</i>
         </template>
       </el-table-column>
       <el-table-column label="排序" width="120">
@@ -53,16 +53,21 @@
         <template slot-scope="scope">{{ scope.row.component }}</template>
       </el-table-column>
       <el-table-column label="状态" width="120">
-        <template slot-scope="scope"> {{ scope.row.status === '0' ? '正常' : '禁用' }}</template>
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === '0'">正常</el-tag>
+          <el-tag type="danger" v-else>禁用</el-tag>
+        </template>
       </el-table-column>
       <el-table-column label="创建时间" width="200">
         <template slot-scope="scope">{{ scope.row.createTime | dateFormat }}</template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" @click="update(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-plus"  @click="Add(scope.row)">新增</el-button>
-          <el-button size="mini" type="text" icon="el-icon-delete" >删除</el-button>
+          <el-button size="mini" type="text" icon="el-icon-edit">修改</el-button>
+          <el-button size="mini" type="text" icon="el-icon-plus">新增</el-button>
+          <el-button size="mini" type="text" icon="el-icon-delete"
+                     @click="deleteMenu(scope.row.menuId,scope.row.parentId)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -382,13 +387,37 @@ created() {
         this.$message.error("获取数据失败");
       }
     },
-    handleQuery(){
+    handleQuery() {
       this.getSysMenu();
     },
     resetQuery() {
       // 重置查询条件
       this.sysMenu.menuName = '';
       this.sysMenu.status = '';
+    },
+    async deleteMenu(menuId, parentId) {
+      // 弹窗提示用户是否要删除
+      const confirmResult = await this.$messagebox.confirm(
+          '请问是否要删除该权限',
+          '删除提示',
+          {
+            confirmButtonText: '确认删除',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+      ).catch(err => err)
+      // 如果用户点击确认，则confirmResult 为'confirm'
+      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+      this.$http.post("sysMenu/deleteMenu", {
+        menuId: menuId,
+        parentId: parentId
+      }).then(res => {
+        alert(res.data.data)
+      })
+      location.reload()
     },
 
   }
