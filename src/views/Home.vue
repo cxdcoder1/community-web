@@ -5,16 +5,12 @@
       <!-- logo -->
       <img src="../assets/logo.png" width="100px" style="padding-left: -130px" alt=""/>
       <!-- 顶部标题 -->
-      <span style="margin-top: 10px; margin-left: -1180px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;智慧社区管理后台</span>
+      <span style="margin-top: 10px; margin-left: -1300px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;智慧社区管理后台</span>
       <el-dropdown>
-    <span class="el-dropdown-link">
-      个人信息
-      <el-icon class="el-icon--right">
-        <arrow-down/>
-      </el-icon>
-    </span>
+        <img :src=res.avatar width="50px" height="50px">
+
         <template #dropdown>
-          <el-dropdown-menu >
+          <el-dropdown-menu>
             <el-dropdown-item><span @click="userInfo1()">个人中心</span></el-dropdown-item>
             <el-dropdown-item><span @click="logout()">退出登录</span></el-dropdown-item>
           </el-dropdown-menu>
@@ -22,8 +18,8 @@
       </el-dropdown>
     </el-header>
 
-    <el-container >
-      <el-aside width="230px" style="background-color: #545c64">
+    <el-container>
+      <el-aside width="230px">
         <el-menu
             background-color="#545c64"
             text-color="#FFFFFF"
@@ -40,6 +36,7 @@
             :reserve-selection="false">
           <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id" :disabled="item.status == '1'">
             <template slot="title">
+              <e-icon :class="`${item.icon}`"/>
               <i class="el-icon-location"></i>
               <span>{{ item.menuName }}</span>
             </template>
@@ -80,6 +77,7 @@ export default {
   name: "welcomeList",
   data() {
     return {
+      res: "", // 初始化一个res变量，用于接收查询
       iconsObj: {
         '125':'iconfont icon-user',
         '103':'iconfont icon-tijikongjian',
@@ -87,7 +85,6 @@ export default {
         '102':'iconfont icon-danju',
         '145':'iconfont icon-baobiao'
       },
-      res: 0, // 初始化一个res变量，用于接收查询
       menuList: [],
       userInfo: [],
       sysUser: {},

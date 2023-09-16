@@ -16,7 +16,26 @@
           </div>
           <div>
             <div class="text-center">
-              <userAvatar />
+<!--              <el-upload-->
+<!--                  action="http://localhost:8080/upload"-->
+<!--                  list-type="picture-card"-->
+<!--                  :on-preview="handlePictureCardPreview"-->
+<!--                  :on-success="updateUserImage"-->
+<!--                  :on-remove="handleRemove">-->
+<!--                <i class="el-icon-plus"></i>-->
+<!--              </el-upload>-->
+<!--              <el-dialog :visible.sync="dialogVisible">-->
+<!--                <img width="100%" :src="dialogImageUrl" alt="">-->
+<!--              </el-dialog>-->
+              <el-upload
+                  class="avatar-uploader"
+                  action="http://localhost:8080/upload"
+                  :show-file-list="false"
+                  :on-success="handleAvatarSuccess">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+
             </div>
             <ul class="list-group list-group-striped">
               <li class="list-group-item">
@@ -56,6 +75,9 @@
             <el-tab-pane label="基本资料" name="userinfo">
               <userInfo :user="user" />
             </el-tab-pane>
+            <el-tab-pane label="修改密码" name="resetPwd">
+              <resetPwd />
+            </el-tab-pane>
           </el-tabs>
         </el-card>
       </el-col>
@@ -64,34 +86,52 @@
 </template>
 
 <script>
-import userAvatar from "./userAvatar";
 import userInfo from "./userInfo";
-import resetPwd from "./resetPwd";
+import resetPwd from "@/components/userInfo/resetPwd";
 // import { getUserProfile } from "@/api/system/user";
 
 export default {
   name: "ProFile",
-  components: { userAvatar, userInfo, resetPwd },
+  components: { userInfo,resetPwd},
   data() {
     return {
+      userId1:"",
       user: "",
-      activeTab: "userinfo"
+      activeTab: "userinfo",
+      imageUrl: ''
     };
   },
   created() {
+    let user= JSON.parse(window.sessionStorage.getItem("user"))
+    this.userId1=user.userId
+    this.imageUrl=user.avatar
     this.getUser();
   },
   methods: {
     getUser:async function () {
-      let user= JSON.parse(window.sessionStorage.getItem("user"))
-      const {data: res} = await this.$http.get('sysUser/'+user.userId)
+      const {data: res} = await this.$http.get('sysUser/'+this.userId1)
       // // 如果返回状态为异常状态则报错并返回
       // if (res.meta.status !== 200) {
       //   return this.$message.error('获取角色列表失败')
       // }
       this.user = res;
-      console.log(res)
-    }
+    },
+    handleAvatarSuccess(res, file) {
+      //调用接口修改数据库
+      // console.log(res)
+      this.$http.put('sysUser/updataUser',{
+          userId:this.userId1,
+          avatar:res
+      })
+      //当数据库修改完成后，重置页面数据
+      this.imageUrl = URL.createObjectURL(file.raw);
+      //给当前session的img换值
+      let item = JSON.parse(window.sessionStorage.getItem("user"));
+      item.avatar=this.imageUrl;
+      window.sessionStorage.setItem("user",JSON.stringify(item))
+    },
+
+
   }
 };
 </script>
@@ -106,5 +146,28 @@ export default {
   margin-bottom: -1px;
   padding: 11px 0px;
   font-size: 13px;
+}
+ .avatar-uploader .el-upload {
+   border: 1px dashed #d9d9d9;
+   border-radius: 6px;
+   cursor: pointer;
+   position: relative;
+   overflow: hidden;
+ }
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 140px;
+  height: 140px;
+  display: block;
 }
 </style>

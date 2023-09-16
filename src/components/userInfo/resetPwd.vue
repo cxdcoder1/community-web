@@ -1,6 +1,4 @@
 <template>
-
-
   <el-form ref="form" :model="user" :rules="rules" label-width="80px">
     <el-form-item label="旧密码" prop="oldPassword">
       <el-input v-model="user.oldPassword" placeholder="请输入旧密码" type="password" show-password/>
@@ -55,15 +53,32 @@ export default {
     submit() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          // updateUserPwd(this.user.oldPassword, this.user.newPassword).then(response => {
-          //   this.$modal.msgSuccess("修改成功");
-          // });
+          let user1= JSON.parse(window.sessionStorage.getItem("user"))
+          if (user1.password==this.user.oldPassword){
+              this.$http.put('sysUser/updataUser',{
+                userId:user1.userId,
+                password:this.user.newPassword
+              })
+            alert("修改成功")
+            let item = JSON.parse(window.sessionStorage.getItem("user"));
+            item.password=this.user.newPassword;
+            window.sessionStorage.setItem("user",JSON.stringify(item))
+            // console.log(user)
+            this.user.newPassword=""
+            this.user.oldPassword=""
+            this.user.confirmPassword=""
+
+
+          }else {
+            alert("旧密码错误")
+          }
+
         }
       });
     },
-    // close() {
-    //   this.$tab.closePage();
-    // }
+    close() {
+      // this.$tab.closePage();
+    }
   }
 };
 </script>
