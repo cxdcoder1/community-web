@@ -1,13 +1,14 @@
 <template>
+  <div id="building">
   <div class="login_container">
     <!-- 登录盒子 -->
     <div class="login_box">
-      <h2 style="text-align: center;margin-bottom: 0px">智慧社区管理系统</h2>
+      <h2 style="text-align: center;color: #ffffff;margin-bottom: 0px" >智慧社区管理系统</h2>
 <!---->
       <!-- 登录表单 -->
       <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
         <!-- 用户名 -->
-        <el-form-item  prop="username">
+        <el-form-item  prop="phonenumber">
           <el-input v-model="loginForm.phonenumber" prefix-icon="el-icon-user-solid"></el-input>
         </el-form-item>
 
@@ -28,6 +29,7 @@
       </el-form>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -38,8 +40,8 @@ export default {
   data() {
     return {
       loginForm: {
-        phonenumber: '15666666666',
-        password: '123456'
+        phonenumber: '',
+        password: ''
       },
 
       userInfo:{
@@ -83,8 +85,8 @@ export default {
     async success() {
         this.isShow = false; // 通过验证后，需要手动隐藏模态框console.log(res)
 
-      this.userInfo.phonenumber = this.loginForm.phonenumber;
-      this.userInfo.password = this.loginForm.password;
+      this.userInfo.phoneNumber = this.loginForm.phonenumber;
+      this.userInfo.passWord = this.loginForm.password;
 
       const {data: res} = await this.$http.post('sysUser/login', this.userInfo);
         if (res.status != 200) {
@@ -96,6 +98,7 @@ export default {
 //       window.sessionStorage.setItem('user', JSON.stringify(res.user));
       window.sessionStorage.setItem('user', JSON.stringify(res.user));
 //保存token
+
       window.sessionStorage.setItem('token', res.JWT);
 
 //导航至/home
@@ -113,20 +116,35 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+#building{
+  //background:url("1.png");
+  width:100%;
+  height:100%;
+  position:fixed;
+  background-size:100% 100%;
+}
 .login_container {
   background-color: #2b5b6b;
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/1.png");
+  opacity: 0.8;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+html, body {
   height: 100%;
 }
-
 .login_box {
   width: 450px;
   height: 300px;
-  background: #fff;
+  background: #030e21;
   border-radius: 3px;
   position: absolute;
   left: 50%;
   top: 50%;
+  opacity: 0.7;
   transform: translate(-50%, -50%);
 
   .avatar_box {
