@@ -5,12 +5,12 @@
       <!-- logo -->
       <img src="../assets/logo.png" width="100px" style="padding-left: -130px" alt=""/>
       <!-- 顶部标题 -->
-      <span style="margin-top: 10px; margin-left: -1300px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;智慧社区管理后台</span>
+      <span style="margin-top: 10px; margin-left: -1180px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;智慧社区管理后台</span>
+      <!-- 顶部标题 -->
       <el-dropdown>
         <img :src=res.avatar width="50px" height="50px">
-
         <template #dropdown>
-          <el-dropdown-menu>
+          <el-dropdown-menu >
             <el-dropdown-item><span @click="userInfo1()">个人中心</span></el-dropdown-item>
             <el-dropdown-item><span @click="logout()">退出登录</span></el-dropdown-item>
           </el-dropdown-menu>
@@ -19,42 +19,59 @@
     </el-header>
 
     <el-container>
-      <el-aside width="230px">
+      <!-- 侧边栏 -->
+      <el-aside class="el-aside" width="170px" style="margin: 0px;padding: 0px">
+
         <el-menu
-            background-color="#545c64"
-            text-color="#FFFFFF"
             :data="menuList"
-            default-active="2"
-            class="el-menu-vertical-demo"
-            active-text-color="#409EFF"
+            :default-active="activePath"
+            text-color="black"
+            active-text-color="brown"
             unique-opened
             router
-            @select="handleSelect"
+            background-color="#D3dce6"
             @open="handleOpen"
             @close="handleClose"
-            type="selection"
-            :reserve-selection="false">
-          <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id" :disabled="item.status == '1'">
+            style="margin-left: -45px;">
+          <!-- 一级菜单 -->
+          <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id"
+                      :disabled="item.status==1">
             <template slot="title">
-              <e-icon :class="`${item.icon}`"/>
-              <i class="el-icon-location"></i>
-              <span>{{ item.menuName }}</span>
+              <e-icon :icon-name="item.icon"></e-icon>
+              <span>{{item.menuName}}</span>
             </template>
-            <el-menu-item :index="'/' + item2.path" v-for="item2 in item.children" :key="item2.menuId"
-                          :disabled="item2.status == '1'"
-                          :style="{ color: activeIndex === '/' + item2.path ? activeColor : '' }">
-              <e-icon :icon-name="`${item2.icon}`"/>
-              <i class="el-icon-location"></i>
-              <template slot="title">{{ item2.menuName }}</template>
-            </el-menu-item>
+            <!-- 二级菜单 -->
+            <template v-for="item2 in item.children" >
+              <el-submenu v-if="item2.menuId == 108" :index="'/' + item2.path"
+                          :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 5px">
+                <template slot="title">
+                  <e-icon :icon-name="item2.icon"></e-icon>
+                  <span>{{item2.menuName}}</span>
+                </template>
+                <!-- 三级菜单 -->
+                <el-menu-item class="el-menu-item" @click="savePath('/'+item3.path)"
+                              :index="'/' + item3.path" v-for="item3 in item2.children"
+                              :key="item3.menuId" :disabled="item3.status==1"  style="padding-left: 90px">
+                  <e-icon :icon-name="item3.icon"></e-icon>
+                  <template slot="title">{{item3.menuName}}</template>
+                </el-menu-item>
+              </el-submenu>
+              <el-menu-item v-else class="el-menu-item" @click="savePath('/'+item2.path)"
+                            :index="'/' + item2.path" :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 70px">
+                <e-icon :icon-name="item2.icon"></e-icon>
+                <template slot="title">{{item2.menuName}}</template>
+              </el-menu-item>
+            </template>
           </el-submenu>
         </el-menu>
-      </el-aside>
 
-      <!-- 内容-->
+      </el-aside>
+      <!-- 主体结构 -->
       <el-main>
         <router-view></router-view>
       </el-main>
+
+
     </el-container>
   </el-container>
 
@@ -77,14 +94,9 @@ export default {
   name: "welcomeList",
   data() {
     return {
-      res: "", // 初始化一个res变量，用于接收查询
-      iconsObj: {
-        '125':'iconfont icon-user',
-        '103':'iconfont icon-tijikongjian',
-        '101':'iconfont icon-shangpin',
-        '102':'iconfont icon-danju',
-        '145':'iconfont icon-baobiao'
-      },
+      showSubmenu: null ,// 控制展开的三级菜单的二级菜单项的菜单ID
+
+      res: 0, // 初始化一个res变量，用于接收查询
       menuList: [],
       userInfo: [],
       sysUser: {},
@@ -92,6 +104,16 @@ export default {
       isShow: true,
       activeColor: '#409EFF'
     }
+  },
+  created() {
+    this.res = this.$route.query.res; // 将查询参数的值赋给res变量
+    // console.log(this.$route.query.res)
+    // if(this.res==null){
+    //   this.res=2
+    // }
+    this.res = JSON.parse(window.sessionStorage.getItem("user"));
+    this.getMenuList();
+    // this.getUserInfo();
   },
   methods: {
     userInfo1: function () {
@@ -137,20 +159,9 @@ export default {
 
   },
 
-  created() {
-    this.res = this.$route.query.res; // 将查询参数的值赋给res变量
-    // console.log(this.$route.query.res)
-    // if(this.res==null){
-    //   this.res=2
-    // }
-    this.res = JSON.parse(window.sessionStorage.getItem("user"));
-    this.getMenuList();
-    // this.getUserInfo();
-  }
+
 }
 </script>
-
-
 
 <style lang="less" scoped>
 
@@ -163,13 +174,19 @@ html, body {
 }
 
 .container{
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
+  overflow: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
 
+}
+
+.container{
+  height: 100vh;
+  width: 100vw;
 }
 .el-main{
   height: auto;
@@ -187,7 +204,7 @@ html, body {
 }
 
 .el-container {
-  margin-top: -10px;
+  margin-top: 0px;
 
 }
 
