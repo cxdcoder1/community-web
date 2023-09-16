@@ -8,7 +8,7 @@
       <!-- 登录表单 -->
       <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
         <!-- 用户名 -->
-        <el-form-item  prop="username">
+        <el-form-item  prop="phonenumber">
           <el-input v-model="loginForm.phonenumber" prefix-icon="el-icon-user-solid"></el-input>
         </el-form-item>
 
@@ -40,8 +40,8 @@ export default {
   data() {
     return {
       loginForm: {
-        phonenumber: '15666666666',
-        password: '123456'
+        phonenumber: '',
+        password: ''
       },
 
       userInfo:{
@@ -85,8 +85,8 @@ export default {
     async success() {
         this.isShow = false; // 通过验证后，需要手动隐藏模态框console.log(res)
 
-      this.userInfo.phonenumber = this.loginForm.phonenumber;
-      this.userInfo.password = this.loginForm.password;
+      this.userInfo.phoneNumber = this.loginForm.phonenumber;
+      this.userInfo.passWord = this.loginForm.password;
 
       const {data: res} = await this.$http.post('sysUser/login', this.userInfo);
         if (res.status != 200) {
