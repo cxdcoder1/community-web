@@ -5,7 +5,7 @@
       <!-- logo -->
       <img src="../assets/logo.png" width="100px" style="padding-left: -130px" alt=""/>
       <!-- 顶部标题 -->
-      <span style="margin-top: 10px; margin-left: -1180px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;智慧社区管理后台</span>
+      <span style="position: fixed; top: 25px; left: 111px;">智慧社区管理后台</span>
       <!-- 顶部标题 -->
       <el-dropdown>
         <img :src=res.avatar width="50px" height="50px">
@@ -173,6 +173,8 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+
 
 .container{
   overflow: auto;

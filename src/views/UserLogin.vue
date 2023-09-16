@@ -9,12 +9,12 @@
       <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
         <!-- 用户名 -->
         <el-form-item  prop="phonenumber">
-          <el-input v-model="loginForm.phonenumber" prefix-icon="el-icon-user-solid"></el-input>
+          <el-input v-model="loginForm.phonenumber" prefix-icon="el-icon-user-solid"  ></el-input>
         </el-form-item>
 
         <!-- 密码 -->
         <el-form-item prop="password">
-          <el-input type="password" v-model="loginForm.password" prefix-icon="el-icon-s-cooperation"></el-input>
+          <el-input type="password" v-model="loginForm.password" prefix-icon="el-icon-s-cooperation" ></el-input>
         </el-form-item>
 
         <!--                <div>-->
@@ -45,8 +45,8 @@ export default {
       },
 
       userInfo:{
-        phoneNumber:'',
-        passWord:''
+        phonenumber:'',
+        password:''
       },
 
 
@@ -54,15 +54,15 @@ export default {
 
       loginFormRules: {
         phonenumber: [
-          {required: true, message: '请输入登录名', trigger: 'blur'},
-          {min: 3, max: 11, message: '登录名长度在 3 到 10 个字符', trigger: 'blur'}
+          { required: true, message: '请输入登录名', trigger: 'blur' },
+          { pattern: /^1[3-9]\d{9}$/, message: '手机号格式错误或手机号没有11位', trigger: 'blur' }
         ],
         password: [
-          {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 6, max: 15, message: '密码长度在 6 到 15 个字符', trigger: 'blur'}
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { pattern: /^.{6,15}$/, message: '密码长度在 6 到 15 个字符', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
   components: {
     Vcode
@@ -85,8 +85,8 @@ export default {
     async success() {
         this.isShow = false; // 通过验证后，需要手动隐藏模态框console.log(res)
 
-      this.userInfo.phoneNumber = this.loginForm.phonenumber;
-      this.userInfo.passWord = this.loginForm.password;
+      this.userInfo.phonenumber = this.loginForm.phonenumber;
+      this.userInfo.password = this.loginForm.password;
 
       const {data: res} = await this.$http.post('sysUser/login', this.userInfo);
         if (res.status != 200) {
