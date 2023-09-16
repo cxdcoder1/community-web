@@ -39,13 +39,9 @@
         <template slot-scope="scope">{{ scope.row.menuName }}</template>
       </el-table-column>
       <el-table-column prop="icon" label="图标" align="center" width="100">
-<<<<<<<<< Temporary merge branch 1
-        <template slot-scope="">
-          <v-icon>{{ icons }}</v-icon>
-=========
+
         <template slot-scope="scope">
           <i :class="'icon iconfont icon-'+scope.row.icon">&nbsp;&nbsp;</i>
->>>>>>>>> Temporary merge branch 2
         </template>
       </el-table-column>
       <el-table-column label="排序" width="120">
@@ -58,14 +54,14 @@
         <template slot-scope="scope">{{ scope.row.component }}</template>
       </el-table-column>
       <el-table-column label="状态" width="120">
-<<<<<<<<< Temporary merge branch 1
+
         <template slot-scope="scope"> {{ scope.row.status === '0' ? '正常' : '禁用' }}</template>
-=========
+
         <template slot-scope="scope">
           <el-tag v-if="scope.row.status === '0'">正常</el-tag>
           <el-tag type="danger" v-else>禁用</el-tag>
         </template>
->>>>>>>>> Temporary merge branch 2
+
       </el-table-column>
       <el-table-column label="创建时间" width="200">
         <template slot-scope="scope">{{ scope.row.createTime | dateFormat }}</template>
@@ -80,7 +76,7 @@
         </template>
       </el-table-column>
     </el-table>
-<<<<<<<<< Temporary merge branch 1
+
     <!-- 添加或修改菜单对话框 -->
 
     <el-dialog  :title="title" :visible.sync="updateSysMenuShow" width="680px" @close="closeLog()" append-to-body >

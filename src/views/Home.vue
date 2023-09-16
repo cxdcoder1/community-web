@@ -5,12 +5,12 @@
       <!-- logo -->
       <img src="../assets/logo.png" width="100px" style="padding-left: -130px" alt=""/>
       <!-- 顶部标题 -->
-      <span style="margin-top: 10px; margin-left: -1180px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;智慧社区管理后台</span>
+      <span style="position: sticky; top: 25px; margin-left: -83%;"> 智慧社区管理后台</span>
       <!-- 顶部标题 -->
       <el-dropdown>
         <img :src=res.avatar width="50px" height="50px">
         <template #dropdown>
-          <el-dropdown-menu >
+          <el-dropdown-menu>
             <el-dropdown-item><span @click="userInfo1()">个人中心</span></el-dropdown-item>
             <el-dropdown-item><span @click="logout()">退出登录</span></el-dropdown-item>
           </el-dropdown-menu>
@@ -39,29 +39,30 @@
                       :disabled="item.status==1">
             <template slot="title">
               <i :class="'icon iconfont icon-'+item.icon">&nbsp;&nbsp;</i>
-              <span>{{item.menuName}}</span>
+              <span>{{ item.menuName }}</span>
             </template>
             <!-- 二级菜单 -->
-            <template v-for="item2 in item.children" >
+            <template v-for="item2 in item.children">
               <el-submenu v-if="item2.menuId == 108" :index="'/' + item2.path"
                           :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 5px">
                 <template slot="title">
                   <e-icon :icon-name="item2.icon"></e-icon>
-                  <span>{{item2.menuName}}</span>
+                  <span>{{ item2.menuName }}</span>
                 </template>
                 <!-- 三级菜单 -->
                 <el-menu-item class="el-menu-item" @click="savePath('/'+item3.path)"
                               :index="'/' + item3.path" v-for="item3 in item2.children"
-                              :key="item3.menuId" :disabled="item3.status==1"  style="padding-left: 90px">
+                              :key="item3.menuId" :disabled="item3.status==1" style="padding-left: 90px">
                   <e-icon :icon-name="item3.icon"></e-icon>
-                  <template slot="title">{{item3.menuName}}</template>
+                  <template slot="title">{{ item3.menuName }}</template>
                 </el-menu-item>
               </el-submenu>
               <el-menu-item v-else class="el-menu-item" @click="savePath('/'+item2.path)"
-                            :index="'/' + item2.path" :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 70px">
+                            :index="'/' + item2.path" :key="item2.menuId" :disabled="item2.status==1"
+                            style="padding-left: 70px">
                 <!-- 图标 -->
                 <i :class="'icon iconfont icon-'+item2.icon">&nbsp;&nbsp;</i>
-                <template slot="title">{{item2.menuName}}</template>
+                <template slot="title">{{ item2.menuName }}</template>
               </el-menu-item>
             </template>
           </el-submenu>
@@ -93,7 +94,7 @@ export default {
   name: "welcomeList",
   data() {
     return {
-      showSubmenu: null ,// 控制展开的三级菜单的二级菜单项的菜单ID
+      showSubmenu: null,// 控制展开的三级菜单的二级菜单项的菜单ID
 
       res: 0, // 初始化一个res变量，用于接收查询
       menuList: [],
@@ -163,7 +164,6 @@ export default {
 </script>
 
 
-
 <style lang="less" scoped>
 
 
@@ -174,7 +174,8 @@ html, body {
   padding: 0;
 }
 
-.container{
+
+.container {
   overflow: auto;
   position: fixed;
   top: 0;
@@ -185,11 +186,12 @@ html, body {
 
 }
 
-.container{
+.container {
   height: 100vh;
   width: 100vw;
 }
-.el-main{
+
+.el-main {
   height: auto;
 
 }
