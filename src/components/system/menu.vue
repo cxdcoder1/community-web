@@ -25,7 +25,8 @@
         icon="el-icon-plus"
         size="small"
         @click="Add"
-    >添加</el-button>
+    >添加
+    </el-button>
 
     <el-table
         ref="multipleTable"
@@ -69,7 +70,7 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-edit" @click="update(scope.row)">修改</el-button>
-          <el-button size="mini" type="text" icon="el-icon-plus" @click="Add(scope.row)" >新增</el-button>
+          <el-button size="mini" type="text" icon="el-icon-plus" @click="Add(scope.row)">新增</el-button>
           <el-button size="mini" type="text" icon="el-icon-delete"
                      @click="deleteMenu(scope.row.menuId,scope.row.parentId)">删除
           </el-button>
@@ -78,7 +79,7 @@
     </el-table>
 
     <!-- 添加或修改菜单对话框 -->
-    <el-dialog  :title="title" :visible.sync="updateSysMenuShow" width="680px" @close="closeLog()" append-to-body >
+    <el-dialog :title="title" :visible.sync="updateSysMenuShow" width="680px" @close="closeLog()" append-to-body>
       <el-form ref="menusInfoRef" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="24">
@@ -92,7 +93,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="菜单类型" prop="menuType" >
+            <el-form-item label="菜单类型" prop="menuType">
               <el-radio-group v-model="form.menuType">
                 <el-radio label="M">目录</el-radio>
                 <el-radio label="C">菜单</el-radio>
@@ -102,13 +103,13 @@
           </el-col>
           <el-col :span="24" v-if="form.menuType != 'F'">
             <el-form-item label="菜单图标" prop="icon">
-              <e-icon-picker v-model="form.icon" style="width:300px" />
+              <e-icon-picker v-model="form.icon" style="width:300px"/>
               <!-- <e-icon-picker v-model="menusInfo.icon" :options="options"/>-->
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="菜单名称" prop="menuName">
-              <el-input v-model="form.menuName"  placeholder="请输入菜单名称"/>
+              <el-input v-model="form.menuName" placeholder="请输入菜单名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -236,28 +237,28 @@ export default {
 
       form: {
         menuType: 'M',
-        status:'',
-        menuName:'',
-        orderNum:'',
-        isFrame:'',
-        path:'',
-        component:'',
-        perms:'',
-        isCache:'',
-        visible:"",
-        title:"修改菜单",
-        menusInfo :"",
+        status: '',
+        menuName: '',
+        orderNum: '',
+        isFrame: '',
+        path: '',
+        component: '',
+        perms: '',
+        isCache: '',
+        visible: "",
+        title: "修改菜单",
+        menusInfo: "",
       },
       // 表单校验
       rules: {
         menuName: [
-          { required: true, message: "菜单名称不能为空", trigger: "blur" }
+          {required: true, message: "菜单名称不能为空", trigger: "blur"}
         ],
         orderNum: [
-          { required: true, message: "菜单顺序不能为空", trigger: "blur" }
+          {required: true, message: "菜单顺序不能为空", trigger: "blur"}
         ],
         path: [
-          { required: true, message: "路由地址不能为空", trigger: "blur" }
+          {required: true, message: "路由地址不能为空", trigger: "blur"}
         ]
       },
       setRightDialogVisible: false,
@@ -265,12 +266,9 @@ export default {
       treeProps: {}, // 树组件属性配置
       defKeys: [], // 默认选中项
       dialogVisible: false, // 是否显示新增用户对话框
-      icons:"",
+      icons: "",
 
-      from1:{
-
-
-      },
+      from1: {},
       sysMenu: {
         menuName: '',
         status: ''
@@ -278,16 +276,16 @@ export default {
 
       showSearch: true,
       dictList: [
-        { label: '正常', value: '0' },
-        { label: '禁用', value: '1' }
+        {label: '正常', value: '0'},
+        {label: '禁用', value: '1'}
       ],
       sysMenuList: [], // 列表数据
     };
   },
-created() {
-  this.getSysMenu();
+  created() {
+    this.getSysMenu();
 
-},
+  },
 
   methods: {
     async saveMenu() {
@@ -295,42 +293,42 @@ created() {
       if (this.form.menuId == null || this.form.menuId == 0) {
         res = await this.$http.post('sysMenu/addMenu', this.form);
         console.log(res)
-      }else {
+      } else {
         res = await this.$http.put('sysMenu/updateMenu', this.form);
       }
       if (res.data.status == 200) {
         this.updateSysMenuShow = false
         this.$message.success("保存成功")
-        this.getSysMenu()
+        await this.getSysMenu()
       } else {
         this.updateSysMenuShow = false
         this.$message.error(res.data.msg)
       }
     },
     update(r) {
-      this.form.menuType='M';
-      this.form.menuId=r.menuId
+      this.form.menuType = 'M';
+      this.form.menuId = r.menuId
       this.updateSysMenuShow = true
       this.title = "修改菜单";
-      if (r.parentId===0){
-        this.form.parentId=0
-      }else {
-        this.form.parentId=r.parentId
+      if (r.parentId === 0) {
+        this.form.parentId = 0
+      } else {
+        this.form.parentId = r.parentId
         // this.form.parentId === 0 ? '' : 'parentId';
       }
-      this.form.status=r.status
-      this.form.menuName=r.menuName
+      this.form.status = r.status
+      this.form.menuName = r.menuName
       // this.form.menuType=r.menuType
-      this.form.orderNum=r.orderNum
-      this.form.isFrame=r.isFrame
-      this.form.path=r.path
-      this.form.component=r.component
-      console.log(this.form.status)
+      this.form.orderNum = r.orderNum
+      this.form.isFrame = r.isFrame
+      this.form.path = r.path
+      this.form.component = r.component
+      // console.log(this.form.status)
 
     },
     Add(r) {
       this.title = "新增菜单";
-      this.form={
+      this.form = {
         menuType: 'M',
         parentId: '0',
       };
@@ -348,12 +346,12 @@ created() {
       //     this.menusInfo.parentId = 0
       // }
     },
-    closeLog(){
-          this.$refs.form.resetFields()
-          this.updateSysMenuShow = false
-          this.form={
-            menuType: 'M',
-          }
+    closeLog() {
+      this.$refs.form.resetFields()
+      this.updateSysMenuShow = false
+      this.form = {
+        menuType: 'M',
+      }
 
     },
     reset() {
@@ -383,7 +381,7 @@ created() {
     },
     async getSysMenu() {
       try {
-        const {data:res} = await this.$http.post("sysMenu/menuList", this.sysMenu);
+        const {data: res} = await this.$http.post("sysMenu/menuList", this.sysMenu);
         //
         // console.log(res.data[0].icon);
         // console.log(res);
@@ -393,9 +391,9 @@ created() {
         //
         console.log(res);
 
-        this.sysMenuList =res.data;
-        this.icons=res.data.icon
-        this.treeData=res.data;
+        this.sysMenuList = res.data;
+        this.icons = res.data.icon
+        this.treeData = res.data;
       } catch (error) {
         console.error(error);
         this.$message.error("获取数据失败");
@@ -430,8 +428,8 @@ created() {
         parentId: parentId
       }).then(res => {
         this.$message.success(res.data.data)
+        this.getSysMenu()
       })
-      location.reload()
     },
 
   }

@@ -74,7 +74,7 @@ export default {
       })
     },
     close() {
-
+      this.$router.push('/home')
     },
   }
 };
