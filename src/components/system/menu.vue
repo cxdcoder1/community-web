@@ -223,6 +223,7 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 
+
 export default {
 
   name: 'e-icon',
@@ -309,6 +310,7 @@ export default {
     update(r) {
       this.form.menuType = 'M';
       this.form.menuId = r.menuId
+      this.form.parentId=r.parentId
       this.updateSysMenuShow = true
       this.title = "修改菜单";
       // this.form.
@@ -326,6 +328,7 @@ export default {
       this.form.path = r.path
       this.form.component = r.component
       this.form.visible=r.visible
+      this.form.icon=r.icon
       // console.log(this.form.status)
 
     },
@@ -335,14 +338,11 @@ export default {
         menuType: 'M',
         parentId: '0',
       };
-
       this.updateSysMenuShow = true;
       this.reset()
       this.menusInfo.parentId = 0
       this.menusInfo.isCache = 1
       this.menusInfo.isFrame = 1
-
-      console.log(r)
       // if(r != null && r .menuId){
       //     this.menusInfo.parentId = r.menuId
       // }else {
