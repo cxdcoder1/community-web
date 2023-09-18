@@ -5,6 +5,7 @@ import Home from "@/views/Home";
 import SysWelcome1 from "@/views/SysWelcome1.vue";
 import userInfo from "@/components/userInfo/index.vue";
 import system from "@/components/system/menu.vue";
+import role from "@/components/system/role/index.vue";
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,7 @@ const routes = [
       { path: '/welcome', component: SysWelcome1 },
       { path: '/userInfo', component: userInfo },
       { path: '/menu', component: system},
+      { path: '/role', component: role},
     ]
   },
 ]
