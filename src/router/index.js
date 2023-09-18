@@ -19,6 +19,7 @@ const routes = [
       { path: '/userInfo', component: userInfo },
       { path: '/menu', component: system},
       { path: '/role', component: role},
+
     ]
   },
 ]

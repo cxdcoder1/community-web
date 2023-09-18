@@ -40,7 +40,8 @@ export default {
         ],
         newPassword: [
           { required: true, message: "新密码不能为空", trigger: "blur" },
-          { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur" }
+          { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur" },
+          // { required: true, validator: equalToOldPassword, trigger: "blur" }
         ],
         confirmPassword: [
           { required: true, message: "确认密码不能为空", trigger: "blur" },
@@ -59,7 +60,7 @@ export default {
                 userId:user1.userId,
                 password:this.user.newPassword
               })
-            alert("修改成功")
+            alert("修改成功,请重新登录!")
             let item = JSON.parse(window.sessionStorage.getItem("user"));
             item.password=this.user.newPassword;
             window.sessionStorage.setItem("user",JSON.stringify(item))
@@ -68,7 +69,9 @@ export default {
             this.user.oldPassword=""
             this.user.confirmPassword=""
 
-            this.$router.push('/home')
+            //修改成功后重新登录
+            window.sessionStorage.clear()
+            this.$router.push('/login')
 
           }else {
             alert("旧密码错误")

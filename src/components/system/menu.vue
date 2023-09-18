@@ -31,7 +31,7 @@
 
     <el-table
         ref="multipleTable"
-        :data="sysMenuList"
+        :data="menuList"
         tooltip-effect="dark"
         style="width: 100%"
         row-key="menuId"
@@ -86,7 +86,7 @@
               <treeselect
                   placeholder='选择上级菜单'
                   v-model="form.parentId"
-                  :options="sysMenuList"
+                  :options="menuList"
                   :normalizer="normalizer"
               />
             </el-form-item>
@@ -248,6 +248,7 @@ export default {
         title: "修改菜单",
         menusInfo: "",
       },
+      menuList:[],
       // 表单校验
       rules: {
         menuName: [
@@ -393,7 +394,7 @@ export default {
         //
         console.log(res);
 
-        this.sysMenuList = res.data;
+        this.menuList = res.data;
         this.icons = res.data.icon
         this.treeData = res.data;
       } catch (error) {
