@@ -298,7 +298,8 @@ export default {
       if (res.data.status == 200) {
         this.updateSysMenuShow = false
         this.$message.success("保存成功")
-        await this.getSysMenu()
+        location.reload()
+
       } else {
         this.updateSysMenuShow = false
         this.$message.error(res.data.msg)
@@ -309,6 +310,7 @@ export default {
       this.form.menuId = r.menuId
       this.updateSysMenuShow = true
       this.title = "修改菜单";
+      // this.form.
       if (r.parentId === 0) {
         this.form.parentId = 0
       } else {
@@ -322,6 +324,7 @@ export default {
       this.form.isFrame = r.isFrame
       this.form.path = r.path
       this.form.component = r.component
+      this.form.visible=r.visible
       // console.log(this.form.status)
 
     },
@@ -397,6 +400,7 @@ export default {
         console.error(error);
         this.$message.error("获取数据失败");
       }
+      // location.reload()
     },
     handleQuery() {
       this.getSysMenu();
@@ -427,7 +431,7 @@ export default {
         parentId: parentId
       }).then(res => {
         this.$message.success(res.data.data)
-        this.getSysMenu()
+        location.reload()
       })
     },
 
