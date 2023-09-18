@@ -31,7 +31,7 @@
 
     <el-table
         ref="multipleTable"
-        :data="sysMenuList"
+        :data="menuList"
         tooltip-effect="dark"
         style="width: 100%"
         row-key="menuId"
@@ -86,7 +86,7 @@
               <treeselect
                   placeholder='选择上级菜单'
                   v-model="form.parentId"
-                  :options="sysMenuList"
+                  :options="menuList"
                   :normalizer="normalizer"
               />
             </el-form-item>
@@ -248,6 +248,7 @@ export default {
         title: "修改菜单",
         menusInfo: "",
       },
+      menuList:[],
       // 表单校验
       rules: {
         menuName: [
@@ -298,7 +299,8 @@ export default {
       if (res.data.status == 200) {
         this.updateSysMenuShow = false
         this.$message.success("保存成功")
-        await this.getSysMenu()
+        location.reload()
+
       } else {
         this.updateSysMenuShow = false
         this.$message.error(res.data.msg)
@@ -309,6 +311,7 @@ export default {
       this.form.menuId = r.menuId
       this.updateSysMenuShow = true
       this.title = "修改菜单";
+      // this.form.
       if (r.parentId === 0) {
         this.form.parentId = 0
       } else {
@@ -322,6 +325,7 @@ export default {
       this.form.isFrame = r.isFrame
       this.form.path = r.path
       this.form.component = r.component
+      this.form.visible=r.visible
       // console.log(this.form.status)
 
     },
@@ -390,13 +394,14 @@ export default {
         //
         console.log(res);
 
-        this.sysMenuList = res.data;
+        this.menuList = res.data;
         this.icons = res.data.icon
         this.treeData = res.data;
       } catch (error) {
         console.error(error);
         this.$message.error("获取数据失败");
       }
+      // location.reload()
     },
     handleQuery() {
       this.getSysMenu();
@@ -427,7 +432,7 @@ export default {
         parentId: parentId
       }).then(res => {
         this.$message.success(res.data.data)
-        this.getSysMenu()
+        location.reload()
       })
     },
 

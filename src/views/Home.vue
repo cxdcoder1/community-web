@@ -28,12 +28,12 @@
             :data="menuList"
             :default-active="activePath"
             text-color="black"
-            active-text-color="brown"
             unique-opened
             router
             background-color="#D3dce6"
             @open="handleOpen"
             @close="handleClose"
+            active-text-color="#ffd04b"
             style="margin-left: -45px;">
           <!-- 一级菜单 -->
           <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id"
