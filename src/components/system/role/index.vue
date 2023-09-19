@@ -396,7 +396,16 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.queryParams = {}
+      this.queryParams = {
+        current: 1,
+        size: 2,
+        roleName: '',
+        roleKey: '',
+        status: undefined,
+        createTime: undefined,
+        updateTime: undefined
+      }
+      this.dateRange=[];
       this.getRoleList()
     },
     // @size-change页码展示数量点击事件
@@ -479,6 +488,8 @@ export default {
             deptCheckStrictly: true,
             remark: undefined
           };
+
+
     },
     // 树权限（展开/折叠）
     handleCheckedTreeExpand(value, type) {
