@@ -303,7 +303,7 @@ export default {
         location.reload()
 
       } else {
-        this.updateSysMenuShow = false
+        this.updateSysMenuShow = true
         this.$message.error(res.data.msg)
       }
     },
