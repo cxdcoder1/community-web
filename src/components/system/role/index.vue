@@ -212,5 +212,27 @@ export default {
 
   }
 
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.queryParams={}
+      this.getRoleList()
+    },
+    // @size-change页码展示数量点击事件
+    handleSizeChange (val) {
+      console.log('asda'+val)
+      // 更新每页展示数据size
+      this.queryParams.Size = val
+      this.getRoleList();
+
+    },
+    // @current-change页码点击事件
+    handleCurrentChange (val) {
+      console.log('asda'+val)
+      // 更新当前页数是第几页
+      this.queryParams.Current = val
+      this.getRoleList();
+    }
+  }
+
 }
 </script>
