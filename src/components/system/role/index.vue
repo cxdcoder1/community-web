@@ -160,6 +160,7 @@
                 :check-strictly="!form.menuCheckStrictly"
                 empty-text="加载中，请稍后"
                 :props="defaultProps"
+                @check-change="handleCheckChange"
             ></el-tree>
           </el-form-item>
           <el-form-item label="备注">
@@ -175,9 +176,9 @@
     <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="queryParams.Current"
+        :current-page="queryParams.current"
         :page-sizes="[1, 2, 5, 10]"
-        :page-size="queryParams.Size"
+        :page-size="queryParams.size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
@@ -214,6 +215,7 @@ export default {
       defaultProps: {
         children: "children",
         label: "menuName"
+
       },
       // 菜单列表
       menuOptions: [],
@@ -247,8 +249,8 @@ export default {
       dateRange: [],
 
       queryParams: {
-        Current: 1,
-        Size: 3,
+        current: 1,
+        size: 5,
         roleName: '',
         roleKey: '',
         status: undefined,
@@ -257,8 +259,8 @@ export default {
       },
 
       queryParams2: {
-        Current: 1,
-        Size: 3,
+        current: 1,
+        size: 2,
         roleName: '',
         roleKey: '',
         status: undefined,
@@ -352,11 +354,6 @@ export default {
       // this.reset();
     },
     async getRoleList() {
-      this.queryParams.createTime = this.dateRange[0];
-      this.queryParams.updateTime = this.dateRange[1];
-
-      // this.queryParams.createTime=this.dateRange[0];
-      // this.queryParams.updateTime=this.dateRange[1];
 
       const {data: res} = await this.$http.get('sysRole/list', {
         params: this.queryParams
@@ -406,20 +403,21 @@ export default {
     handleSizeChange(val) {
       console.log('asda' + val)
       // 更新每页展示数据size
-      this.queryParams.Size = val
+      this.queryParams.size = val
       this.getRoleList();
     },
     // @current-change页码点击事件
     handleCurrentChange(val) {
       console.log('asda' + val)
       // 更新当前页数是第几页
-      this.queryParams.Current = val
+      this.queryParams.current = val
       this.getRoleList();
     },
     //新增或修改角色
     async saveRole() {
       if (this.form.roleId != undefined) {
         let res = await this.$http.put("sysRole/edit", this.form);
+        console.log(this.form+"zzzz")
         if (res.data.status === 200) {
           this.open = false;
           this.$message.success("修改成功")
@@ -516,7 +514,11 @@ export default {
     handleClose() {
       this.open = false;
       this.reset()
-    }
+    },
+    handleCheckChange(checkedNode, checkedNodeIds) {
+      this.selectedIds = checkedNodeIds;
+    },
+
   }
 }
 </script>
