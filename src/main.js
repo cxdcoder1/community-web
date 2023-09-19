@@ -5,6 +5,7 @@ import store from './store'
 import './plugins/element.js'
 import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css';
+import 'e-icon-picker/lib/index.css'; // 基本样式，包含基本图标
 import iconPicker from 'e-icon-picker';
 import "./assets/fonts/iconfont/iconfont.css"
 import {MessageBox} from 'element-ui'

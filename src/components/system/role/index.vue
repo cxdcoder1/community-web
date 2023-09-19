@@ -52,7 +52,8 @@
             plain
             icon="el-icon-plus"
             size="mini"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
 
       <el-col :span="1.5">
@@ -61,7 +62,9 @@
             plain
             icon="el-icon-download"
             size="mini"
-        >导出</el-button>
+            @click="derive()"
+        >导出
+        </el-button>
       </el-col>
     </el-row>
     <el-table :data="roleList">
@@ -101,12 +104,15 @@
               size="mini"
               type="text"
               icon="el-icon-edit"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
               size="mini"
               type="text"
               icon="el-icon-delete"
-          >删除</el-button>
+              @click="deleteRole(scope.row)"
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -119,15 +125,41 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
+
+
+<!--    &lt;!&ndash;    选择路径对话框&ndash;&gt;-->
+<!--    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">-->
+<!--      <el-form :model="form">-->
+<!--        <el-form-item label="活动名称" :label-width="formLabelWidth">-->
+<!--          <el-input v-model="form.name" autocomplete="off"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="活动区域" :label-width="formLabelWidth">-->
+<!--          <el-select v-model="form.region" placeholder="请选择活动区域">-->
+<!--            <el-option label="区域一" value="shanghai"></el-option>-->
+<!--            <el-option label="区域二" value="beijing"></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <div slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="dialogFormVisible = false">取 消</el-button>-->
+<!--        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
+<!--      </div>-->
+<!--    </el-dialog>-->
+
+
   </div>
 </template>
 
 <script>
-import moment from 'moment';
+// import moment from 'moment';
 export default {
   name: 'UserRole',
-  data () {
+  data() {
     return {
+      //导出集合
+      deriveList: [],
+      //导出的对象
+      derives: {},
       dictList: [
         {label: '正常', value: '0'},
         {label: '禁用', value: '1'}
@@ -137,12 +169,16 @@ export default {
       roleList: [],
       // 总条数
       total: 0,
+      //总页数
+      pages:'',
       // 日期范围
       dateRange: [],
 
       queryParams: {
-        Current:1,
-        Size:1,
+        //当前页
+        Current: 1,
+        //当前页长度
+        Size: 1,
         roleName: '',
         roleKey: '',
         status:undefined,
@@ -155,6 +191,60 @@ export default {
     this.getRoleList();
   },
   methods: {
+    /**
+     * 导出方法
+     */
+    async derive() {
+      const {data: res} = await this.$http.post(`excel/list`, this.deriveList)
+      if (res.status == 200) {
+        //成功导出
+        this.$message.success(res.msg + ",路径为：" + res.path)
+      } else if (res.status == 201) {
+        //导出失败
+        this.$message.error(res.msg)
+      }
+      console.log(res)
+    },
+    //把选中的那条记录的roleId属性放到deriveList中
+    selectionChangeHandle(val) {
+      this.deriveList = []
+      for (let i = 0; i < val.length; i++) {
+        //concat方法在数组后追加内容。
+        this.deriveList = this.deriveList.concat(val[i].roleId)
+      }
+    },
+    //删除角色
+    async deleteRole(role) {
+      const confirmResult = await this.$confirm('确认要删除' + '"' + role.roleName + '"角色吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).catch(err => err)
+
+      // 如果用户点击确认，则confirmResult 为'confirm'
+      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+      await this.$http.delete('sysRole/delete/' + role.roleId).then(res => {
+        // console.log(res.data.status)
+        if (res.data.status == 200) {
+          this.$message.success(res.data.msg)
+          this.getRoleList();
+        } else if (res.data.status == 201) {
+          this.$message.error(res.data.msg)
+        }
+      })
+
+      //     .then(() => {
+      //   this.msgSuccess("导出成功");
+      // });
+      // await this.$http.delete('sysRole/delete/'+role.roleId)
+      // const {data: res} =
+      // if (res.status!=200){
+      //   console.log(res)
+      // }
+    },
     async getRoleList() {
 
       this.queryParams.createTime=this.dateRange[0];
@@ -191,12 +281,12 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.queryParams={}
+      this.queryParams = {}
       this.getRoleList()
     },
     // @size-change页码展示数量点击事件
-    handleSizeChange (val) {
-      console.log('asda'+val)
+    handleSizeChange(val) {
+      console.log('asda' + val)
       // 更新每页展示数据size
       this.queryParams.Size = val
       this.getRoleList();
@@ -210,7 +300,30 @@ export default {
       this.getRoleList();
     },
 
+  },
+
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.queryParams={}
+      this.getRoleList()
+    },
+    // @size-change页码展示数量点击事件
+    handleSizeChange (val) {
+      console.log('asda'+val)
+      // 更新每页展示数据size
+      this.queryParams.Size = val
+      this.getRoleList();
+
+    },
+    // @current-change页码点击事件
+    handleCurrentChange(val) {
+      console.log('asda' + val)
+      // 更新当前页数是第几页
+      this.queryParams.Current = val
+      this.getRoleList();
+    }
   }
 
-}
+
+
 </script>
