@@ -127,33 +127,10 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
-
-
-    <!--    &lt;!&ndash;    选择路径对话框&ndash;&gt;-->
-    <!--    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">-->
-    <!--      <el-form :model="form">-->
-    <!--        <el-form-item label="活动名称" :label-width="formLabelWidth">-->
-    <!--          <el-input v-model="form.name" autocomplete="off"></el-input>-->
-    <!--        </el-form-item>-->
-    <!--        <el-form-item label="活动区域" :label-width="formLabelWidth">-->
-    <!--          <el-select v-model="form.region" placeholder="请选择活动区域">-->
-    <!--            <el-option label="区域一" value="shanghai"></el-option>-->
-    <!--            <el-option label="区域二" value="beijing"></el-option>-->
-    <!--          </el-select>-->
-    <!--        </el-form-item>-->
-    <!--      </el-form>-->
-    <!--      <div slot="footer" class="dialog-footer">-->
-    <!--        <el-button @click="dialogFormVisible = false">取 消</el-button>-->
-    <!--        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
-    <!--      </div>-->
-    <!--    </el-dialog>-->
-
-
   </div>
 </template>
 
 <script>
-// import moment from 'moment';
 
 export default {
   name: 'UserRole',
@@ -178,9 +155,17 @@ export default {
       dateRange: [],
 
       queryParams: {
-        //当前页
         Current: 1,
-        //当前页长度
+        Size: 1,
+        roleName: '',
+        roleKey: '',
+        status: undefined,
+        createTime: undefined,
+        updateTime: undefined
+      },
+
+      queryParams2: {
+        Current: 1,
         Size: 1,
         roleName: '',
         roleKey: '',
@@ -250,8 +235,8 @@ export default {
     },
     async getRoleList() {
 
-      this.queryParams.createTime = this.dateRange[0];
-      this.queryParams.updateTime = this.dateRange[1];
+      // this.queryParams.createTime=this.dateRange[0];
+      // this.queryParams.updateTime=this.dateRange[1];
 
       const {data: res} = await this.$http.get('sysRole/list', {
         params: this.queryParams
@@ -259,32 +244,42 @@ export default {
       this.roleList = res.data.records;
       this.total = res.data.total
 
+
       // console.log(this.roleList)
     }, handleQuery() {
+      this.queryParams = this.queryParams2
+      console.log("搜索时间范围", this.dateRange[0])
+      this.queryParams.createTime = this.dateRange[0]
+      this.queryParams.updateTime = this.dateRange[1]
+
+      this.queryParams.Current = 1
+      console.log("查询参数", this.queryParams)
       this.queryParams.pageNum = 1;
-      // 设置时间范围参数
+
 
       this.getRoleList();
     },
     // 角色状态修改
     handleStatusChange(row) {
       let text = row.status === "0" ? "启用" : "停用";
-      this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
+      this.$confirm('确认要"' + text + '" "' + row.roleName + '"角色吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(function () {
-        // eslint-disable-next-line no-undef
-        return changeRoleStatus(row.roleId, row.status);
       }).then(() => {
-        this.msgSuccess(text + "成功");
-      }).catch(function () {
+        return this.$http.put('sysRole/upDataStatus?status=' + row.status + '&roleId=' + row.roleId);
+
+      }).catch(() => {
         row.status = row.status === "0" ? "1" : "0";
       });
+      // const {data:res} =  this.$http.put('sysRole/upDataStatus?status='+row.status+'&roleId='+row.roleId);
+      // console.log(res)
+
     },
     /** 重置按钮操作 */
     resetQuery() {
       this.queryParams = {}
+
       this.getRoleList()
     },
 
@@ -306,6 +301,11 @@ export default {
     },
 
   },
+  /** 重置按钮操作 */
+  resetQuery() {
+    this.queryParams = {}
+    this.getRoleList()
+  },
   // @size-change页码展示数量点击事件
   handleSizeChange(val) {
     console.log('asda' + val)
@@ -323,6 +323,4 @@ export default {
   }
 
 }
-
-
 </script>
