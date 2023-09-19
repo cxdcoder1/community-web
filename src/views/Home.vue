@@ -22,7 +22,7 @@
 
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside class="el-aside" width="170px" style="margin: 0px;padding: 0px">
+      <el-aside class="el-aside" width="175px" style="margin: 0px;padding: 0px">
 
         <el-menu
             :data="menuList"
@@ -97,6 +97,7 @@ export default {
     return {
       showSubmenu: null,// 控制展开的三级菜单的二级菜单项的菜单ID
 
+      status:"",
       res: 0, // 初始化一个res变量，用于接收查询
       menuList: [],
       userInfo: [],

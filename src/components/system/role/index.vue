@@ -160,6 +160,7 @@
                 :check-strictly="!form.menuCheckStrictly"
                 empty-text="加载中，请稍后"
                 :props="defaultProps"
+                @check-change="handleCheckChange"
             ></el-tree>
           </el-form-item>
           <el-form-item label="备注">
@@ -214,6 +215,7 @@ export default {
       defaultProps: {
         children: "children",
         label: "menuName"
+
       },
       // 菜单列表
       menuOptions: [],
@@ -420,6 +422,7 @@ export default {
     async saveRole() {
       if (this.form.roleId != undefined) {
         let res = await this.$http.put("sysRole/edit", this.form);
+        console.log(this.form+"zzzz")
         if (res.data.status === 200) {
           this.open = false;
           this.$message.success("修改成功")
@@ -516,7 +519,11 @@ export default {
     handleClose() {
       this.open = false;
       this.reset()
-    }
+    },
+    handleCheckChange(checkedNode, checkedNodeIds) {
+      this.selectedIds = checkedNodeIds;
+    },
+
   }
 }
 </script>
