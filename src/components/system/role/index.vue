@@ -68,7 +68,7 @@
         </el-button>
       </el-col>
     </el-row>
-    <el-table :data="roleList" @selection-change="selectionChangeHandle" >
+    <el-table :data="roleList" @selection-change="selectionChangeHandle" ref="list" >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="角色编号" width="120">
         <template slot-scope="scope">{{ scope.row.roleId }}</template>
@@ -282,7 +282,7 @@ export default {
       if (res.status == 200) {
         //成功导出
         this.$message.success(res.msg + ",路径为：" + res.path)
-        // this.$refs.list.clearSelection(); // el-table上绑定ref="list"
+        this.$refs.list.clearSelection(); // el-table上绑定ref="list"
       } else if (res.status == 201) {
         //导出失败
         this.$message.error(res.msg)
@@ -311,7 +311,9 @@ export default {
         return this.$message.info('已经取消删除')
       }
       await this.$http.delete('sysRole/delete/' + role.roleId).then(res => {
-        // console.log(res.data.status)
+        if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
+          this.queryParams.current = Math.ceil((this.total - 1) / this.queryParams.size);
+        }
         if (res.data.status == 200) {
           this.$message.success(res.data.msg)
           this.getRoleList();
