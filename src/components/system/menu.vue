@@ -86,7 +86,7 @@
               <treeselect
                   placeholder='选择上级菜单'
                   v-model="form.parentId"
-                  :options="menuList"
+                  :options="treeList"
                   :normalizer="normalizer"
               />
             </el-form-item>
@@ -133,7 +133,8 @@
           <el-col :span="12" v-if="form.menuType != 'F'">
             <el-form-item prop="path">
                           <span slot="label">
-                            <el-tooltip content="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头" placement="top">
+                            <el-tooltip content="访问的路由地址，如：`user`，如外网地址需内链访问则以`http(s)://`开头"
+                                        placement="top">
                             <i class="el-icon-question"></i>
                             </el-tooltip>
                             路由地址
@@ -156,7 +157,8 @@
             <el-form-item prop="perms">
               <el-input v-model="form.perms" placeholder="请输入权限标识" maxlength="100"/>
               <span slot="label">
-                <el-tooltip content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)" placement="top">
+                <el-tooltip content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasPermi('system:user:list')`)"
+                            placement="top">
                 <i class="el-icon-question"></i>
                 </el-tooltip>
                 权限字符
@@ -223,7 +225,6 @@ import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 
-
 export default {
 
   name: 'e-icon',
@@ -249,7 +250,16 @@ export default {
         title: "修改菜单",
         menusInfo: "",
       },
-      menuList:[],
+      menuList: [],
+      treeList: [
+        {
+          id: 0,
+          menuId: 0,
+          menuName: '主目录',
+          parentId: 0,
+          children: []
+        },
+      ],
       // 表单校验
       rules: {
         menuName: [
@@ -303,14 +313,14 @@ export default {
         location.reload()
 
       } else {
-        this.updateSysMenuShow = false
+        this.updateSysMenuShow = true
         this.$message.error(res.data.msg)
       }
     },
     update(r) {
       this.form.menuType = 'M';
       this.form.menuId = r.menuId
-      this.form.parentId=r.parentId
+      this.form.parentId = r.parentId
       this.updateSysMenuShow = true
       this.title = "修改菜单";
       // this.form.
@@ -327,8 +337,8 @@ export default {
       this.form.isFrame = r.isFrame
       this.form.path = r.path
       this.form.component = r.component
-      this.form.visible=r.visible
-      this.form.icon=r.icon
+      this.form.visible = r.visible
+      this.form.icon = r.icon
       // console.log(this.form.status)
 
     },
@@ -338,6 +348,9 @@ export default {
         menuType: 'M',
         parentId: '0',
       };
+      if(r.parentId!=null){
+        this.form.parentId=r.parentId;
+      }
       this.updateSysMenuShow = true;
       this.reset()
       this.menusInfo.parentId = 0
@@ -395,6 +408,7 @@ export default {
         console.log(res);
 
         this.menuList = res.data;
+        this.treeList[0].children = res.data;
         this.icons = res.data.icon
         this.treeData = res.data;
       } catch (error) {

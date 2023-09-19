@@ -52,6 +52,7 @@
             plain
             icon="el-icon-plus"
             size="mini"
+            @click="Add"
         >新增
         </el-button>
       </el-col>
@@ -67,7 +68,7 @@
         </el-button>
       </el-col>
     </el-row>
-    <el-table :data="roleList">
+    <el-table :data="roleList" @selection-change="selectionChangeHandle" >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="角色编号" width="120">
         <template slot-scope="scope">{{ scope.row.roleId }}</template>
@@ -106,6 +107,7 @@
               size="mini"
               type="text"
               icon="el-icon-edit"
+              @click="handleUpdate(scope.row)"
           >修改
           </el-button>
           <el-button
@@ -118,6 +120,58 @@
         </template>
       </el-table-column>
     </el-table>
+    <!--     添加或修改角色对话框-->
+    <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="handleClose">
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-form-item label="角色名称" prop="roleName">
+            <el-input v-model="form.roleName" placeholder="请输入角色名称"/>
+          </el-form-item>
+          <el-form-item prop="roleKey">
+          <span slot="label">
+            <el-tooltip content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasRole('admin')`)" placement="top">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+            权限字符
+          </span>
+            <el-input v-model="form.roleKey" placeholder="请输入权限字符"/>
+          </el-form-item>
+          <el-form-item label="角色顺序" prop="roleSort">
+            <el-input-number v-model="form.roleSort" controls-position="right" :min="0"/>
+          </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <el-radio-group v-model="form.status">
+              <el-radio label="0" value="0">正常</el-radio>
+              <el-radio label="1" value="1">停用</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="菜单权限">
+            <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
+            <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选
+            </el-checkbox>
+            <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动
+            </el-checkbox>
+            <el-tree
+                class="tree-border"
+                :data="menuOptions"
+                show-checkbox
+                ref="menu"
+                node-key="id"
+                :check-strictly="!form.menuCheckStrictly"
+                empty-text="加载中，请稍后"
+                :props="defaultProps"
+            ></el-tree>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+          </el-form-item>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="saveRole()">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
     <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -127,10 +181,13 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
+
   </div>
 </template>
 
 <script>
+import 'element-ui/lib/theme-chalk/index.css';
+// import ElTree from 'element-ui/lib/tree';
 
 export default {
   name: 'UserRole',
@@ -140,6 +197,41 @@ export default {
       deriveList: [],
       //导出的对象
       derives: {},
+      rules: {
+        roleName: [
+          {required: true, message: "角色名称不能为空", trigger: "blur"}
+        ],
+        roleKey: [
+          {required: true, message: "角色权限字符不能为空", trigger: "blur"}
+        ],
+        roleSort: [
+          {required: true, message: "顺序不能为空", trigger: "blur"}
+        ],
+        status: [
+          {required: true, message: "状态不能为空", trigger: "blur"}
+        ],
+      },
+      defaultProps: {
+        children: "children",
+        label: "menuName"
+      },
+      // 菜单列表
+      menuOptions: [],
+      menuExpand: false,
+      menuNodeAll: false,
+      // 表单参数
+      form: {
+        roleId: undefined,
+        roleName: undefined,
+        roleKey: undefined,
+        roleSort: 0,
+        status: "0",
+        menuIds: [],
+        deptIds: [],
+        menuCheckStrictly: true,
+        deptCheckStrictly: true,
+        remark: undefined
+      },
       dictList: [
         {label: '正常', value: '0'},
         {label: '禁用', value: '1'}
@@ -156,7 +248,7 @@ export default {
 
       queryParams: {
         Current: 1,
-        Size: 1,
+        Size: 3,
         roleName: '',
         roleKey: '',
         status: undefined,
@@ -166,7 +258,7 @@ export default {
 
       queryParams2: {
         Current: 1,
-        Size: 1,
+        Size: 3,
         roleName: '',
         roleKey: '',
         status: undefined,
@@ -177,6 +269,7 @@ export default {
   },
   created() {
     this.getRoleList();
+    this.getMenuList();
   },
   methods: {
     /**
@@ -187,11 +280,12 @@ export default {
       if (res.status == 200) {
         //成功导出
         this.$message.success(res.msg + ",路径为：" + res.path)
+        // this.$refs.list.clearSelection(); // el-table上绑定ref="list"
       } else if (res.status == 201) {
         //导出失败
         this.$message.error(res.msg)
       }
-      console.log(res)
+
     },
     //把选中的那条记录的roleId属性放到deriveList中
     selectionChangeHandle(val) {
@@ -233,7 +327,33 @@ export default {
       //   console.log(res)
       // }
     },
+    //获取添加角色的菜单接口
+    async getMenuList() {
+      try {
+        const response = await this.$http.get(`sysRole/getRoleMenuTreeselect`);
+        // console.log("111111111111", response)
+        this.menuOptions = response.data.data;
+        // 处理响应数据
+      } catch (error) {
+        console.error(error);
+        // 处理错误
+      }
+    },
+    /** 查询角色列表 */
+    Add() {
+      this.title = "新增角色";
+      this.open = true;
+      this.form = {};
+    },
+// 取消按钮
+    cancel() {
+      this.open = false;
+      this.reset()
+      // this.reset();
+    },
     async getRoleList() {
+      this.queryParams.createTime = this.dateRange[0];
+      this.queryParams.updateTime = this.dateRange[1];
 
       // this.queryParams.createTime=this.dateRange[0];
       // this.queryParams.updateTime=this.dateRange[1];
@@ -246,7 +366,8 @@ export default {
 
 
       // console.log(this.roleList)
-    }, handleQuery() {
+    },
+    handleQuery() {
       this.queryParams = this.queryParams2
       console.log("搜索时间范围", this.dateRange[0])
       this.queryParams.createTime = this.dateRange[0]
@@ -255,7 +376,7 @@ export default {
       this.queryParams.Current = 1
       console.log("查询参数", this.queryParams)
       this.queryParams.pageNum = 1;
-
+      // 设置时间范围参数
 
       this.getRoleList();
     },
@@ -279,18 +400,14 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.queryParams = {}
-
       this.getRoleList()
     },
-
-
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {
       console.log('asda' + val)
       // 更新每页展示数据size
       this.queryParams.Size = val
       this.getRoleList();
-
     },
     // @current-change页码点击事件
     handleCurrentChange(val) {
@@ -299,28 +416,107 @@ export default {
       this.queryParams.Current = val
       this.getRoleList();
     },
+    //新增或修改角色
+    async saveRole() {
+      if (this.form.roleId != undefined) {
+        let res = await this.$http.put("sysRole/edit", this.form);
+        if (res.data.status === 200) {
+          this.open = false;
+          this.$message.success("修改成功")
+          this.getRoleList();
+        } else {
+          this.$message.error(res.data.msg);
+          // this.open = false;
+          // this.form = {};
+        }
+      } else {
+        let res = await this.$http.post("sysRole/insertRole", this.form);
+        if (res.data.status === 200) {
+          this.open = false;
+          this.$message.success("新增成功")
+          this.getRoleList();
+        } else {
+          this.$message.error(res.data.msg);
+          // this.open = false;
+          // this.form = {};
+        }
+      }
+    },
+    /** 根据角色ID查询菜单树结构 */
+    getRoleMenuTreeselect(roleId) {
+      // let res = this.$http.get("sysRole/getRoleMenuTreeselect", roleId);
+      const res = this.$http.get(`sysRole/getRoleMenuTreeselect` + roleId);
+      console.log("cxd", res)
+      this.menuOptions = res.data.data;
+      console.log(this.menuOptions)
+    },
+    /** 修改按钮操作 */
+    handleUpdate(row) {
+      this.form = structuredClone(row)
 
-  },
-  /** 重置按钮操作 */
-  resetQuery() {
-    this.queryParams = {}
-    this.getRoleList()
-  },
-  // @size-change页码展示数量点击事件
-  handleSizeChange(val) {
-    console.log('asda' + val)
-    // 更新每页展示数据size
-    this.queryParams.Size = val
-    this.getRoleList();
+      // console.log("cxd",this.form)
 
-  },
-  // @current-change页码点击事件
-  handleCurrentChange(val) {
-    console.log('asda' + val)
-    // 更新当前页数是第几页
-    this.queryParams.Current = val
-    this.getRoleList();
+      this.getMenuList();
+
+      this.open = true;
+
+      this.title = "修改角色";
+    }
+    ,
+    // 表单重置
+    reset() {
+      this.menuExpand = false,
+          this.menuNodeAll = false,
+          this.deptExpand = true,
+          this.deptNodeAll = false,
+          this.form = {
+            roleId: undefined,
+            roleName: undefined,
+            roleKey: undefined,
+            roleSort: 0,
+            status: "0",
+            menuIds: [],
+            deptIds: [],
+            menuCheckStrictly: true,
+            deptCheckStrictly: true,
+            remark: undefined
+          };
+    },
+    // 树权限（展开/折叠）
+    handleCheckedTreeExpand(value, type) {
+      if (type == 'menu') {
+        let treeList = this.menuOptions;
+
+        for (let i = 0; i < treeList.length; i++) {
+          this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value;
+        }
+      } else if (type == 'dept') {
+        let treeList = this.deptOptions;
+        for (let i = 0; i < treeList.length; i++) {
+          this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value;
+        }
+      }
+    },
+    // 树权限（全选/全不选）
+    handleCheckedTreeNodeAll(value, type) {
+      if (type == 'menu') {
+        this.$refs.menu.setCheckedNodes(value ? this.menuOptions : []);
+      } else if (type == 'dept') {
+        this.$refs.dept.setCheckedNodes(value ? this.deptOptions : []);
+      }
+    },
+    // 树权限（父子联动）
+    handleCheckedTreeConnect(value, type) {
+      if (type == 'menu') {
+        this.form.menuCheckStrictly = value ? true : false;
+      } else if (type == 'dept') {
+        this.form.deptCheckStrictly = value ? true : false;
+      }
+    },
+    handleClose() {
+      this.open = false;
+      this.reset()
+    }
   }
-
 }
 </script>
