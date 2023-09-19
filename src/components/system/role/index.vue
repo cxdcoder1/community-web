@@ -68,7 +68,7 @@
       </el-col>
     </el-row>
     <el-table :data="roleList">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="角色编号" width="120">
         <template slot-scope="scope">{{ scope.row.roleId }}</template>
       </el-table-column>
@@ -88,14 +88,16 @@
               active-value="0"
               inactive-value="1"
               @change="handleStatusChange(scope.row)"
-          ><el-tag :type="scope.row.status === '0' ? '' : 'danger'">
-            {{ scope.row.status === '0' ? '正常' : '禁用' }}
-          </el-tag></el-switch>
+          >
+            <el-tag :type="scope.row.status === '0' ? '' : 'danger'">
+              {{ scope.row.status === '0' ? '正常' : '禁用' }}
+            </el-tag>
+          </el-switch>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center" width="180">
         <template slot-scope="scope">
-          {{ scope.row.createTime | dateFormat}}
+          {{ scope.row.createTime | dateFormat }}
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -127,24 +129,24 @@
     </el-pagination>
 
 
-<!--    &lt;!&ndash;    选择路径对话框&ndash;&gt;-->
-<!--    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">-->
-<!--      <el-form :model="form">-->
-<!--        <el-form-item label="活动名称" :label-width="formLabelWidth">-->
-<!--          <el-input v-model="form.name" autocomplete="off"></el-input>-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="活动区域" :label-width="formLabelWidth">-->
-<!--          <el-select v-model="form.region" placeholder="请选择活动区域">-->
-<!--            <el-option label="区域一" value="shanghai"></el-option>-->
-<!--            <el-option label="区域二" value="beijing"></el-option>-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
-<!--      <div slot="footer" class="dialog-footer">-->
-<!--        <el-button @click="dialogFormVisible = false">取 消</el-button>-->
-<!--        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
-<!--      </div>-->
-<!--    </el-dialog>-->
+    <!--    &lt;!&ndash;    选择路径对话框&ndash;&gt;-->
+    <!--    <el-dialog title="收货地址" :visible.sync="dialogFormVisible">-->
+    <!--      <el-form :model="form">-->
+    <!--        <el-form-item label="活动名称" :label-width="formLabelWidth">-->
+    <!--          <el-input v-model="form.name" autocomplete="off"></el-input>-->
+    <!--        </el-form-item>-->
+    <!--        <el-form-item label="活动区域" :label-width="formLabelWidth">-->
+    <!--          <el-select v-model="form.region" placeholder="请选择活动区域">-->
+    <!--            <el-option label="区域一" value="shanghai"></el-option>-->
+    <!--            <el-option label="区域二" value="beijing"></el-option>-->
+    <!--          </el-select>-->
+    <!--        </el-form-item>-->
+    <!--      </el-form>-->
+    <!--      <div slot="footer" class="dialog-footer">-->
+    <!--        <el-button @click="dialogFormVisible = false">取 消</el-button>-->
+    <!--        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>-->
+    <!--      </div>-->
+    <!--    </el-dialog>-->
 
 
   </div>
@@ -152,6 +154,7 @@
 
 <script>
 // import moment from 'moment';
+
 export default {
   name: 'UserRole',
   data() {
@@ -170,7 +173,7 @@ export default {
       // 总条数
       total: 0,
       //总页数
-      pages:'',
+      pages: '',
       // 日期范围
       dateRange: [],
 
@@ -181,9 +184,9 @@ export default {
         Size: 1,
         roleName: '',
         roleKey: '',
-        status:undefined,
-        createTime:undefined,
-        updateTime:undefined
+        status: undefined,
+        createTime: undefined,
+        updateTime: undefined
       },
     }
   },
@@ -247,8 +250,8 @@ export default {
     },
     async getRoleList() {
 
-      this.queryParams.createTime=this.dateRange[0];
-      this.queryParams.updateTime=this.dateRange[1];
+      this.queryParams.createTime = this.dateRange[0];
+      this.queryParams.updateTime = this.dateRange[1];
 
       const {data: res} = await this.$http.get('sysRole/list', {
         params: this.queryParams
@@ -257,7 +260,7 @@ export default {
       this.total = res.data.total
 
       // console.log(this.roleList)
-    },handleQuery() {
+    }, handleQuery() {
       this.queryParams.pageNum = 1;
       // 设置时间范围参数
 
@@ -284,32 +287,11 @@ export default {
       this.queryParams = {}
       this.getRoleList()
     },
+
+
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {
       console.log('asda' + val)
-      // 更新每页展示数据size
-      this.queryParams.Size = val
-      this.getRoleList();
-
-    },
-    // @current-change页码点击事件
-    handleCurrentChange (val) {
-      console.log('asda'+val)
-      // 更新当前页数是第几页
-      this.queryParams.Current = val
-      this.getRoleList();
-    },
-
-  },
-
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.queryParams={}
-      this.getRoleList()
-    },
-    // @size-change页码展示数量点击事件
-    handleSizeChange (val) {
-      console.log('asda'+val)
       // 更新每页展示数据size
       this.queryParams.Size = val
       this.getRoleList();
@@ -321,9 +303,26 @@ export default {
       // 更新当前页数是第几页
       this.queryParams.Current = val
       this.getRoleList();
-    }
+    },
+
+  },
+  // @size-change页码展示数量点击事件
+  handleSizeChange(val) {
+    console.log('asda' + val)
+    // 更新每页展示数据size
+    this.queryParams.Size = val
+    this.getRoleList();
+
+  },
+  // @current-change页码点击事件
+  handleCurrentChange(val) {
+    console.log('asda' + val)
+    // 更新当前页数是第几页
+    this.queryParams.Current = val
+    this.getRoleList();
   }
 
+}
 
 
 </script>
