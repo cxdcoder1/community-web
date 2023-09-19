@@ -182,6 +182,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
+
   </div>
 </template>
 
@@ -193,7 +194,6 @@ export default {
   name: 'UserRole',
   data() {
     return {
-      selectedIds: [],
       //导出集合
       deriveList: [],
       //导出的对象
