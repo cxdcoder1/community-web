@@ -303,7 +303,7 @@ export default {
         location.reload()
 
       } else {
-        this.updateSysMenuShow = false
+        this.updateSysMenuShow = true
         this.$message.error(res.data.msg)
       }
     },
@@ -338,16 +338,14 @@ export default {
         menuType: 'M',
         parentId: '0',
       };
+      //新增回显菜单上级目录
+      // this.form.parentId=r.parentId
+      // this.form.parentId = this.form.parentId === 0 ? '主目录' : r.parentId;
       this.updateSysMenuShow = true;
       this.reset()
       this.menusInfo.parentId = 0
       this.menusInfo.isCache = 1
       this.menusInfo.isFrame = 1
-      // if(r != null && r .menuId){
-      //     this.menusInfo.parentId = r.menuId
-      // }else {
-      //     this.menusInfo.parentId = 0
-      // }
     },
     closeLog() {
       this.$refs.form.resetFields()
@@ -384,19 +382,10 @@ export default {
     },
     async getSysMenu() {
       try {
-        const {data: res} = await this.$http.post("sysMenu/menuList", this.sysMenu);
-        //
-        // console.log(res.data[0].icon);
-        // console.log(res);
-
-        // let _this=this;
-        // _this.icon=res.data.icon
-        //
+        const { data: res } = await this.$http.post("sysMenu/menuList", this.sysMenu);
         console.log(res);
-
         this.menuList = res.data;
-        this.icons = res.data.icon
-        this.treeData = res.data;
+        this.icons = res.icon;
       } catch (error) {
         console.error(error);
         this.$message.error("获取数据失败");

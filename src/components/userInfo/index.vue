@@ -62,7 +62,7 @@
               </li>
               <li class="list-group-item">
                 <i class="el-icon-s-grid"></i>创建日期
-                <div class="pull-right">{{ user.createTime }}</div>
+                <div class="pull-right">{{ user.createTime |dateFormat }}</div>
               </li>
             </ul>
           </div>
