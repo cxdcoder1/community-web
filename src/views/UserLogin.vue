@@ -71,6 +71,8 @@ export default {
 
   },
   methods: {
+
+
     // 用户点击遮罩层，应该关闭模态框
     close() {
       this.isShow = false;
@@ -79,8 +81,18 @@ export default {
       this.$refs.LoginFormRef.resetFields()
     },
     async login() {
+      // 表单验证
+      this.$refs.LoginFormRef.validate((valid) => {
+        if (valid) {
+          // 验证通过，发送请求进行登录
+          this.isShow = true;
+        } else {
+          // 验证不通过，不执行登录操作
+          return;
+        }
+      });
       // 发送请求进行登录
-      this.isShow = true;
+      // this.isShow = true;
     },
     async success() {
         this.isShow = false; // 通过验证后，需要手动隐藏模态框console.log(res)

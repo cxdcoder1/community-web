@@ -5,8 +5,12 @@ import Home from "@/views/Home";
 import SysWelcome1 from "@/views/SysWelcome1.vue";
 import userInfo from "@/components/userInfo/index.vue";
 import system from "@/components/system/menu.vue";
+import user from  "@/components/system/user/index.vue"
 // import role from "@/components/system/role/indexList.vue";
 import role from "@/components/system/role/index.vue";
+import dict from "@/components/system/dict/index.vue";
+import data from "@/components/system/dict/data.vue";
+import dept from "@/components/system/dept/deptView.vue"
 
 Vue.use(VueRouter)
 
@@ -20,6 +24,16 @@ const routes = [
       { path: '/userInfo', component: userInfo },
       { path: '/menu', component: system},
       { path: '/role', component: role},
+      { path: '/dict', component: dict},
+      {path: '/dept', component: dept},
+      { path: '/data', component: data},
+      { path: '/user', component: user},
+      // 路由配置
+      {
+        path: '/data/:id',
+        name: 'data',
+        component: data
+      }
 
     ]
   },
