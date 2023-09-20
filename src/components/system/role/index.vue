@@ -381,22 +381,24 @@ export default {
           const {data: res} = await this.$http.get('sysRole/list', {
             params: this.queryParams
           })
+          if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
+            this.queryParams.current = Math.ceil((this.total - 1) / this.queryParams.size);
+          }
           this.roleList = res.data.records;
           this.total = res.data.total
+
 
 
           // console.log(this.roleList)
         },
         handleQuery() {
-          // this.queryParams = this.queryParams2
+          this.queryParams = this.queryParams2
           this.queryParams.createTime = this.dateRange[0]
           this.queryParams.updateTime = this.dateRange[1]
-
           this.queryParams.current = 1
-
           this.queryParams.roleName=this.queryParams.roleName.trim()
-
           this.queryParams.roleKey=this.queryParams.roleKey.trim()
+          this.queryParams.pageNum = 1;
 
           this.getRoleList();
         },

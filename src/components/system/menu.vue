@@ -440,7 +440,10 @@ export default {
         parentId: parentId
       }).then(res => {
         this.$message.success(res.data.data)
-        location.reload()
+        setTimeout(()=>{
+          location.reload()
+        },500)
+
       })
     },
 
