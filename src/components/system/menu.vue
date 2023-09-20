@@ -405,6 +405,13 @@ export default {
       // location.reload()
     },
     handleQuery() {
+
+
+
+      this.sysMenu.menuName=this.sysMenu.menuName.trim()
+
+
+
       this.getSysMenu();
     },
     resetQuery() {
