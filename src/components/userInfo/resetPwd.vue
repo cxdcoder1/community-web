@@ -10,8 +10,8 @@
       <el-input v-model="user.confirmPassword" placeholder="请确认新密码" type="password" show-password/>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" size="mini" @click="submit" >保存</el-button>
-      <el-button type="danger" size="mini" @click="close" >关闭</el-button>
+      <el-button type="primary" size="mini" @click="submit">保存</el-button>
+      <el-button type="danger" size="mini" @click="close">关闭</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -36,16 +36,16 @@ export default {
       // 表单校验
       rules: {
         oldPassword: [
-          { required: true, message: "旧密码不能为空", trigger: "blur" }
+          {required: true, message: "旧密码不能为空", trigger: "blur"}
         ],
         newPassword: [
-          { required: true, message: "新密码不能为空", trigger: "blur" },
-          { min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur" },
+          {required: true, message: "新密码不能为空", trigger: "blur"},
+          {min: 6, max: 20, message: "长度在 6 到 20 个字符", trigger: "blur"},
           // { required: true, validator: equalToOldPassword, trigger: "blur" }
         ],
         confirmPassword: [
-          { required: true, message: "确认密码不能为空", trigger: "blur" },
-          { required: true, validator: equalToPassword, trigger: "blur" }
+          {required: true, message: "确认密码不能为空", trigger: "blur"},
+          {required: true, validator: equalToPassword, trigger: "blur"}
         ]
       }
     };
@@ -54,27 +54,25 @@ export default {
     submit() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          let user1= JSON.parse(window.sessionStorage.getItem("user"))
-          if (user1.password==this.user.oldPassword){
-              this.$http.put('sysUser/updataUser',{
-                userId:user1.userId,
-                password:this.user.newPassword
-              })
-            alert("修改成功,请重新登录!")
-            let item = JSON.parse(window.sessionStorage.getItem("user"));
-            item.password=this.user.newPassword;
-            window.sessionStorage.setItem("user",JSON.stringify(item))
-            // console.log(user)
-            this.user.newPassword=""
-            this.user.oldPassword=""
-            this.user.confirmPassword=""
-
-            //修改成功后重新登录
-            window.sessionStorage.clear()
-            this.$router.push('/login')
-
-          }else {
-            alert("旧密码错误")
+          let user1 = JSON.parse(window.sessionStorage.getItem("user"))
+          if (user1.password == this.user.oldPassword) {
+            this.$http.put('sysUser/updataUser', {
+              userId: user1.userId,
+              password: this.user.newPassword
+            }).then(res=>{
+              if (res.status == 200) {
+                this.$message.success("修改成功,请重新登录!")
+                // console.log(user)
+                this.user.newPassword = ""
+                this.user.oldPassword = ""
+                this.user.confirmPassword = ""
+                //修改成功后重新登录
+                window.sessionStorage.clear()
+                this.$router.push('/login')
+              }
+            })
+          } else {
+            this.$message.error("修改失败!")
           }
 
         }

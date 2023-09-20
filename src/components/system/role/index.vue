@@ -146,20 +146,23 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="菜单权限">
-            <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
-            <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选
-            </el-checkbox>
-            <el-checkbox v-model="form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动
-            </el-checkbox>
+            <!--            <el-checkbox v-model="menuExpand" @change="expandOrFoldChange()">展开/折叠</el-checkbox>-->
+            <!--            <el-checkbox v-model="menuNodeAll" @change="selectAllChange($event, 'menu')">全选/全不选-->
+            <!--            </el-checkbox>-->
+            <el-checkbox v-model="checked" @change="selectAllChange">全选/取消</el-checkbox>
+            <el-checkbox v-model="expandOrFold" @change="expandOrFoldChange()">展开/折叠</el-checkbox>
+            <el-checkbox v-model="menuCheckStrictly1" @change="checkStrictlyChange()">父子联动</el-checkbox>
             <el-tree
+                :default-checked-keys="form.menuIds"
                 class="tree-border"
                 :data="menuOptions"
                 show-checkbox
                 ref="menu"
-                node-key="id"
-                :check-strictly="!form.menuCheckStrictly"
+                node-key="menuId"
+                :check-strictly="menuCheckStrictly"
                 empty-text="加载中，请稍后"
                 :props="defaultProps"
+                :default-expand-all="expandOrFold"
                 @check-change="handleCheckChange"
             ></el-tree>
           </el-form-item>
@@ -217,10 +220,20 @@ export default {
         label: "menuName"
 
       },
+      //树形控件区域
+      checked: false, //checkbox的值
+      menuCheckStrictly1: true, //父子联动(默认开启)
+      //tree是否展开
+      expandOrFold: false,
       // 菜单列表
       menuOptions: [],
       menuExpand: false,
       menuNodeAll: false,
+      //选取的菜单下拉框
+      selectMenuOptions: [],
+      menuCheckStrictly: false,
+      defaultMenu: [],
+
       // 表单参数
       form: {
         roleId: undefined,
@@ -271,7 +284,7 @@ export default {
   },
   created() {
     this.getRoleList();
-    this.getMenuList();
+
   },
   methods: {
     /**
@@ -347,6 +360,7 @@ export default {
     Add() {
       this.title = "新增角色";
       this.open = true;
+      this.getMenuList();
       this.form = {};
     },
 // 取消按钮
@@ -407,7 +421,7 @@ export default {
         createTime: undefined,
         updateTime: undefined
       }
-      this.dateRange=[];
+      this.dateRange = [];
       this.getRoleList()
     },
     // @size-change页码展示数量点击事件
@@ -426,13 +440,20 @@ export default {
     },
     //新增或修改角色
     async saveRole() {
+      //传入所选中的Id
+      this.form.menuIds = [];
+      if (this.selectMenuOptions.length > 0) {
+        for (let i = 0; i < this.selectMenuOptions.length; i++) {
+          this.form.menuIds.push(this.selectMenuOptions[i].menuId)
+        }
+      }
       if (this.form.roleId != undefined) {
         let res = await this.$http.put("sysRole/edit", this.form);
-        console.log(this.form+"zzzz")
         if (res.data.status === 200) {
           this.open = false;
           this.$message.success("修改成功")
           this.getRoleList();
+          this.menuOptions = {}
         } else {
           this.$message.error(res.data.msg);
           // this.open = false;
@@ -458,26 +479,48 @@ export default {
       console.log("cxd", res)
       this.menuOptions = res.data.data;
       console.log(this.menuOptions)
+      return this.menuOptions
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.form = structuredClone(row)
-
-      // console.log("cxd",this.form)
-
+      this.$http.get(`sysRole/getMenuIds/` + row.roleId).then(res => {
+        // console.log(res.data.status)
+        // console.log("111111111",res.data)
+        this.form.menuIds = res.data
+      });
+      // console.log("aaaaaaa", res)
       this.getMenuList();
 
       this.open = true;
 
       this.title = "修改角色";
-    }
-    ,
+    },
+    handleUpdate1(row) {
+      this.reset();
+      const roleId = row.roleId || this.ids
+      const roleMenu = this.getRoleMenuTreeselect(roleId);
+      // getRole(roleId).then(response => {
+      this.form = structuredClone(row)
+      this.open = true;
+      this.$nextTick(() => {
+        roleMenu.then(res => {
+          let checkedKeys = res.checkedKeys
+          checkedKeys.forEach((v) => {
+            this.$nextTick(() => {
+              this.$refs.menu.setChecked(v, true, false);
+            })
+          })
+        });
+      });
+      this.title = "修改角色";
+      // });
+    },
     // 表单重置
     reset() {
       this.menuExpand = false,
           this.menuNodeAll = false,
-          this.deptExpand = true,
-          this.deptNodeAll = false,
+          this.menuOptions = {},
           this.form = {
             roleId: undefined,
             roleName: undefined,
@@ -490,48 +533,42 @@ export default {
             deptCheckStrictly: true,
             remark: undefined
           };
-
-
     },
-    // 树权限（展开/折叠）
-    handleCheckedTreeExpand(value, type) {
-      if (type == 'menu') {
-        let treeList = this.menuOptions;
-
-        for (let i = 0; i < treeList.length; i++) {
-          this.$refs.menu.store.nodesMap[treeList[i].id].expanded = value;
-        }
-      } else if (type == 'dept') {
-        let treeList = this.deptOptions;
-        for (let i = 0; i < treeList.length; i++) {
-          this.$refs.dept.store.nodesMap[treeList[i].id].expanded = value;
-        }
-      }
-    },
-    // 树权限（全选/全不选）
-    handleCheckedTreeNodeAll(value, type) {
-      if (type == 'menu') {
-        this.$refs.menu.setCheckedNodes(value ? this.menuOptions : []);
-      } else if (type == 'dept') {
-        this.$refs.dept.setCheckedNodes(value ? this.deptOptions : []);
-      }
-    },
-    // 树权限（父子联动）
-    handleCheckedTreeConnect(value, type) {
-      if (type == 'menu') {
-        this.form.menuCheckStrictly = value ? true : false;
-      } else if (type == 'dept') {
-        this.form.deptCheckStrictly = value ? true : false;
-      }
-    },
+    //x关闭
     handleClose() {
       this.open = false;
       this.reset()
     },
-    handleCheckChange(checkedNode, checkedNodeIds) {
-      this.selectedIds = checkedNodeIds;
+    //新增/修改区域
+    //下拉框附加功能1：全选/取消
+    selectAllChange() {
+      if (this.checked) {
+        //全选
+        this.$refs.menu.setCheckedNodes(this.menuOptions);
+      } else {
+        //取消选中
+        this.$refs.menu.setCheckedKeys([]);
+      }
     },
-
+    //下拉框附加功能2：是否开启父子联动
+    checkStrictlyChange() {
+      this.menuCheckStrictly = !this.menuCheckStrictly;
+    },
+    //下拉框附加功能3：展开/折叠
+    expandOrFoldChange() {
+      for (var i = 0; i < this.$refs.menu.store._getAllNodes().length; i++) {
+        // 根据isExpand， tree展开或折叠
+        this.$refs.menu.store._getAllNodes()[i].expanded = this.expandOrFold
+      }
+    },
+    //关于下拉框的数据选取时候获取数据
+    handleCheckChange() {
+      // 当勾选状态变化时，将选中的节点保存在 selectedItems 数组中
+      this.selectMenuOptions = this.$refs.menu.getCheckedNodes();
+    },
+    // handleCheckChange(checkedNode, checkedNodeIds) {
+    //   this.selectedIds = checkedNodeIds;
+    // },
   }
 }
 </script>
