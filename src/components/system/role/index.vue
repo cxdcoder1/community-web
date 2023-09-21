@@ -218,7 +218,6 @@ export default {
       defaultProps: {
         children: "children",
         label: "menuName"
-
       },
       //树形控件区域
       checked: false, //checkbox的值
@@ -283,7 +282,7 @@ export default {
             createTime: '',
             updateTime: '',
           },
-// 新增/修改区域
+          // 新增/修改区域
           dialogEditRole: false,
           titleEditRole: "",
           // 表单校验
@@ -370,7 +369,7 @@ export default {
           this.getMenuList();
           this.form = {};
         },
-// 取消按钮
+      // 取消按钮
         cancel() {
           this.open = false;
           this.reset()
@@ -458,7 +457,10 @@ export default {
         },
         //新增或修改角色
         async saveRole() {
-          //传入所选中的Id
+          if (!this.form.roleName) {
+            this.$message.error('请输入角色名');
+            return;
+          }
           this.form.menuIds = [];
           if (this.selectMenuOptions.length > 0) {
             for (let i = 0; i < this.selectMenuOptions.length; i++) {

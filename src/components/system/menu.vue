@@ -213,7 +213,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="saveMenu()">确 定</el-button>
-        <el-button @click="updateSysMenuShow=f">取 消</el-button>
+        <el-button @click="updateSysMenuShow=false">取 消</el-button>
       </div>
     </el-dialog>
 
@@ -295,11 +295,26 @@ export default {
   },
   created() {
     this.getSysMenu();
-
   },
 
   methods: {
     async saveMenu() {
+      if (!this.form.menuName) {
+        // 部门名称为空，提示用户输入值
+        this.$message.error('菜单名称不能为空');
+        return;
+      }
+      if (!this.form.orderNum) {
+        // 部门名称为空，提示用户输入值
+        this.$message.error('菜单顺序不能为空');
+        return;
+      }
+      if (!this.form.path.trim()) {
+        // 部门名称为空，提示用户输入值
+        this.$message.error('路由不能为空');
+        return;
+      }
+
       let res;
       if (this.form.menuId == null || this.form.menuId == 0) {
         res = await this.$http.post('sysMenu/addMenu', this.form);
@@ -347,10 +362,13 @@ export default {
       this.form = {
         menuType: 'M',
         parentId: '0',
+        visible:'0',
+        status:'0',
+        isFrame:'0'
       };
-      if(r.parentId!=null){
-        this.form.parentId=r.parentId;
-      }
+        if(r.parentId!=null){
+          this.form.parentId=r.parentId;
+        }
       this.updateSysMenuShow = true;
       this.reset()
       this.menusInfo.parentId = 0
@@ -405,13 +423,7 @@ export default {
       // location.reload()
     },
     handleQuery() {
-
-
-
       this.sysMenu.menuName=this.sysMenu.menuName.trim()
-
-
-
       this.getSysMenu();
     },
     resetQuery() {
