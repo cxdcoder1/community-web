@@ -1,5 +1,11 @@
 <template>
   <div>
+    <!-- 面包屑导航 -->
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item >部门管理</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br>
     <el-card>
       <el-form :model="deptInfo" ref="queryForm" size="small" :inline="true">
         <el-form-item label="部门名称" prop="deptName">
@@ -264,6 +270,9 @@ export default {
 
     //新增修改表单提交
     async submitForm() {
+      if (this.form.deptId <= this.form.parentId) {
+        return this.$message.error("大部门不能移到小部门");
+      }
       if (this.form.deptName == null || this.form.deptName.length > 10) {
         // name 字段为空或长度超过 10，提示用户输入正确的值
         this.$message.error('请输入正确长度的姓名');
@@ -300,7 +309,7 @@ export default {
         orderNum:'1',
         parentId:'100'
       }
-      console.log(row.deptId)
+      // console.log(row.deptId)
       // this.form.parentId=row.parentId
       if (row.deptId!=null){
        this.form.parentId=row.deptId

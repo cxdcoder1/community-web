@@ -1,5 +1,11 @@
 <template>
   <div>
+    <!-- 面包屑导航 -->
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item >菜单管理</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br>
     <el-form :model="sysMenu" ref="queryForm" size="small" :inline="true" v-show="showSearch">
       <el-form-item label="菜单名称" prop="menuName">
         <el-input v-model="sysMenu.menuName" placeholder="请输入菜单名称" clearable @keyup.enter.native="handleQuery"/>
