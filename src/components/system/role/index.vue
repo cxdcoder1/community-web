@@ -381,9 +381,6 @@ export default {
           const {data: res} = await this.$http.get('sysRole/list', {
             params: this.queryParams
           })
-          if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
-            this.queryParams.current = Math.ceil((this.total - 1) / this.queryParams.size);
-          }
           this.roleList = res.data.records;
           this.total = res.data.total
 
@@ -441,20 +438,6 @@ export default {
           }
           this.dateRange = [];
           this.getRoleList()
-        },
-        // @size-change页码展示数量点击事件
-        handleSizeChange(val) {
-          console.log('asda' + val)
-          // 更新每页展示数据size
-          this.queryParams.size = val
-          this.getRoleList();
-        },
-        // @current-change页码点击事件
-        handleCurrentChange(val) {
-          console.log('asda' + val)
-          // 更新当前页数是第几页
-          this.queryParams.current = val
-          this.getRoleList();
         },
         //新增或修改角色
         async saveRole() {
@@ -584,9 +567,20 @@ export default {
           // 当勾选状态变化时，将选中的节点保存在 selectedItems 数组中
           this.selectMenuOptions = this.$refs.menu.getCheckedNodes();
         },
-        // handleCheckChange(checkedNode, checkedNodeIds) {
-        //   this.selectedIds = checkedNodeIds;
-        // },
+        // @size-change页码展示数量点击事件
+        handleSizeChange(val) {
+          console.log('asda' + val)
+          // 更新每页展示数据size
+          this.queryParams.size = val
+          this.getRoleList();
+        },
+        // @current-change页码点击事件
+        handleCurrentChange(val) {
+          console.log('asda' + val)
+          // 更新当前页数是第几页
+          this.queryParams.current = val
+          this.getRoleList();
+        }
       }
 
 
