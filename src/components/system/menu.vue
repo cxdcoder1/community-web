@@ -189,7 +189,6 @@
                 显示状态
               </span>
               <el-radio-group v-model="form.visible">
-
                 <el-radio :label="'0'">显示</el-radio>
                 <el-radio :label="'1'">隐藏</el-radio>
               </el-radio-group>
