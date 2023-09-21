@@ -367,6 +367,7 @@ export default {
       this.reset();
       this.title = "添加字典类型";
     },
+
     /** 修改按钮操作 */
     handleUpdate(r) {
       this.form.dictId=r.dictId;
