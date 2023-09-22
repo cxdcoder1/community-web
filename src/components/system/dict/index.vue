@@ -106,7 +106,7 @@
       <el-table-column label="字典类型" align="center">
         <template slot-scope="scope">
           <!--                <router-link :to="{ path: '/data', query:{dictId: scope.row.dictId}}" class="link-type">-->
-          <router-link :to="{ name: 'data', params: { id: scope.row.dictId } }" class="link-type">
+          <router-link :to="{ name: 'data', params: { dictId: scope.row.dictId } }" class="link-type">
             <span>{{ scope.row.dictType }}</span>
           </router-link>
         </template>

@@ -7,9 +7,12 @@
       <!-- 顶部标题 -->
       <span style="position: sticky; top: 25px; margin-left: -83%;"> 智慧社区管理后台</span>
       <!-- 顶部标题 -->
+
       <el-dropdown>
-<!--        <img :src=res.avatar width="50px" height="50px">-->
-        <div class="block"><el-avatar :size="60" :src=res.avatar></el-avatar></div>
+        <!--        <img :src=res.avatar width="50px" height="50px">-->
+        <div class="block">
+          <el-avatar :size="60" :src=res.avatar></el-avatar>
+        </div>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item><span @click="userInfo1()">个人中心</span></el-dropdown-item>
@@ -93,11 +96,22 @@ export default {
     'el-dropdown-item': DropdownItem
   },
   name: "welcomeList",
+  $route(fo) {
+    this.tabs = JSON.parse(window.localStorage.getItem("tabs")) || [];
+    this.path = fo.path;
+  },
+  watch: {
+    $route(fo) {
+      this.tabs = JSON.parse(window.localStorage.getItem("tabs")) || [];
+      this.path = fo.path;
+      console.log(this.path)
+    },
+  },
   data() {
     return {
       showSubmenu: null,// 控制展开的三级菜单的二级菜单项的菜单ID
 
-      status:"",
+      status: "",
       res: 0, // 初始化一个res变量，用于接收查询
       menuList: [],
       userInfo: [],
