@@ -10,6 +10,7 @@ import role from "@/components/system/role/index.vue";
 import dict from "@/components/system/dict/index.vue";
 import data from "@/components/system/dict/data.vue";
 import dept from "@/components/system/dept/deptView.vue"
+import UserIndex from "@/components/system/user/UserIndex";
 
 Vue.use(VueRouter)
 
@@ -26,6 +27,8 @@ const routes = [
             {path: '/dict', component: dict},
             {path: '/dept', component: dept},
             {path: '/data', component: data},
+            {path: '/data', component: data},
+            {path: '/user', component: UserIndex},
             // 路由配置
             {
                 path: '/data/:dictId',

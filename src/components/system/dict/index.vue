@@ -1,14 +1,9 @@
 <template>
   <div class="app-container">
-    <!-- 面包屑导航 -->
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>字典管理</el-breadcrumb-item>
-    </el-breadcrumb>
-    <br>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="字典名称" prop="dictName">
         <el-input
+            :maxlength="11" show-word-limit
             v-model.trim="queryParams.dictName"
             placeholder="请输入字典名称"
             clearable
@@ -18,6 +13,7 @@
       </el-form-item>
       <el-form-item label="字典类型" prop="dictType">
         <el-input
+            :maxlength="11" show-word-limit
             v-model.trim="queryParams.dictType"
             placeholder="请输入字典类型"
             clearable
@@ -72,6 +68,17 @@
             @click="derive()"
             v-hasPermi="['system:dict:export']"
         >导出
+        </el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+            type="warning"
+            plain
+            icon="el-icon-download"
+            size="mini"
+            @click="handleDelete()"
+            v-hasPermi="['system:dict:export']"
+        >删除
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -131,7 +138,7 @@
               size="mini"
               type="text"
               icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
+              @click="dleDelete(scope.row)"
           >删除
           </el-button>
         </template>
@@ -185,11 +192,12 @@
     <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="handleClose">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
-          <el-form-item label="id" prop="dictName">
-            <el-input v-model="form.dictId" placeholder="请输入id"/>
+          <el-form-item label="id" prop="dictName" v-if="form.dictId != '0'" :style="{ opacity: '0.5' }"
+                        :class="{ 'readonly-input': true }">
+            <el-input v-model.trim="form.dictId" placeholder="请输入id" readonly/>
           </el-form-item>
           <el-form-item label="角色名称" prop="dictName">
-            <el-input v-model="form.dictName" placeholder="请输入名称"/>
+            <el-input v-model.trim="form.dictName" placeholder="请输入名称"/>
           </el-form-item>
           <el-form-item prop="dictType">
           <span slot="label">
@@ -198,7 +206,7 @@
             </el-tooltip>
             字典类型
           </span>
-            <el-input v-model="form.dictType" placeholder="请输入字典类型"/>
+            <el-input v-model.trim="form.dictType" placeholder="请输入字典类型"/>
           </el-form-item>
           <el-form-item label="状态" prop="status">
             <el-radio-group v-model="form.status">
@@ -207,7 +215,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item label="备注">
-            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+            <el-input v-model.trim="form.remark" type="textarea" placeholder="请输入内容"></el-input>
           </el-form-item>
         </el-row>
       </el-form>
@@ -245,6 +253,7 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      types:[],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -265,11 +274,11 @@ export default {
       queryParams: {
         current: 1,
         size: 10,
-        dictName: undefined,
-        dictType: undefined,
-        status: undefined,
-        createTime: undefined,
-        updateTime: undefined
+        dictName: '',
+        dictType: '',
+        status: '',
+        createTime: "",
+        updateTime: ""
       },
       // 表单参数
       form: {
@@ -299,6 +308,7 @@ export default {
      */
     async derive() {
       const {data: res} = await this.$http.post(`excel/DictList`, this.ids)
+      console.log(this.ids)
       if (res.status == 200) {
         //成功导出
         this.$message.success(res.msg + ",路径为：" + res.path)
@@ -320,11 +330,15 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.dictId)
+      this.types=selection.map(item => item.dictType)
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
     /** 查询字典类型列表 */
     async getList() {
+      this.queryParams.createTime = this.dateRange[0]
+      this.queryParams.updateTime = this.dateRange[1]
+
       // this.loading = true;
       const {data: res} = await this.$http.get('sysDictType/selectDictType', {
         params: this.queryParams
@@ -350,23 +364,21 @@ export default {
         status: "0",
         remark: undefined
       };
-      this.resetForm("form");
+
     },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
-      // this.queryParams.dictName=this.queryParams.dictName.trim()
-      // this.queryParams.dictType=this.queryParams.dictType.trim()
-
-      this.queryParams.createTime = this.dateRange[0]
-      this.queryParams.updateTime = this.dateRange[1]
 
       this.getList();
+
     },
     /** 重置按钮操作 */
     resetQuery() {
       this.dateRange = [];
       this.$refs["queryForm"].resetFields();
+      this.reset();
+
       this.handleQuery();
     },
     /** 新增按钮操作 */
@@ -384,12 +396,11 @@ export default {
       this.form.status = r.status;
       this.form.remark = r.remark;
       this.open = true;
+      this.type=r.dictType;
       this.title = "添加字典类型";
     },
     /** 删除按钮操作 */
-    async handleDelete(row) {
-      console.log(row.dictId, row.dictType)
-
+    async handleDelete() {
 
       const confirmResult = await this.$confirm(
           '此操作将永久删除该数据, 是否继续?',
@@ -403,32 +414,58 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('已取消删除')
       }
-      const {data: res} = await this.$http.delete('sysDictType/delType?id=' + row.dictId + '&name=' + row.dictType);
+      const {data: res} = await this.$http.delete('sysDictType/delType?type='+this.types,{data:this.$refs.list.selection.map(item=>item.dictId)});
       if (res.status !== 200) {
         this.$message.error(res.msg);
       } else {
         this.$message.success('删除用户成功')
       }
+
       this.getList();
     },
-    // /** 导出按钮操作 */
-    // handleExport() {
-    //    this.download('system/dict/type/export', {
-    //      ...this.queryParams
-    //    }, `type_${new Date().getTime()}.xlsx`)
-    // },
+
+    async dleDelete(row){
+      const confirmResult = await  this.$confirm(
+          '此操作将永久删除该数据, 是否继续?',
+          '提示',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+      ).catch(err => err)
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已取消删除')
+      }
+      const {data: res} = await this.$http.delete('sysDictType/dleDelete?idList=' + row.dictId+'&type='+row.dictType);
+      if (res.status !== 200) {
+        this.$message.error(res.msg);
+      }else{
+        this.$message.success('删除用户成功')
+      }
+      this.getList();
+    },
+
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('system/dict/type/export', {
+        ...this.queryParams
+      }, `type_${new Date().getTime()}.xlsx`)
+    },
     /** 刷新缓存按钮操作 */
     handleRefreshCache() {
       // refreshCache().then(() => {
       //   this.$modal.msgSuccess("刷新成功");
       //   this.$store.dispatch('dict/cleanDict');
       // });
-    },
-    async saveRole() {
-
+    }, async saveRole() {
+      if(this.form.dictType == 0 || this.form.dictName == 0 || this.form.dictType == null || this.form.dictName == null ){
+        this.$message.error("请输入参数")
+        return
+      }
       if (this.form.dictId != 0) {
-        alert(1)
-        let res = await this.$http.put("sysDictType/updType", this.form);
+        let res = await this.$http.put("sysDictType/updType?type="+this.type+"&type2="+this.form.dictType, this.form);
+        console.log(res)
         if (res.data.status === 200) {
           this.open = false;
           this.$message.success("修改成功")
@@ -438,7 +475,6 @@ export default {
         }
       }
       if (this.form.dictId == 0) {
-        alert(0)
         let res = await this.$http.post("sysDictType/insDictType", this.form);
         console.log(res)
         if (res.data.status === 200) {
@@ -470,3 +506,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.readonly-input {
+  cursor: not-allowed; /* 设置鼠标样式为不可点击 */
+}
+</style>
