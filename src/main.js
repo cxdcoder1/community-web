@@ -13,6 +13,7 @@ import 'e-icon-picker/lib/index.css';
 
 import {analyzingIconForIconfont} from "e-icon-picker/src/utils";//引入解析json函数
 import iconfont from "./assets/fonts/iconfont/iconfont.json" //解析class
+
 let forIconfont = analyzingIconForIconfont(iconfont)
 
 
