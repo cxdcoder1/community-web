@@ -434,6 +434,7 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('已经取消删除')
       }
+      // eslint-disable-next-line no-unused-vars
       await this.$http.delete("sysDictData/delete/" + dictCodes).then(res => {
         if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
           this.queryParams.current = this.queryParams.current - 1;
