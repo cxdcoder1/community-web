@@ -5,7 +5,7 @@ import Home from "@/views/Home";
 import SysWelcome1 from "@/views/SysWelcome1.vue";
 import userInfo from "@/components/userInfo/index.vue";
 import system from "@/components/system/menu.vue";
-import user from  "@/components/system/user/UserIndex.vue"
+import user from "@/components/system/user/UserIndex.vue"
 // import role from "@/components/system/role/indexList.vue";
 import role from "@/components/system/role/index.vue";
 import dict from "@/components/system/dict/index.vue";
