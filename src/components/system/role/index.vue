@@ -20,12 +20,17 @@
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="菜单状态" clearable>
+        <el-select
+            v-model="queryParams.status"
+            placeholder="用户状态"
+            clearable
+            style="width: 240px"
+        >
           <el-option
-              v-for="dict in dictList"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
+              v-for="dict in statusPotion"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -199,6 +204,8 @@ export default {
     return {
       //导出集合
       deriveList: [],
+
+      statusPotion:[],
       //导出的对象
       derives: {},
       rules: {
@@ -247,10 +254,7 @@ export default {
         deptCheckStrictly: true,
         remark: undefined
       },
-      dictList: [
-        {label: '正常', value: '0'},
-        {label: '禁用', value: '1'}
-      ],
+
 //角色列表区域
           delId: "",
           selection: [],
@@ -274,15 +278,6 @@ export default {
             updateTime: '',
           },
 
-          queryParams2: {
-            current: 1,
-            size: 1,
-            roleName: '',
-            roleKey: '',
-            status: '',
-            createTime: '',
-            updateTime: '',
-          },
 // 新增/修改区域
           dialogEditRole: false,
           titleEditRole: "",
@@ -291,7 +286,7 @@ export default {
       },
       created() {
         this.getRoleList();
-
+        this.getStatus();
       },
       methods: {
         /**
@@ -308,6 +303,10 @@ export default {
             this.$message.error(res.msg)
           }
 
+        },
+        async getStatus() {
+          const {data: res} = await this.$http.get('sysRole/statusOption?type='+'sys_normal_disable')
+          this.statusPotion=res.data;
         },
         //把选中的那条记录的roleId属性放到deriveList中
         selectionChangeHandle(val) {
@@ -389,14 +388,11 @@ export default {
           // console.log(this.roleList)
         },
         handleQuery() {
-          this.queryParams = this.queryParams2
           this.queryParams.createTime = this.dateRange[0]
           this.queryParams.updateTime = this.dateRange[1]
           this.queryParams.current = 1
           this.queryParams.roleName=this.queryParams.roleName.trim()
           this.queryParams.roleKey=this.queryParams.roleKey.trim()
-          this.queryParams.pageNum = 1;
-
           this.getRoleList();
         },
         // 角色状态修改

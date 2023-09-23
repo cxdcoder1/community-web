@@ -39,21 +39,21 @@
                 @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <!--          <el-form-item label="状态" prop="status">-->
-          <!--            <el-select-->
-          <!--                v-model="queryParams.status"-->
-          <!--                placeholder="用户状态"-->
-          <!--                clearable-->
-          <!--                style="width: 240px"-->
-          <!--            >-->
-          <!--              <el-option-->
-          <!--                  v-for="dict in dict.type.sys_normal_disable"-->
-          <!--                  :key="dict.value"-->
-          <!--                  :label="dict.label"-->
-          <!--                  :value="dict.value"-->
-          <!--              />-->
-          <!--            </el-select>-->
-          <!--          </el-form-item>-->
+                    <el-form-item label="状态" prop="status">
+                      <el-select
+                          v-model="queryParams.status"
+                          placeholder="用户状态"
+                          clearable
+                          style="width: 240px"
+                      >
+                        <el-option
+                            v-for="dict in statusPotion"
+                            :key="dict.dictValue"
+                            :label="dict.dictLabel"
+                            :value="dict.dictValue"
+                        />
+                      </el-select>
+                    </el-form-item>
           <el-form-item label="创建时间">
             <el-date-picker
                 v-model="dateRange"
@@ -250,7 +250,7 @@
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "User",
-  dicts: ['sys_normal_disable', 'sys_user_sex'],
+  dicts: 'sys_normal_disable',
   data() {
     return {
       // 遮罩层
@@ -271,6 +271,8 @@ export default {
       title: "",
       // 部门树选项
       deptOptions: undefined,
+      //状态下拉
+      statusPotion:[],
       // 是否显示弹出层
       open: false,
       // 部门名称
@@ -364,6 +366,7 @@ export default {
   created() {
     this.getList();
     this.getDeptTree();
+    this.getStatus();
     this.getConfigKey("sys.user.initPassword").then(response => {
       this.initPassword = response.msg;
     });
@@ -373,11 +376,8 @@ export default {
     async getList() {
       this.queryParams.createTime = this.dateRange[0]
       this.queryParams.updateTime = this.dateRange[1]
-
       console.log(this.queryParams.current)
       console.log( this.queryParams.size)
-
-
       const {data: res} = await this.$http.get('sysUser/sysUserList', {
         params: this.queryParams
       })
@@ -386,6 +386,16 @@ export default {
 
       // this.deptOptions=res.data.records.sysDept;
       console.log(res)
+      // console.log(this.deptOptions)
+      // console.log(res.data.records)
+      // console.log(this.deptOptions);
+    },
+    async getStatus() {
+      console.log('sadas',this.dicts)
+      const {data: res} = await this.$http.get('sysUser//statusOption?type='+'sys_normal_disable')
+      this.statusPotion=res.data;
+
+      console.log( 'ads',res.data)
       // console.log(this.deptOptions)
       // console.log(res.data.records)
       // console.log(this.deptOptions);

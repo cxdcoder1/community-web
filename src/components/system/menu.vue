@@ -13,10 +13,10 @@
       <el-form-item label="状态" prop="status">
         <el-select v-model="sysMenu.status" placeholder="菜单状态" clearable>
           <el-option
-              v-for="dict in dictList"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
+              v-for="dict in statusPotion"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -240,7 +240,7 @@ export default {
 
       updateSysMenuShow: false,
       treeData: [], // 初始化为一个空数组
-
+      statusPotion:[],
       form: {
         menuType: 'M',
         status: '',
@@ -300,9 +300,14 @@ export default {
   },
   created() {
     this.getSysMenu();
+    this.getStatus();
   },
 
   methods: {
+    async getStatus() {
+      const {data: res} = await this.$http.get('sysRole/statusOption?type='+'sys_normal_disable')
+      this.statusPotion=res.data;
+    },
     async saveMenu() {
       if (!this.form.menuName) {
         // 部门名称为空，提示用户输入值

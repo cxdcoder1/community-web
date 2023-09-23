@@ -24,10 +24,10 @@
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="菜单状态" clearable>
           <el-option
-              v-for="dict in dictList"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
+              v-for="dict in statusPotion"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
           />
         </el-select>
       </el-form-item>
@@ -249,6 +249,7 @@ export default {
         {label: '正常', value: '0'},
         {label: '禁用', value: '1'}
       ],
+      statusPotion:[],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -301,8 +302,13 @@ export default {
   },
   created() {
     this.getList();
+    this.getStatus();
   },
   methods: {
+    async getStatus() {
+      const {data: res} = await this.$http.get('sysRole/statusOption?type='+'sys_normal_disable')
+      this.statusPotion=res.data;
+    },
     /**
      * 导出方法
      */
