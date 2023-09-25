@@ -498,7 +498,6 @@ export default {
       const {data: res} = await this.$http.get('sysUser/sysUserList', {
         params: this.queryParams
       })
-      console.log(res,"resxxxxxxxxxxx")
       this.userList = res.data.records;
       this.total = res.data.total
       console.log(res.data.records, "xxxxxxxxxxxxxx")
