@@ -81,7 +81,7 @@
                 icon="el-icon-plus"
                 size="mini"
                 @click="handleAdd"
-                v-hasPermi="['system:user:add']"
+
             >新增
             </el-button>
           </el-col>
@@ -94,7 +94,7 @@
                 size="mini"
                 :disabled="multiple"
                 @click="delUsers"
-                v-hasPermi="['system:user:remove']"
+
             >删除
             </el-button>
           </el-col>
@@ -160,7 +160,7 @@
                   type="text"
                   icon="el-icon-edit"
                   @click="handleUpdate(scope.row)"
-                  v-hasPermi="['system:user:edit']"
+
               >修改
               </el-button>
               <el-button
@@ -168,7 +168,7 @@
                   type="text"
                   icon="el-icon-delete"
                   @click="delUser(scope.row)"
-                  v-hasPermi="['system:user:remove']"
+
               >删除
               </el-button>
               <el-button
@@ -312,10 +312,14 @@
           :limit="1"
           accept=".xlsx, .xls"
           :headers="upload.headers"
-          :action="upload.url"
           :disabled="upload.isUploading"
           :on-progress="handleFileUploadProgress"
           :on-success="handleFileSuccess"
+          class="upload-demo"
+          action="#"
+          :before-upload="beforeAvatarUpload"
+          :http-request="uploadHttpRequest"
+          :auto-upload="true"
 
           name="file"
           drag
@@ -335,7 +339,7 @@
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button type="primary" @click="uploadHttpRequest">确 定</el-button>
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -474,6 +478,8 @@ export default {
         // 上传的地址
         url: "http://localhost:8080/#/excel/into"
       },
+      uploadFile:{},
+      format:[],
 
     };
   },
@@ -498,7 +504,6 @@ export default {
       const {data: res} = await this.$http.get('sysUser/sysUserList', {
         params: this.queryParams
       })
-      console.log(res,"resxxxxxxxxxxx")
       this.userList = res.data.records;
       this.total = res.data.total
       console.log(res.data.records, "xxxxxxxxxxxxxx")
@@ -558,6 +563,46 @@ export default {
           this.$message.error(res.data.msg)
         }
       })
+    },
+    //上传导入
+    async uploadHttpRequest() {
+      const {data: res} = await this.$http({
+        url: 'excel/into',
+        method: "post",
+        headers: {
+          "Content-Type": "multipart/form-data;boundary=" + new Date().getTime()
+        },
+        data: this.format,
+      })
+      console.log(res)
+      if (res.status == 201) {
+        this.$message.error(res.msg);
+      } else {
+        this.$message.success(res.msg);
+      }
+
+    },
+    //上传前
+    beforeAvatarUpload(file){
+      console.log("文件",file)
+      const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
+      const whiteList = ["xls", "xlsx"];
+
+      if (whiteList.indexOf(fileSuffix) === -1) {
+        this.$message.error("上传文件只能是xls、xlsx格式", "error");
+        return false;
+      }
+
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+        return false;
+      }
+      this.uploadFile=file
+      let formData = new FormData();
+      formData.append('file',file)
+      this.format=formData
+      console.log("from",formData)
     },
     async getStatus() {
       console.log('sadas', this.dicts)
@@ -735,7 +780,7 @@ export default {
       this.upload.open = false;
       this.upload.isUploading = false;
       this.$refs.upload.clearFiles();
-      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", {dangerouslyUseHTMLString: true});
+      // this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", {dangerouslyUseHTMLString: true});
       this.getList();
     },
     // 提交上传文件
