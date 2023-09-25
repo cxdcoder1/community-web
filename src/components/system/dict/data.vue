@@ -439,6 +439,7 @@ export default {
       }
       // eslint-disable-next-line no-unused-vars
       await this.$http.delete("sysDictData/delete/" + dictCodes).then(res => {
+        console.log(res)
         if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
           this.queryParams.current = this.queryParams.current - 1;
         }

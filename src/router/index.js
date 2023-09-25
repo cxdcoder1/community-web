@@ -11,47 +11,50 @@ import role from "@/components/system/role/index.vue";
 import dict from "@/components/system/dict/index.vue";
 import data from "@/components/system/dict/data.vue";
 import dept from "@/components/system/dept/deptView.vue"
+import post from "@/components/system/post/postView.vue"
 
 Vue.use(VueRouter)
 
 const routes = [
-  {path: '/', redirect: '/login'},
-  {path: '/login', component: UserLogin},
-  {
-    path: '/home', component: Home,  redirect: '/welcome',
-    children: [
-      { path: '/welcome', component: SysWelcome1 },
-      { path: '/userInfo', component: userInfo },
-      { path: '/menu', component: system},
-      { path: '/role', component: role},
-      { path: '/dict', component: dict},
-      {path: '/dept', component: dept},
-      { path: '/data', component: data},
-      { path: '/user', component: user},
-      // 路由配置
-      {
-        path: '/data/:dictId',
-        name: 'data',
-        component: data
-      }
+    {path: '/', redirect: '/login'},
+    {path: '/login', component: UserLogin},
+    {
+        path: '/home', component: Home, redirect: '/welcome',
+        children: [
+            {path: '/welcome', component: SysWelcome1},
+            {path: '/userInfo', component: userInfo},
+            {path: '/menu', component: system},
+            {path: '/role', component: role},
+            {path: '/dict', component: dict},
+            {path: '/dept', component: dept},
+            {path: '/data', component: data},
+            {path: '/data', component: data},
+             { path: '/post', component: post},
+            {path: '/user', component: user},
+            // 路由配置
+            {
+                path: '/data/:dictId',
+                name: 'data',
+                component: data
+            }
 
-    ]
-  },
+        ]
+    },
 ]
 
 const router = new VueRouter({
-  routes
+    routes
 })
 
 //挂载路由导航守卫,to表示将要访问的路径，from表示从哪里来，next是下一个要做的操作
 router.beforeEach((to, from, next) => {
-  if (to.path === '/login')
-    return next();
-  //获取token
-  const tokenStr = window.sessionStorage.getItem('token');
-  if (!tokenStr)
-    return next('/login');
-  next();
+    if (to.path === '/login')
+        return next();
+    //获取token
+    const tokenStr = window.sessionStorage.getItem('token');
+    if (!tokenStr)
+        return next('/login');
+    next();
 
 });
 

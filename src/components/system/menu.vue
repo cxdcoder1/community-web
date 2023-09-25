@@ -114,7 +114,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="菜单名称" prop="menuName">
-              <el-input v-model="form.menuName" placeholder="请输入菜单名称"/>
+              <el-input v-model.trim="form.menuName" placeholder="请输入菜单名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -145,7 +145,7 @@
                             </el-tooltip>
                             路由地址
                           </span>
-              <el-input v-model="form.path" placeholder="请输入路由地址"/>
+              <el-input v-model.trim="form.path" placeholder="请输入路由地址"/>
             </el-form-item>
           </el-col>
           <el-col :span="12" v-if="form.menuType == 'C'">
@@ -156,7 +156,7 @@
                 </el-tooltip>
                 组件路径
               </span>
-              <el-input v-model="form.component" placeholder="请输入组件路径"/>
+              <el-input v-model.trim="form.component" placeholder="请输入组件路径"/>
             </el-form-item>
           </el-col>
           <el-col :span="12" v-if="form.menuType !== 'M'">
@@ -374,10 +374,11 @@ export default {
         parentId: '0',
         visible:'0',
         status:'0',
-        isFrame:'0'
+        isFrame:0,
+        orderNum: 1
       };
-        if(r.parentId!=null){
-          this.form.parentId=r.parentId;
+        if(r.menuId!=null){
+          this.form.parentId=r.menuId;
         }
       this.updateSysMenuShow = true;
       this.reset()

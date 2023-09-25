@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+    <!-- 面包屑导航 -->
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>角色管理</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="`showSearch`">
       <el-form-item label="角色名称" prop="roleName">
         <el-input
@@ -50,6 +56,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
@@ -73,7 +80,8 @@
         </el-button>
       </el-col>
     </el-row>
-    <el-table :data="roleList" @selection-change="selectionChangeHandle" ref="list" >
+
+    <el-table :data="roleList" @selection-change="selectionChangeHandle" ref="list">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="角色编号" width="120">
         <template slot-scope="scope">{{ scope.row.roleId }}</template>
@@ -125,12 +133,13 @@
         </template>
       </el-table-column>
     </el-table>
+
     <!--     添加或修改角色对话框-->
     <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="handleClose">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-form-item label="角色名称" prop="roleName">
-            <el-input v-model="form.roleName" placeholder="请输入角色名称"/>
+            <el-input v-model.trim="form.roleName" placeholder="请输入角色名称"/>
           </el-form-item>
           <el-form-item prop="roleKey">
           <span slot="label">
@@ -139,7 +148,7 @@
             </el-tooltip>
             权限字符
           </span>
-            <el-input v-model="form.roleKey" placeholder="请输入权限字符"/>
+            <el-input v-model.trim="form.roleKey" placeholder="请输入权限字符"/>
           </el-form-item>
           <el-form-item label="角色顺序" prop="roleSort">
             <el-input-number v-model="form.roleSort" controls-position="right" :min="0"/>
@@ -181,6 +190,7 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
     <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -254,40 +264,48 @@ export default {
         deptCheckStrictly: true,
         remark: undefined
       },
-
 //角色列表区域
-          delId: "",
-          selection: [],
-          // currentPage: 1,
-          // pageSize: 1,
-          roleList: [],
-          // 总条数
-          total: 0,
-          //总页数
-          pages: '',
-          // 日期范围
-          dateRange: [],
+      delId: "",
+      selection: [],
+      // currentPage: 1,
+      // pageSize: 1,
+      roleList: [],
+      // 总条数
+      total: 0,
+      //总页数
+      pages: '',
+      // 日期范围
+      dateRange: [],
 
-          queryParams: {
-            current: 1,
-            size: 5,
-            roleName: '',
-            roleKey: '',
-            status: '',
-            createTime: '',
-            updateTime: '',
-          },
+      queryParams: {
+        current: 1,
+        size: 5,
+        roleName: '',
+        roleKey: '',
+        status: '',
+        createTime: '',
+        updateTime: '',
+      },
 
-// 新增/修改区域
-          dialogEditRole: false,
-          titleEditRole: "",
-          // 表单校验
-        }
+      queryParams2: {
+        current: 1,
+        size: 1,
+        roleName: '',
+        roleKey: '',
+        status: '',
+        createTime: '',
+        updateTime: '',
       },
-      created() {
-        this.getRoleList();
-        this.getStatus();
-      },
+      // 新增/修改区域
+      dialogEditRole: false,
+      titleEditRole: "",
+      // 表单校验
+    }
+  },
+  created() {
+    this.getRoleList();
+    this.getStatus();
+  },
       methods: {
         /**
          * 导出方法
