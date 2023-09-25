@@ -14,17 +14,7 @@
           </div>
           <div>
             <div class="text-center">
-              <!--              <el-upload-->
-              <!--                  action="http://localhost:8080/upload"-->
-              <!--                  list-type="picture-card"-->
-              <!--                  :on-preview="handlePictureCardPreview"-->
-              <!--                  :on-success="updateUserImage"-->
-              <!--                  :on-remove="handleRemove">-->
-              <!--                <i class="el-icon-plus"></i>-->
-              <!--              </el-upload>-->
-              <!--              <el-dialog :visible.sync="dialogVisible">-->
-              <!--                <img width="100%" :src="dialogImageUrl" alt="">-->
-              <!--              </el-dialog>-->
+
               <el-upload
                   class="avatar-uploader"
                   action="http://localhost:8080/upload"
@@ -106,7 +96,6 @@ export default {
     this.userId1 = user.userId
     this.imageUrl = user.avatar
     this.getUser();
-    console.log(this.imageUrl)
   },
   methods: {
     getUser: async function () {

@@ -1,32 +1,24 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-            <!--部门数据-->
-            <el-col :span="4" :xs="24">
-              <div class="head-container">
-                <el-input
-                    v-model="deptName"
-                    placeholder="请输入部门名称"
-                    clearable
-                    size="small"
-                    prefix-icon="el-icon-search"
-                    style="margin-bottom: 20px"
-                />
-              </div>
-              <div class="head-container">
-                <el-tree
-                    :data="deptOptions"
-                    :props="defaultProps"
-                    :expand-on-click-node="false"
-                    :filter-node-method="filterNode"
-                    ref="tree"
-                    node-key="id"
-                    default-expand-all
-                    highlight-current
-                    @node-click="handleNodeClick"
-                />
-              </div>
-            </el-col>
+      <!--部门数据-->
+      <el-col :span="4">
+        <el-card>
+          <div class="grid-content bg-purple">
+            <el-tree
+                ref="tree"
+                :data="leftDeptTree"
+                :props="{label: 'deptName'}"
+                :expand-on-click-node="false"
+                :filter-node-method="filterNode"
+                highlight-current
+                default-expand-all
+                node-key="id"
+                @node-click="handleNodeClick">
+            </el-tree>
+          </div>
+        </el-card>
+      </el-col>
       <!--      用户数据-->
       <el-col :span="20" :xs="24">
         <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
@@ -49,21 +41,21 @@
                 @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-                    <el-form-item label="状态" prop="status">
-                      <el-select
-                          v-model="queryParams.status"
-                          placeholder="用户状态"
-                          clearable
-                          style="width: 240px"
-                      >
-                        <el-option
-                            v-for="dict in statusPotion"
-                            :key="dict.dictValue"
-                            :label="dict.dictLabel"
-                            :value="dict.dictValue"
-                        />
-                      </el-select>
-                    </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <el-select
+                v-model="queryParams.status"
+                placeholder="用户状态"
+                clearable
+                style="width: 240px"
+            >
+              <el-option
+                  v-for="dict in statusPotion"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item label="创建时间">
             <el-date-picker
                 v-model="dateRange"
@@ -93,18 +85,7 @@
             >新增
             </el-button>
           </el-col>
-          <el-col :span="1.5">
-            <el-button
-                type="success"
-                plain
-                icon="el-icon-edit"
-                size="mini"
-                :disabled="single"
-                @click="handleUpdate"
-                v-hasPermi="['system:user:edit']"
-            >修改
-            </el-button>
-          </el-col>
+
           <el-col :span="1.5">
             <el-button
                 type="danger"
@@ -112,7 +93,7 @@
                 icon="el-icon-delete"
                 size="mini"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="delUsers"
                 v-hasPermi="['system:user:remove']"
             >删除
             </el-button>
@@ -124,7 +105,6 @@
                 icon="el-icon-upload2"
                 size="mini"
                 @click="handleImport"
-                v-hasPermi="['system:user:import']"
             >导入
             </el-button>
           </el-col>
@@ -135,13 +115,11 @@
                 icon="el-icon-download"
                 size="mini"
                 @click="handleExport"
-                v-hasPermi="['system:user:export']"
             >导出
             </el-button>
           </el-col>
           <right-toolbar :showSearch.sync="showSearch" @queryTable="getList" :columns="columns"></right-toolbar>
         </el-row>
-
 
         <el-table :data="userList" @selection-change="handleSelectionChange" ref="list">
           <el-table-column type="selection" width="55" align="center"/>
@@ -149,7 +127,7 @@
           <el-table-column label="用户名称" align="center" key="userName" prop="userName"/>
           <el-table-column label="用户昵称" align="center" key="nickName" prop="nickName"/>
           <el-table-column label="部门" align="center" key="deptId">
-            <template slot-scope="scope">{{ scope.row.sysDeptList.deptName }}</template>
+            <template slot-scope="scope">{{ scope.row.deptName }}</template>
           </el-table-column>
 
           <!--          <el-table-column label="部门" align="center" key="deptName" prop="sysDept.deptName"/>-->
@@ -189,7 +167,7 @@
                   size="mini"
                   type="text"
                   icon="el-icon-delete"
-                  @click="handleDelete(scope.row)"
+                  @click="delUser(scope.row)"
                   v-hasPermi="['system:user:remove']"
               >删除
               </el-button>
@@ -256,7 +234,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
-              <el-input v-model="form.password" placeholder="请输入用户密码" type="password" maxlength="20" show-password/>
+              <el-input v-model="form.password" placeholder="请输入用户密码" type="password" maxlength="20"
+                        show-password/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -325,6 +304,41 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 用户导入对话框 -->
+    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+      <el-upload
+          ref="upload"
+          :limit="1"
+          accept=".xlsx, .xls"
+          :headers="upload.headers"
+          :action="upload.url"
+          :disabled="upload.isUploading"
+          :on-progress="handleFileUploadProgress"
+          :on-success="handleFileSuccess"
+
+          name="file"
+          drag
+          multiple
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <!--          <div class="el-upload__tip" slot="tip">-->
+          <!--            <el-checkbox v-model="upload.updateSupport"/>-->
+          <!--            是否更新已经存在的用户数据-->
+          <!--          </div>-->
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;"
+                   @click="importTemplate">下载模板
+          </el-link>
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button @click="upload.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -342,10 +356,16 @@ export default {
   data() {
     return {
 
+      //左侧部门树
+      leftDeptTree: [],
       sexList: [
         {label: '男', value: '0'},
         {label: '女', value: '1'},
         // {label: '', value: '1'}
+      ],
+      dictList:[
+        {label: '启用', value: '0'},
+        {label: '禁用', value: '1'},
       ],
       PostList: [
         {label: '男', value: '0'},
@@ -371,7 +391,7 @@ export default {
       // 部门树选项
       deptOptions: undefined,
       //状态下拉
-      statusPotion:[],
+      statusPotion: [],
       // 是否显示弹出层
       open: false,
       // 部门名称
@@ -390,7 +410,6 @@ export default {
         children: "children",
         label: "label"
       },
-
       // 查询参数
       queryParams: {
         current: 1,
@@ -399,8 +418,8 @@ export default {
         phonenumber: undefined,
         status: undefined,
         deptId: undefined,
-        createTime:undefined,
-        updateTime:undefined
+        createTime: undefined,
+        updateTime: undefined
       },
       // 列信息
       columns: [
@@ -451,9 +470,9 @@ export default {
         // 是否更新已经存在的用户数据
         updateSupport: 0,
         // 设置上传的请求头部
-        // headers: { Authorization: "Bearer " + getToken() },
+        headers: {Authorization: window.sessionStorage.getItem("token")},
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + "/system/user/importData"
+        url: "http://localhost:8080/#/excel/into"
       },
 
     };
@@ -468,9 +487,6 @@ export default {
     this.getList();
     this.getDeptTree();
     this.getStatus();
-    this.getConfigKey("sys.user.initPassword").then(response => {
-      this.initPassword = response.msg;
-    });
   },
   methods: {
     /** 查询用户列表 */
@@ -478,26 +494,76 @@ export default {
       this.queryParams.createTime = this.dateRange[0]
       this.queryParams.updateTime = this.dateRange[1]
       console.log(this.queryParams.current)
-      console.log( this.queryParams.size)
+      console.log(this.queryParams.size)
       const {data: res} = await this.$http.get('sysUser/sysUserList', {
         params: this.queryParams
       })
+      console.log(res,"resxxxxxxxxxxx")
       this.userList = res.data.records;
       this.total = res.data.total
-      console.log(res.data,"xxxxxxxxxxxxxx")
+      console.log(res.data.records, "xxxxxxxxxxxxxx")
 
       // this.deptOptions=res.data.records.sysDept;
-      console.log(res)
+      // console.log('asdsa',res)
       // console.log(this.deptOptions)
       // console.log(res.data.records)
       // console.log(this.deptOptions);
     },
-    async getStatus() {
-      console.log('sadas',this.dicts)
-      const {data: res} = await this.$http.get('sysUser//statusOption?type='+'sys_normal_disable')
-      this.statusPotion=res.data;
+    //批量删除
+    async delUsers() {
+      const confirmResult = await this.$confirm('确认要删除' + '"' + this.ids + '"用户吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).catch(err => err)
 
-      console.log( 'ads',res.data)
+      // 如果用户点击确认，则confirmResult 为'confirm'
+      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+      await this.$http.post('sysUser/deleteUsers', this.ids).then(res => {
+        if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
+          this.queryParams.current = Math.ceil((this.total - 1) / this.queryParams.size);
+        }
+        if (res.data.status == 200) {
+          this.$message.success(res.data.msg)
+          this.getList();
+        } else if (res.data.status == 201) {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
+    //单个删除
+    async delUser(row) {
+      const confirmResult = await this.$confirm('确认要删除' + '"' + row.userName + '"吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).catch(err => err)
+
+      // 如果用户点击确认，则confirmResult 为'confirm'
+      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+      await this.$http.delete('sysUser/delUser/' + row.userId).then(res => {
+        if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
+          this.queryParams.current = Math.ceil((this.total - 1) / this.queryParams.size);
+        }
+        if (res.data.status == 200) {
+          this.$message.success(res.data.msg)
+          this.getList();
+        } else if (res.data.status == 201) {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
+    async getStatus() {
+      console.log('sadas', this.dicts)
+      const {data: res} = await this.$http.get('sysUser//statusOption')
+      this.statusPotion = res.data;
+      console.log('ads', res.data)
       // console.log(this.deptOptions)
       // console.log(res.data.records)
       // console.log(this.deptOptions);
@@ -508,6 +574,11 @@ export default {
       this.$http.post("sysUser/getDeptList", {}).then(response => {
         console.log("cccccccccc", response)
         this.deptOptions = response.data.menuList;
+      });
+
+      this.$http.post("sysDept/getDeptList", {}).then(response => {
+
+        this.leftDeptTree = response.data.menuList;
       });
     },
     // @size-change页码展示数量点击事件
@@ -531,7 +602,8 @@ export default {
     },
     // 节点单击事件
     handleNodeClick(data) {
-      this.queryParams.deptId = data.id;
+      this.queryParams.deptId = data.deptId;
+
       this.handleQuery();
     },
     // 用户状态修改
@@ -570,19 +642,21 @@ export default {
         postIds: [],
         roleIds: []
       };
-      this.resetForm("form");
     },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.current = 1;
+      this.queryParams.createTime = this.dateRange[0]
+      this.queryParams.updateTime = this.dateRange[1]
       this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
       this.dateRange = [];
+
       this.$refs["queryForm"].resetFields();
       this.queryParams.deptId = undefined;
-      // this.$refs.tree.setCurrentKey(null);
+      this.$refs.tree.setCurrentKey(null);
       this.handleQuery();
     },
     // 多选框选中数据
@@ -599,16 +673,19 @@ export default {
         this.roleOptions = response.data.roles;
         this.open = true;
         this.title = "添加用户";
-        this.form.password = this.initPassword;
       })
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
       this.form = row;
+      console.log("qqqqqqqq", row)
+      // this.form.deptId = row.sysDeptList.deptId;
+      // this.form.postIds = row.userAndPostDto.sysPost.postId;
+      // this.form.roleIds = row.userAndRoleDto.sysRole.roleId;
+      console.log("cccccccccccccccccccccccc", this.form)
       // this.form.roleIds = row.userAndRoleDto.sysRole.roleId
       // this.form.postIds = row.userAndPostDto.sysPost.postIds
-      console.log(this.form,"test修改")
       this.$http.get("sysUser/getUser").then(response => {
         this.postOptions = response.data.posts;
         this.roleOptions = response.data.roles;
@@ -625,41 +702,80 @@ export default {
         closeOnClickModal: false,
         inputPattern: /^.{5,20}$/,
         inputErrorMessage: "用户密码长度必须介于 5 和 20 之间"
-      }).then(({ value }) => {
+      }).then(({value}) => {
         console.log(value)
-        this.$http.put("sysUser/resetPwd?id="+row.userId+"&pwd="+value);
+        this.$http.put("sysUser/resetPwd?id=" + row.userId + "&pwd=" + value);
         this.$message.success('重置密码成功')
-      }).catch(() => {});
+      }).catch(() => {
+      });
     },
-    // /** 分配角色操作 */
-    // handleAuthRole: function(row) {
-    //   const userId = row.userId;
-    //   this.$router.push("/system/user-auth/role/" + userId);
-    // },
+    /** 导入按钮操作 */
+    handleImport() {
+      this.upload.title = "用户导入";
+      this.upload.open = true;
+    },
+    /** 下载模板操作 */
+    async importTemplate() {
+      const {data: res} = await this.$http.post(`excel/template`)
+      if (res.status == 200) {
+        //成功导出
+        this.$message.success(res.msg + ",路径为：" + res.path)
+        this.$refs.list.clearSelection(); // el-table上绑定ref="list"
+      } else if (res.status == 201) {
+        //导出失败
+        this.$message.error(res.msg)
+      }
+    },
+    // 文件上传中处理
+    handleFileUploadProgress(event, file, fileList) {
+      this.upload.isUploading = true;
+    },
+    // 文件上传成功处理
+    handleFileSuccess(response, file, fileList) {
+      this.upload.open = false;
+      this.upload.isUploading = false;
+      this.$refs.upload.clearFiles();
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", {dangerouslyUseHTMLString: true});
+      this.getList();
+    },
+    // 提交上传文件
+    submitFileForm() {
+      this.$http.put("excel/into", this).then(response => {
+        // console.log("cccc",response)
+        if (response.data.data == 1) {
+          this.$message.success("修改成功");
+          this.open = false;
+          this.getList();
+        } else {
+          this.$message.error("修改失败，手机号重复!");
+        }
+      });
+      this.$refs.upload.submit();
+    },
     /** 提交按钮 */
     submitForm: function () {
       this.$refs["form"].validate(valid => {
-        console.log(this.form,"ccccccccccc")
+        console.log(this.form, "ccccccccccc")
         if (valid) {
           if (this.form.userId != undefined) {
             this.$http.put("sysUser/updateUser", this.form).then(response => {
               // console.log("cccc",response)
-              if (response.data.data==1){
+              if (response.data.data == 1) {
                 this.$message.success("修改成功");
                 this.open = false;
                 this.getList();
-              }else {
+              } else {
                 this.$message.error("修改失败，手机号重复!");
               }
             });
           } else {
             this.$http.put("sysUser/addUser", this.form).then(response => {
               // console.log("cccc",response)
-              if (response.data.data==1){
+              if (response.data.data == 1) {
                 this.$message.success("新增成功");
                 this.open = false;
                 this.getList();
-              }else {
+              } else {
                 this.$message.error("新增失败，手机号重复!");
               }
             });
@@ -668,48 +784,17 @@ export default {
         // });
       })
     },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      // const userIds = row.userId || this.ids;
-      // this.$modal.confirm('是否确认删除用户编号为"' + userIds + '"的数据项？').then(function() {
-      //   return delUser(userIds);
-      // }).then(() => {
-      //   this.getList();
-      //   this.$modal.msgSuccess("删除成功");
-      // }).catch(() => {});
-
-      // /** 导出按钮操作 */
-      // handleExport() {
-      //   this.download('system/user/export', {
-      //     ...this.queryParams
-      //   }, `user_${new Date().getTime()}.xlsx`)
-      // },
-      // /** 导入按钮操作 */
-      // handleImport() {
-      //   this.upload.title = "用户导入";
-      //   this.upload.open = true;
-      // },
-      // /** 下载模板操作 */
-      // importTemplate() {
-      //   this.download('system/user/importTemplate', {
-      //   }, `user_template_${new Date().getTime()}.xlsx`)
-      // },
-      // 文件上传中处理
-      // handleFileUploadProgress(event, file, fileList) {
-      //   this.upload.isUploading = true;
-      // },
-      // 文件上传成功处理
-      // handleFileSuccess(response, file, fileList) {
-      //   this.upload.open = false;
-      //   this.upload.isUploading = false;
-      //   this.$refs.upload.clearFiles();
-      //   this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
-      //   this.getList();
-      // },
-      // 提交上传文件
-      // submitFileForm() {
-      //   this.$refs.upload.submit();
-      // }
+    /** 导出按钮操作 */
+    async handleExport() {
+      const {data: res} = await this.$http.post(`excel/userList`, this.ids)
+      if (res.status == 200) {
+        //成功导出
+        this.$message.success(res.msg + ",路径为：" + res.path)
+        this.$refs.list.clearSelection(); // el-table上绑定ref="list"
+      } else if (res.status == 201) {
+        //导出失败
+        this.$message.error(res.msg)
+      }
     },
     normalizer(node) {
       if (node.children && !node.children.length) {

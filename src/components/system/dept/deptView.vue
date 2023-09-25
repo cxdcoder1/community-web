@@ -15,10 +15,10 @@
         <el-form-item label="状态" prop="status">
           <el-select v-model="deptInfo.status" placeholder="部门状态" clearable>
             <el-option
-                v-for="dict in dictList"
-                :key="dict.value"
-                :label="dict.label"
-                :value="dict.value"
+                v-for="dict in statusPotion"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
             />
           </el-select>
         </el-form-item>
@@ -152,6 +152,8 @@ export default {
 
   data() {
     return {
+      statusPotion:[],
+
       //查询条件
       deptInfoTree: {
         deptName: '',
@@ -207,19 +209,21 @@ export default {
         status: ''
       },
       //部门状态
-      dictList: [
-        {label: '正常', value: '0'},
-        {label: '停用', value: '1'}
-      ],
+
     }
   },
   created() {
     this.search();
+    this.getStatus();
     //树形结构的table默认展开第一级
     // 放入默认展开行
     this.expands.push(this.deptList[0].deptId)
   },
   methods: {
+    async getStatus() {
+      const {data: res} = await this.$http.get('sysRole/statusOption')
+      this.statusPotion=res.data;
+    },
     //新增修改表单取消
     cancel() {
       this.open = false;
@@ -336,6 +340,7 @@ export default {
       };
       this.search();
     },
+    //下拉状态
     //删除方法
     async deleteDept(dept) {
       console.log(dept);

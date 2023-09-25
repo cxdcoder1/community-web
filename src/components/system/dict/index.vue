@@ -245,10 +245,6 @@ export default {
   data() {
     return {
       deriveList: [],
-      dictList: [
-        {label: '正常', value: '0'},
-        {label: '禁用', value: '1'}
-      ],
       statusPotion:[],
       // 遮罩层
       loading: true,
@@ -306,7 +302,7 @@ export default {
   },
   methods: {
     async getStatus() {
-      const {data: res} = await this.$http.get('sysRole/statusOption?type='+'sys_normal_disable')
+      const {data: res} = await this.$http.get('sysRole/statusOption')
       this.statusPotion=res.data;
     },
     /**

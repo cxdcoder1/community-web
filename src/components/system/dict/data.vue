@@ -302,7 +302,7 @@ export default {
       });
     },
     async getStatus() {
-      const {data: res} = await this.$http.get('sysRole/statusOption?type='+'sys_normal_disable')
+      const {data: res} = await this.$http.get('sysRole/statusOption')
       this.statusPotion=res.data;
     },
     /** 查询字典数据列表 */
