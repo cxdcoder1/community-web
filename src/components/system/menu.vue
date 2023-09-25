@@ -114,7 +114,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="菜单名称" prop="menuName">
-              <el-input v-model="form.menuName" placeholder="请输入菜单名称"/>
+              <el-input v-model.trim="form.menuName" placeholder="请输入菜单名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -145,7 +145,7 @@
                             </el-tooltip>
                             路由地址
                           </span>
-              <el-input v-model="form.path" placeholder="请输入路由地址"/>
+              <el-input v-model.trim="form.path" placeholder="请输入路由地址"/>
             </el-form-item>
           </el-col>
           <el-col :span="12" v-if="form.menuType == 'C'">
@@ -156,7 +156,7 @@
                 </el-tooltip>
                 组件路径
               </span>
-              <el-input v-model="form.component" placeholder="请输入组件路径"/>
+              <el-input v-model.trim="form.component" placeholder="请输入组件路径"/>
             </el-form-item>
           </el-col>
           <el-col :span="12" v-if="form.menuType !== 'M'">
@@ -231,16 +231,12 @@ import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 
 export default {
-
   name: 'e-icon',
   components: {Treeselect},
-
   data() {
     return {
-
       updateSysMenuShow: false,
       treeData: [], // 初始化为一个空数组
-
       form: {
         menuType: 'M',
         status: '',
@@ -278,18 +274,15 @@ export default {
         ]
       },
       setRightDialogVisible: false,
-
       treeProps: {}, // 树组件属性配置
       defKeys: [], // 默认选中项
       dialogVisible: false, // 是否显示新增用户对话框
       icons: "",
-
       from1: {},
       sysMenu: {
         menuName: '',
         status: ''
       },
-
       showSearch: true,
       dictList: [
         {label: '正常', value: '0'},
@@ -298,10 +291,11 @@ export default {
       sysMenuList: [], // 列表数据
     };
   },
+    //钩子函数
   created() {
     this.getSysMenu();
   },
-
+    //方法区
   methods: {
     async saveMenu() {
       if (!this.form.menuName) {
@@ -319,7 +313,6 @@ export default {
         this.$message.error('路由不能为空');
         return;
       }
-
       let res;
       if (this.form.menuId == null || this.form.menuId == 0) {
         res = await this.$http.post('sysMenu/addMenu', this.form);
@@ -331,7 +324,6 @@ export default {
         this.updateSysMenuShow = false
         this.$message.success("保存成功")
         location.reload()
-
       } else {
         this.updateSysMenuShow = true
         this.$message.error(res.data.msg)
@@ -360,7 +352,6 @@ export default {
       this.form.visible = r.visible
       this.form.icon = r.icon
       // console.log(this.form.status)
-
     },
     Add(r) {
       this.title = "新增菜单";
@@ -369,10 +360,11 @@ export default {
         parentId: '0',
         visible:'0',
         status:'0',
-        isFrame:'0'
+        isFrame:0,
+        orderNum: 1
       };
-        if(r.parentId!=null){
-          this.form.parentId=r.parentId;
+        if(r.menuId!=null){
+          this.form.parentId=r.menuId;
         }
       this.updateSysMenuShow = true;
       this.reset()
@@ -460,10 +452,8 @@ export default {
         setTimeout(()=>{
           location.reload()
         },500)
-
       })
     },
-
   }
 };
 </script>
