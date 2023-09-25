@@ -29,7 +29,7 @@ const routes = [
             {path: '/dept', component: dept},
             {path: '/data', component: data},
             {path: '/data', component: data},
-             { path: '/post', component: post},
+            {path: '/post', component: post},
             {path: '/user', component: user},
             // 路由配置
             {

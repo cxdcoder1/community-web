@@ -390,7 +390,6 @@ export default {
         children: "children",
         label: "label"
       },
-
       // 查询参数
       queryParams: {
         current: 1,
@@ -494,9 +493,8 @@ export default {
     },
     async getStatus() {
       console.log('sadas',this.dicts)
-      const {data: res} = await this.$http.get('sysUser//statusOption?type='+'sys_normal_disable')
+      const {data: res} = await this.$http.get('sysUser//statusOption')
       this.statusPotion=res.data;
-
       console.log( 'ads',res.data)
       // console.log(this.deptOptions)
       // console.log(res.data.records)
@@ -570,7 +568,6 @@ export default {
         postIds: [],
         roleIds: []
       };
-      this.resetForm("form");
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -582,7 +579,7 @@ export default {
       this.dateRange = [];
       this.$refs["queryForm"].resetFields();
       this.queryParams.deptId = undefined;
-      // this.$refs.tree.setCurrentKey(null);
+      this.$refs.tree.setCurrentKey(null);
       this.handleQuery();
     },
     // 多选框选中数据
@@ -606,6 +603,9 @@ export default {
     handleUpdate(row) {
       this.reset();
       this.form = row;
+      this.form.deptId=row.sysDeptList.deptId;
+      this.form.postIds=row.userAndPostDto.sysPost.postId;
+      this.form.roleIds=row.userAndRoleDto.sysRole.roleId;
       // this.form.roleIds = row.userAndRoleDto.sysRole.roleId
       // this.form.postIds = row.userAndPostDto.sysPost.postIds
       console.log(this.form,"test修改")

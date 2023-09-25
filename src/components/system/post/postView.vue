@@ -261,7 +261,7 @@ export default {
               return this.$message.info('已经取消删除')
             }
             await this.$http.delete('sysPost/delPost/'+row.postId).then(res => {
-              console.log(res)
+              console.log(res,"zzzzzzzzzzzzzzzzzzzz")
               if (res.data.status == 200) {
                 this.$message.success(res.data.msg)
                 this.getPostList();
