@@ -251,7 +251,7 @@ export default {
       try {
         this.deptInfo.deptName = this.deptInfo.deptName.trim();
         const {data: res} = await this.$http.post("sysDept/getDeptList", this.deptInfo);
-        const {data: res2} = await this.$http.post("sysDept/getDeptList",this.deptInfoTree);
+        const {data: res2} = await this.$http.post("sysDept/treeDeptList",this.deptInfoTree);
         // console.log("cxdccccc",res.menuList)
         this.deptList = res.menuList;
 
