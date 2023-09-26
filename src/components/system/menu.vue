@@ -434,6 +434,9 @@ export default {
         this.icons = res.icon;
         this.treeData = res.data;
         this.treeList[0].children = res.data;
+        // const res1 = this.$http.get(`sysRole/getRoleMenuTreeselect` + roleId);
+        // this.treeList[0].children = res1.data.data;
+
       } catch (error) {
         console.error(error);
         this.$message.error("获取数据失败");

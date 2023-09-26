@@ -10,8 +10,9 @@ import user from "@/components/system/user/UserIndex.vue"
 import role from "@/components/system/role/index.vue";
 import dict from "@/components/system/dict/index.vue";
 import data from "@/components/system/dict/data.vue";
-import dept from "@/components/system/dept/deptView.vue"
-import post from "@/components/system/post/postView.vue"
+import dept from "@/components/system/dept/deptView.vue";
+import post from "@/components/system/post/postView.vue";
+import zy_room from "@/components/system/community/zy_room";
 
 Vue.use(VueRouter)
 
@@ -31,13 +32,13 @@ const routes = [
             {path: '/data', component: data},
             {path: '/post', component: post},
             {path: '/user', component: user},
+            {path: '/room', component: zy_room},
             // 路由配置
             {
                 path: '/data/:dictId',
                 name: 'data',
                 component: data
-            }
-
+            },
         ]
     },
 ]

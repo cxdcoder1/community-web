@@ -272,7 +272,7 @@ export default {
 
     //新增修改表单提交
     async submitForm() {
-      if (this.form.deptId <= this.form.parentId) {
+      if (this.form.deptId < this.form.parentId) {
         return this.$message.error("大部门不能移到小部门");
       }
       if (this.form.deptName == null || this.form.deptName.length > 10) {

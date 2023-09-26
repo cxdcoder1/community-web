@@ -321,6 +321,7 @@
           :before-upload="beforeAvatarUpload"
           :http-request="uploadHttpRequest"
           :auto-upload="true"
+
           name="file"
           drag
           multiple
@@ -357,6 +358,24 @@ export default {
   name: "User",
   components: {Treeselect},
   dicts: 'sys_normal_disable',
+  // watch: {
+  //   "form.roleIds"(value) {
+  //     if (!isNaN(value)) {
+  //       let data = this.roleOptions.find((item) => item.roleId == value);
+  //       if (data == undefined) {
+  //         this.form.roleIds = null;
+  //       }
+  //     }
+  //   },
+  //   "form.postIds"(value) {
+  //     if (!isNaN(value)) {
+  //       let data = this.postOptions.find((item) => item.postId == value);
+  //       if (data == undefined) {
+  //         this.form.postIds = null;
+  //       }
+  //     }
+  //   },
+  // },
   data() {
     return {
 
@@ -482,12 +501,6 @@ export default {
       format:[],
 
     };
-  },
-  watch: {
-    // 根据名称筛选部门树
-    deptName(val) {
-      this.$refs.tree.filter(val);
-    }
   },
   created() {
     this.getList();
@@ -653,7 +666,6 @@ export default {
     },
     // 用户状态修改
     handleStatusChange(row) {
-
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm('确认要' + text + row.userName + '角色吗?', "警告", {
         confirmButtonText: "确定",
@@ -662,10 +674,11 @@ export default {
       }).then(() => {
         return this.$http.put('sysUser/updateUserStatus?status=' + row.status + '&id=' + row.userId);
       }).catch(() => {
-         row.status = row.status === "0" ? "1" : "0";
+        row.status = row.status === "0" ? "1" : "0";
       });
       // const {data:res} =  this.$http.put('sysRole/upDataStatus?status='+row.status+'&roleId='+row.roleId);
       // console.log(res)
+
     },
     cancel() {
       this.open = false;
@@ -785,9 +798,6 @@ export default {
     },
     // 提交上传文件
     submitFileForm() {
-
-
-
       this.$http.put("excel/into", this).then(response => {
         // console.log("cccc",response)
         if (response.data.data == 1) {
