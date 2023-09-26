@@ -209,8 +209,11 @@
                 菜单状态
               </span>
               <el-radio-group v-model="form.status">
-                <el-radio :label="'0'">正常</el-radio>
-                <el-radio :label="'1'">停用</el-radio>
+                <el-radio    v-for="dict in statusPotion"
+                             :key="dict.dictValue"
+                             :label="dict.dictLabel"
+                             :value="dict.dictValue">
+                  </el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -243,7 +246,7 @@ export default {
       statusPotion:[],
       form: {
         menuType: 'M',
-        status: '',
+        status: '0',
         menuName: '',
         orderNum: '',
         isFrame: '',
@@ -305,10 +308,12 @@ export default {
 
   methods: {
     async getStatus() {
-      const {data: res} = await this.$http.get('sysRole/statusOption?type='+'sys_normal_disable')
+      const {data: res} = await this.$http.get('sysRole/statusOption')
       this.statusPotion=res.data;
     },
     async saveMenu() {
+      this.form.status= this.form.status == "正常"?'0':'1';
+
       if (!this.form.menuName) {
         // 部门名称为空，提示用户输入值
         this.$message.error('菜单名称不能为空');
@@ -324,6 +329,7 @@ export default {
         this.$message.error('路由不能为空');
         return;
       }
+
 
       let res;
       if (this.form.menuId == null || this.form.menuId == 0) {
@@ -343,6 +349,7 @@ export default {
       }
     },
     update(r) {
+
       this.form.menuType = 'M';
       this.form.menuId = r.menuId
       this.form.parentId = r.parentId

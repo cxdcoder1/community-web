@@ -116,7 +116,6 @@
           <el-tag :type="scope.row.status === '0' ? '' : 'danger'">
             {{ scope.row.status === '0' ? '正常' : '禁用' }}
           </el-tag>
-
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark"/>
@@ -187,7 +186,6 @@
     <!--      </el-table-column>-->
     <!--    </el-table>-->
 
-
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="handleClose">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
@@ -209,10 +207,15 @@
             <el-input v-model.trim="form.dictType" placeholder="请输入字典类型"/>
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-radio-group v-model="form.status">
-              <el-radio label="0" value="0">正常</el-radio>
-              <el-radio label="1" value="1">停用</el-radio>
-            </el-radio-group>
+              <el-radio-group v-model="form.status">
+                <el-radio
+                    v-for="dict in statusPotion"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                >{{ dict.dictLabel}}
+                </el-radio>
+              </el-radio-group>
           </el-form-item>
           <el-form-item label="备注">
             <el-input v-model.trim="form.remark" type="textarea" placeholder="请输入内容"></el-input>
@@ -282,7 +285,7 @@ export default {
         dictId: undefined,
         dictName: undefined,
         dictType: "",
-        status: "0",
+        status: undefined,
         remark: undefined
       },
       // 表单校验
@@ -372,7 +375,8 @@ export default {
     handleQuery() {
       this.queryParams.pageNum = 1;
 
-
+      this.queryParams.createTime = this.dateRange[0]
+      this.queryParams.updateTime = this.dateRange[1]
       this.getList();
 
     },
@@ -393,14 +397,10 @@ export default {
 
     /** 修改按钮操作 */
     handleUpdate(r) {
-      this.form.dictId = r.dictId;
-      this.form.dictName = r.dictName;
-      this.form.dictType = r.dictType
-      this.form.status = r.status;
-      this.form.remark = r.remark;
+      this.form = structuredClone(r)
       this.open = true;
       this.type=r.dictType;
-      this.title = "添加字典类型";
+      this.title = "修改字典类型";
     },
     /** 删除按钮操作 */
     async handleDelete() {
@@ -462,6 +462,7 @@ export default {
       //   this.$store.dispatch('dict/cleanDict');
       // });
     }, async saveRole() {
+      this.form.status= this.form.status == "正常"?'0':'1';
       if(this.form.dictType == 0 || this.form.dictName == 0 || this.form.dictType == null || this.form.dictName == null ){
         this.$message.error("请输入参数")
         return
@@ -488,9 +489,7 @@ export default {
         } else {
           this.$message.error(res.data.msg);
         }
-
       }
-
     },
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {

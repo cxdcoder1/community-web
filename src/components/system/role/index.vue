@@ -240,12 +240,15 @@ export default {
       //树形控件区域
       checked: false, //checkbox的值
       menuCheckStrictly1: true, //父子联动(默认开启)
+
       //tree是否展开
       expandOrFold: false,
+
       // 菜单列表
       menuOptions: [],
       menuExpand: false,
       menuNodeAll: false,
+
       //选取的菜单下拉框
       selectMenuOptions: [],
       menuCheckStrictly: false,
@@ -264,7 +267,7 @@ export default {
         deptCheckStrictly: true,
         remark: undefined
       },
-//角色列表区域
+      //角色列表区域
       delId: "",
       selection: [],
       // currentPage: 1,
@@ -422,7 +425,6 @@ export default {
             type: "warning"
           }).then(() => {
             return this.$http.put('sysRole/upDataStatus?status=' + row.status + '&roleId=' + row.roleId);
-
           }).catch(() => {
             row.status = row.status === "0" ? "1" : "0";
           });

@@ -125,8 +125,13 @@
             <el-col :span="12">
               <el-form-item label="部门状态">
                 <el-radio-group v-model="form.status">
-                  <el-radio label="0" value="0">正常</el-radio>
-                  <el-radio label="1" value="1">停用</el-radio>
+                  <el-radio
+                      v-for="dict in statusPotion"
+                      :key="dict.dictValue"
+                      :label="dict.dictLabel"
+                      :value="dict.dictValue"
+                  >
+                  </el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>

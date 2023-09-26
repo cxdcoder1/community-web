@@ -256,10 +256,11 @@
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
                 <el-radio
-                    v-for="dict in dictList"
-                    :key="dict.value"
-                    :label="dict.value"
-                >{{ dict.label }}
+                    v-for="dict in statusPotion"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                >{{ dict.dictLabel}}
                 </el-radio>
               </el-radio-group>
             </el-form-item>
@@ -320,7 +321,6 @@
           :before-upload="beforeAvatarUpload"
           :http-request="uploadHttpRequest"
           :auto-upload="true"
-
           name="file"
           drag
           multiple
@@ -367,10 +367,10 @@ export default {
         {label: '女', value: '1'},
         // {label: '', value: '1'}
       ],
-      dictList:[
-        {label: '启用', value: '0'},
-        {label: '禁用', value: '1'},
-      ],
+      // dictList:[
+      //   {label: '启用', value: '0'},
+      //   {label: '禁用', value: '1'},
+      // ],
       PostList: [
         {label: '男', value: '0'},
         {label: '女', value: '1'},
@@ -653,6 +653,7 @@ export default {
     },
     // 用户状态修改
     handleStatusChange(row) {
+
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm('确认要' + text + row.userName + '角色吗?', "警告", {
         confirmButtonText: "确定",
@@ -661,11 +662,10 @@ export default {
       }).then(() => {
         return this.$http.put('sysUser/updateUserStatus?status=' + row.status + '&id=' + row.userId);
       }).catch(() => {
-        row.status = row.status === "0" ? "1" : "0";
+         row.status = row.status === "0" ? "1" : "0";
       });
       // const {data:res} =  this.$http.put('sysRole/upDataStatus?status='+row.status+'&roleId='+row.roleId);
       // console.log(res)
-
     },
     cancel() {
       this.open = false;
@@ -723,7 +723,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      this.form = row;
+      this.form = structuredClone(row)
       console.log("qqqqqqqq", row)
       // this.form.deptId = row.sysDeptList.deptId;
       // this.form.postIds = row.userAndPostDto.sysPost.postId;
@@ -785,6 +785,9 @@ export default {
     },
     // 提交上传文件
     submitFileForm() {
+
+
+
       this.$http.put("excel/into", this).then(response => {
         // console.log("cccc",response)
         if (response.data.data == 1) {
@@ -799,6 +802,7 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function () {
+      this.form.status= this.form.status == "正常"?'0':'1';
       this.$refs["form"].validate(valid => {
         console.log(this.form, "ccccccccccc")
         if (valid) {

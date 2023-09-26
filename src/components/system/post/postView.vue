@@ -20,7 +20,7 @@
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="岗位状态" clearable>
           <el-option
-              v-for="dict in this.dictList"
+              v-for="dict in statusPotion"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -126,7 +126,7 @@
           </el-form-item>
           <el-form-item label="岗位状态" prop="status">
             <el-radio-group v-model="form.status">
-              <el-radio v-for="dict in this.dictList" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel }}</el-radio>
+              <el-radio v-for="dict in this.statusPotion" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel}}</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="备注" prop="remark">
@@ -176,6 +176,8 @@ export default {
             dictList: [],
             // 显示搜索条件
             showSearch: true,
+
+            statusPotion: [],
             // 总条数
             total: 0,
             // 岗位表格数据
@@ -199,6 +201,7 @@ export default {
       },
       created() {
         this.getPostList();
+        this.getStatus();
       },
       methods:{
         // 多选框选中数据
@@ -249,6 +252,16 @@ export default {
               this.$message.error("请输入正确的信息")
             }
           })
+        },
+        async getStatus() {
+          console.log('sadas', this.dicts)
+          const {data: res} = await this.$http.get('sysUser//statusOption')
+          this.statusPotion = res.data;
+          console.log('ads', res.data)
+          // console.log(this.deptOptions)
+          // console.log(res.data.records)
+          // console.log(this.deptOptions);
+          // console.log(res.data.records.sysDept.deptName);
         },
         //删除
           async delPost(row) {

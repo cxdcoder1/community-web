@@ -41,7 +41,7 @@
               <li class="list-group-item">
                 <i class="el-icon-office-building"></i>所属部门
                 <div class="pull-right" v-for="dept in user.sysDept">
-                  {{ dept.deptName }} /
+                  {{ dept.deptName }}
                 </div>
               </li>
               <li class="list-group-item">
