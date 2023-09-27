@@ -618,8 +618,7 @@ export default {
       console.log("from",formData)
     },
     async getStatus() {
-      console.log('sadas', this.dicts)
-      const {data: res} = await this.$http.get('sysUser//statusOption')
+      const {data: res} = await this.$http.get('sysUser/statusOption')
       this.statusPotion = res.data;
       console.log('ads', res.data)
       // console.log(this.deptOptions)

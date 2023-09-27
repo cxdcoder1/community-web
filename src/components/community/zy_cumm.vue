@@ -61,12 +61,18 @@
 
     <el-table :data="communityList" @selection-change="selectionChangeHandle" ref="list">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="用户编号" align="center" key="userId" prop="communityId"/>
+      <el-table-column label="小区id" align="center" key="userId" prop="communityId"/>
       <el-table-column label="小区名称" align="center" key="userName" prop="communityName"/>
       <el-table-column label="小区编码" align="center" key="nickName" prop="communityCode"/>
-      <el-table-column label="省" align="center" key="nickName" prop="communityProvenceCode"/>
-      <el-table-column label="市" align="center" key="nickName" prop="communityCityCode"/>
-      <el-table-column label=" 区/县" align="center" key="nickName" prop="communityTownCode"/>
+      <el-table-column label="省" align="center" key="communityProvenceCode">
+        <template slot-scope="scope">{{ addressText(scope.row.communityProvenceCode) }}</template>
+      </el-table-column>
+      <el-table-column label="市" align="center" key="communityCityCode">
+        <template slot-scope="scope">{{ addressText(scope.row.communityCityCode) }}</template>
+      </el-table-column>
+      <el-table-column label=" 区/县" align="center" key="communityTownCode">
+        <template slot-scope="scope">{{ addressText(scope.row.communityTownCode) }}</template>
+      </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="160">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime|dateFormat }}</span>
@@ -83,12 +89,12 @@
           >修改
           </el-button>
           <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="deleteRole(scope.row)"
-        >删除
-        </el-button>
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="deleteRole(scope.row)"
+          >删除
+          </el-button>
           <el-button
               size="mini"
               type="text"
@@ -113,17 +119,17 @@
     <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="cancel">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
-          <el-form-item label="id" prop="dictName" v-if="form.communityId != undefined" :style="{ opacity: '0.5' }"
+          <el-form-item label="id" prop="communityId" v-if="form.communityId != '0'" :style="{ opacity: '0.5' }"
                         :class="{ 'readonly-input': true }">
             <el-input v-model.trim="form.communityId" placeholder="请输入id" readonly/>
           </el-form-item>
-          <el-form-item label="小区名称" prop="dictName">
+          <el-form-item label="小区名称" prop="communityName">
             <el-input v-model.trim="form.communityName" placeholder="请输入名称"/>
           </el-form-item>
-          <el-form-item label="详细地址" prop="dictName">
+          <el-form-item label="详细地址" prop="communityDetailedAddress">
             <el-input v-model.trim="form.communityDetailedAddress" placeholder="请输入名称"/>
           </el-form-item>
-          <el-form-item label="所属区域" prop="dictName">
+          <el-form-item label="所属区域" prop="selectedOptions">
             <el-cascader
                 size="large"
                 :options="options"
@@ -146,7 +152,7 @@
         title="提示"
         :visible.sync="dialogVisible"
         append-to-body :before-close="handleClose"
-        >
+    >
       <el-table
           :data="deptList"
           style="width: 100%;margin-bottom: 20px;"
@@ -188,11 +194,11 @@
                 v-if="scope.row.deptId === form2.deptId"
                 :style="{ color: 'red' }">已选择</el-button>
           </template>
-<!--          <template slot-scope="scope">-->
-<!--            <button @click="updReal(scope.row)">-->
-<!--                {{ scope.row.deptId}}-->
-<!--            </button>-->
-<!--          </template>-->
+          <!--          <template slot-scope="scope">-->
+          <!--            <button @click="updReal(scope.row)">-->
+          <!--                {{ scope.row.deptId}}-->
+          <!--            </button>-->
+          <!--          </template>-->
         </el-table-column>
       </el-table>
       <span slot="footer" class="dialog-footer">
@@ -205,7 +211,7 @@
 
 </template>
 <script>
-import { regionData } from 'element-china-area-data'
+import { regionData,codeToText } from 'element-china-area-data'
 
 export default {
   name: "zy_cumm",
@@ -284,7 +290,9 @@ export default {
     this.getStatus();
   },
   methods: {
-
+    addressText(code){
+      return codeToText[code]
+    },
     //也可以这样写
     handleChange (value) {
       console.log(value)
@@ -316,13 +324,13 @@ export default {
         communityCode: ""
       }
     },
-    // handleClose(done) {
-    //   this.$confirm('确认关闭？')
-    //       .then(_ => {
-    //         done();
-    //       })
-    //       .catch(_ => {});
-    // },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+    },
     //删除角色
     async deleteRole(r) {
       const confirmResult = await this.$confirm('确认要删除' + '"' + r.communityName + '"角色吗?', "警告", {
@@ -415,6 +423,7 @@ export default {
     },
     handleAdd() {
       this.open = true;
+      this.reset()
       this.title = "添加";
     },
     replacement(r) {
@@ -439,7 +448,13 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(r) {
       this.reset()
-      this.form = structuredClone(r)
+      this.form.communityId = r.communityId
+      this.form.communityName = r.communityName
+      this.form.communityDetailedAddress = r.communityDetailedAddress
+      this.form.communityId = r.communityId
+      this.form.communityProvenceCode=this.selectedOptions[0];
+      this.form.communityCityCode=this.selectedOptions[1];
+      this.form.communityTownCode=this.selectedOptions[2];
       this.open = true;
       // this.type=r.dictType;
       this.title = "修改";
@@ -455,10 +470,9 @@ export default {
         communityCityCode:"",
         communityTownCode:""
       };
-
     },
     async saveRole() {
-      console.log(this.form.communityId)
+
       // this.form.status = this.form.status == "正常" ? '0' : '1';
       if (this.form.communityName == 0 || this.form.communityDetailedAddress == 0 ||
           this.form.communityDetailedAddress == null || this.form.communityName == null) {
@@ -471,7 +485,6 @@ export default {
         this.form.communityTownCode=this.selectedOptions[2];
 
         let res = await this.$http.put("zyCommunity/updCommunity",this.form);
-        console.log(res)
         if (res.data.status === 200) {
           this.open = false;
           this.$message.success("修改成功")
@@ -480,36 +493,34 @@ export default {
           this.$message.error(res.data.msg);
         }
       }
-      if (this.form.communityId == 0) {
+      if (this.form.communityId == 0 ) {
         this.form.communityId=Date.now()
         this.form.communityCode='COMMUNITY_'+Date.now()
+
         this.form.communityProvenceCode=this.selectedOptions[0];
         this.form.communityCityCode=this.selectedOptions[1];
         this.form.communityTownCode=this.selectedOptions[2];
 
-        console.log(this.form.communityTownCode,this.form.communityCityCode,this.form.communityProvenceCode)
         let res = await this.$http.post("zyCommunity/insCommunity",this.form);
-        console.log(res)
         if (res.data.status === 200) {
           this.open = false;
           this.$message.success("新增成功")
           this.open = false;
           this.getCommunityList();
-        } else {
           this.reset()
+        } else {
+          this.form.communityId = 0
           this.$message.error(res.data.msg);
-
         }
       }
     },
-
   }
 }
 </script>
 
 <style>
-.highlight-button {
-  background-color: yellow;
-  /* 其他样式定义 */
+.el-cascader-menu {
+  max-height: 200px; /* 设置下拉菜单的最大高度 */
+  overflow-y: auto; /* 当内容超出最大高度时显示滚动条 */
 }
 </style>
