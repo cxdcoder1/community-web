@@ -10,11 +10,11 @@ import user from "@/components/system/user/UserIndex.vue"
 import role from "@/components/system/role/index.vue";
 import dict from "@/components/system/dict/index.vue";
 import data from "@/components/system/dict/data.vue";
-import zy_room from "@/components/system/community/zy_room";
-import community from "../components/system/community/zy_cumm";
+import community from "../components/community/zy_cumm.vue";
 import dept from "@/components/system/dept/deptView.vue"
 import post from "@/components/system/post/postView.vue"
-import building from "@/components/system/community/zy_building.vue"
+import building from "@/components/community/zy_building.vue"
+import unit from "@/components/community/UnitView.vue";
 
 Vue.use(VueRouter)
 
@@ -31,12 +31,11 @@ const routes = [
             {path: '/dict', component: dict},
             {path: '/dept', component: dept},
             {path: '/data', component: data},
-            {path: '/data', component: data},
             {path: '/post', component: post},
             {path: '/user', component: user},
             {path: '/building', component: building},
-            {path: '/room', component: zy_room},
             {path: '/community', component: community},
+            {path: '/unit',component: unit},
             // 路由配置
             {
                 path: '/data/:dictId',
