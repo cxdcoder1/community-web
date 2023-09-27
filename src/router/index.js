@@ -15,6 +15,9 @@ import community from "../components/system/community/zy_cumm";
 import dept from "@/components/system/dept/deptView.vue"
 import post from "@/components/system/post/postView.vue"
 import building from "@/components/system/community/zy_building.vue"
+import dept from "@/components/system/dept/deptView.vue"
+import post from "@/components/system/post/postView.vue"
+import building from "@/components/system/community/zy_building.vue"
 
 Vue.use(VueRouter)
 
@@ -37,6 +40,7 @@ const routes = [
             {path: '/building', component: building},
             {path: '/room', component: zy_room},
             {path: '/community', component: community},
+            {path: '/building', component: building},
             // 路由配置
             {
                 path: '/data/:dictId',
