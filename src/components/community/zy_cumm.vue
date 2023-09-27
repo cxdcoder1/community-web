@@ -316,13 +316,13 @@ export default {
         communityCode: ""
       }
     },
-    handleClose(done) {
-      this.$confirm('确认关闭？')
-          .then(_ => {
-            done();
-          })
-          .catch(_ => {});
-    },
+    // handleClose(done) {
+    //   this.$confirm('确认关闭？')
+    //       .then(_ => {
+    //         done();
+    //       })
+    //       .catch(_ => {});
+    // },
     //删除角色
     async deleteRole(r) {
       const confirmResult = await this.$confirm('确认要删除' + '"' + r.communityName + '"角色吗?', "警告", {
