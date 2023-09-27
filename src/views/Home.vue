@@ -29,7 +29,6 @@
 
         <el-menu
             :data="menuList"
-            :default-active="activePath"
             text-color="black"
             unique-opened
             router
@@ -54,14 +53,14 @@
                   <span>{{ item2.menuName }}</span>
                 </template>
                 <!-- 三级菜单 -->
-                <el-menu-item class="el-menu-item" @click="savePath('/'+item3.path)"
+                <el-menu-item class="el-menu-item"
                               :index="'/' + item3.path" v-for="item3 in item2.children"
                               :key="item3.menuId" :disabled="item3.status==1" style="padding-left: 90px">
                   <e-icon :icon-name="item3.icon"></e-icon>
                   <template slot="title">{{ item3.menuName }}</template>
                 </el-menu-item>
               </el-submenu>
-              <el-menu-item v-else class="el-menu-item" @click="savePath('/'+item2.path)"
+              <el-menu-item v-else class="el-menu-item"
                             :index="'/' + item2.path" :key="item2.menuId" :disabled="item2.status==1"
                             style="padding-left: 70px">
                 <!-- 图标 -->
