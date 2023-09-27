@@ -1,5 +1,10 @@
 <template>
   <div class="app-container">
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item >岗位管理</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="岗位编码" prop="postCode">
         <el-input
@@ -236,6 +241,7 @@ export default {
           this.$refs.form.validate(async valid => {
             if (valid){
               let res;
+
               if (this.form.postId == null) {
                 res = await this.$http.get("sysPost/insertPost", { params: this.form });
               } else {
@@ -263,7 +269,7 @@ export default {
           // console.log(this.deptOptions);
           // console.log(res.data.records.sysDept.deptName);
         },
-        //删除
+        //单个删除
           async delPost(row) {
             const confirmResult = await this.$confirm('确认要删除' + row.postName + '吗?', "警告", {
               confirmButtonText: "确定",
@@ -332,6 +338,9 @@ export default {
             this.ids=this.derivesA;
           }
         },
+        /**
+         * 批量删除
+         */
         async batchDelete() {
           if (this.ids.length==0){
             this.$message.error("请选择要删除的数据")
@@ -350,11 +359,17 @@ export default {
               this.$message.success(res.data.msg)
               this.getPostList();
               this.search();
+              // 清空选中的数据
+              this.ids = [];
             } else {
               this.$message.error(res.data.msg);
+              // 清空选中的数据
+              this.getPostList()
+              this.ids = [];
             }
           })
         },
+        //添加岗位方法
         Add(){
           this.open=true
           this.title = "添加岗位";
@@ -363,12 +378,13 @@ export default {
           }
           this.reset();
         },
+        //修改岗位方法
         update(row){
           this.open=true;
           this.title = "修改岗位";
           this.form = structuredClone(row)
         },
-        // 取消按钮
+        // 表单取消按钮
         cancel() {
           this.open = false;
           this.reset();

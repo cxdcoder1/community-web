@@ -403,9 +403,6 @@ export default {
           })
           this.roleList = res.data.records;
           this.total = res.data.total
-
-
-
           // console.log(this.roleList)
         },
         handleQuery() {

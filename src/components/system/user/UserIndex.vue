@@ -635,7 +635,6 @@ export default {
       });
 
       this.$http.post("sysDept/getDeptList", {}).then(response => {
-
         this.leftDeptTree = response.data.menuList;
       });
     },
@@ -661,7 +660,6 @@ export default {
     // 节点单击事件
     handleNodeClick(data) {
       this.queryParams.deptId = data.deptId;
-
       this.handleQuery();
     },
     // 用户状态修改
