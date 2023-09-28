@@ -42,14 +42,14 @@
 
         <el-form-item label="是否有电梯" prop="unitHaveElevator">
           <el-select v-model="searchUnit.unitHaveElevator" placeholder="是否有电梯" clearable style="width: 150px">
-            <el-option label="是" value="0"></el-option>
-            <el-option label="否" value="1"></el-option>
-            <!--            <el-option-->
-            <!--                v-for="dict in statusPotion"-->
-            <!--                :key="dict.dictValue"-->
-            <!--                :label="dict.dictLabel"-->
-            <!--                :value="dict.dictValue"-->
-            <!--            />-->
+            <!--            <el-option label="是" value="0"></el-option>-->
+            <!--            <el-option label="否" value="1"></el-option>-->
+            <el-option
+                v-for="dict in statusOptions"
+                :key="dict.dictSort"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+            />
           </el-select>
         </el-form-item>
 
@@ -108,6 +108,7 @@
         <el-table-column label="层数" align="center" key="unitLevel" prop="unitLevel"/>
         <el-table-column label="建筑面积" align="center" key="unitAcreage" prop="unitAcreage"/>
         <el-table-column label="是否有电梯" align="center" key="unitHaveElevator">
+
           <template slot-scope="scope">{{ scope.row.unitHaveElevator == '0' ? '是' : '否' }}</template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" key="createTime">
@@ -155,7 +156,7 @@
 
     <!--    修改、新增表单-->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body @close="formClose()">
-      <el-form ref="form" :model="unitForm" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="unitForm" :rules="rules" label-width="100px">
 
         <el-form-item label="楼栋" prop="buildingId">
           <el-select v-model="unitForm.buildingId" placeholder="楼栋" clearable>
@@ -181,21 +182,21 @@
         </el-form-item>
 
         <el-form-item label="建筑面积" prop="unitAcreage">
-          <el-input v-model.trim="unitForm.unitAcreage" placeholder="请输入建筑面积"/>
+          <el-input-number v-model.trim="unitForm.unitAcreage" controls-position="right" :min="0" />
         </el-form-item>
 
-        <el-form-item label="是否有电梯">
+        <el-form-item label="是否有电梯" prop="unitHaveElevator">
           <el-radio-group v-model="unitForm.unitHaveElevator">
-            <el-radio label="0" >是</el-radio>
-            <el-radio label="1" >否</el-radio>
+            <!--            <el-radio label="0" >是</el-radio>-->
+            <!--            <el-radio label="1" >否</el-radio>-->
 
-            <!--            <el-radio-->
-            <!--                v-for="dict in statusPotion"-->
-            <!--                :key="dict.dictValue"-->
-            <!--                :label="dict.dictLabel"-->
-            <!--                :value="dict.dictValue"-->
-            <!--            >-->
-            <!--            </el-radio>-->
+            <el-radio
+                v-for="dict in statusOptions"
+                :key="dict.dictSort"
+                :label="dict.dictValue"
+                :value="dict.dictLabel"
+            >{{ dict.dictLabel}}
+            </el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -215,7 +216,6 @@
 
 
 <script>
-
 
 
 export default {
@@ -250,7 +250,7 @@ export default {
       unitForm: {
         communityId: '',
         buildingId: '',
-        unitId:'',
+        unitId: '',
         unitName: '',
         unitCode: '',
         unitLevel: '',
@@ -259,24 +259,26 @@ export default {
         remark: ''
       },
       //多选框id集合
-      ids:[],
+      ids: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
       multiple: true,
+      //电梯状态集合
+      statusOptions: [],
       //表单验证
       rules: {
         buildingId: [
-          { required: true, message: "楼栋不能为空", trigger: "blur" }
+          {required: true, message: "楼栋不能为空", trigger: "blur"}
         ],
         unitName: [
-          { required: true, message: "单元名称不能为空", trigger: "blur" }
+          {required: true, message: "单元名称不能为空", trigger: "blur"}
         ],
         unitCode: [
-          { required: true, message: "单元编号不能为空", trigger: "blur" }
+          {required: true, message: "单元编号不能为空", trigger: "blur"}
         ],
         unitLevel: [
-          { required: true, message: "层数不能为空", trigger: "blur" }
+          {required: true, message: "层数不能为空", trigger: "blur"}
         ],
       },
     }
@@ -336,18 +338,18 @@ export default {
     },
     //小区点击事件
     communityOn(val) {
-      this.searchUnit.buildingId='';
+      this.searchUnit.buildingId = '';
       this.searchUnit.communityId = val.communityId
       this.getBuildList();
       this.getUnitList();
     },
-    submit(){
+    submit() {
       //验证通过执行提交
       this.$refs.form.validate(async valid => {
         if (valid) {
           // 在表单验证通过时执行的代码
           let res;
-          if (this.unitForm.unitId  == 0) {
+          if (this.unitForm.unitId == 0) {
             //新增
             this.unitForm.unitId = Date.now();
             res = await this.$http.post("zyUnit/addUnit", this.unitForm);
@@ -357,28 +359,40 @@ export default {
           }
           if (res.data.status == 200) {
             this.open = false;
-            this.$message.success("操作成功");
+            this.$message.success(res.data.msg);
             this.getUnitList();
           } else {
             this.$message.error(res.data.msg);
             this.unitForm.unitId = 0;
           }
-        }else {
+        } else {
           this.$message.error('请输入正确信息');
         }
       });
     },
     //新增按钮
-    addUnit(){
+    addUnit() {
       this.title = "新增单元"
       this.open = true;
-      this.unitForm.communityId = this.searchUnit.communityId
-      this.unitForm.unitId = 0;
+      this.unitForm= {
+        communityId: this.searchUnit.communityId,
+            buildingId: '',
+            unitId: 0,
+            unitName: '',
+            unitCode: '',
+            unitLevel: '',
+            unitAcreage: '',
+            unitHaveElevator: '',
+            remark: ''
+      },
+      this.resetForm("form")
     },
     //修改按钮
-    updateUnit(row){
+    updateUnit(row) {
+      console.log(row)
       this.title = "修改单元"
-      this.open=true;
+      this.open = true;
+      this.resetForm("form")
       this.unitForm.communityId = this.searchUnit.communityId
       this.unitForm.unitId = row.unitId
       //回显
@@ -390,21 +404,27 @@ export default {
       this.unitForm.unitHaveElevator = row.unitHaveElevator
       this.unitForm.remark = row.remark
     },
-    //关闭对话框事件
-    formClose(){
-      //清空表单
-      this.unitForm= {
-        communityId: '',
-            buildingId: '',
-            unitId:'',
-            unitName: '',
-            unitCode: '',
-            unitLevel: '',
-            unitAcreage: '',
-            unitHaveElevator: '',
-            remark: ''
+    //重置信息
+    resetForm(refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields();
       }
-      this.open=false;
+    },
+    //关闭对话框事件
+    formClose() {
+      //清空表单
+      this.unitForm = {
+        communityId: '',
+        buildingId: '',
+        unitId: '',
+        unitName: '',
+        unitCode: '',
+        unitLevel: '',
+        unitAcreage: '',
+        unitHaveElevator: '',
+        remark: ''
+      }
+      this.open = false;
     },
     //批量删除
     async delUnits() {
@@ -469,12 +489,19 @@ export default {
         this.$message.error(res.msg)
       }
     },
+    //字典搜索
+    async searchStatus() {
+      const {data: res} = await this.$http.get(`zyUnit/getElevatorStatus/${27}`)
+      this.statusOptions = res.statusList
+      console.log(this.statusOptions)
+    },
 
   },
   async created() {
     await this.getCommunityList();
     await this.getUnitList();
     await this.getBuildList();
+    await this.searchStatus();
   }
 }
 </script>
