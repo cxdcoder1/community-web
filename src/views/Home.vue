@@ -38,7 +38,7 @@
             active-text-color="#ffd04b"
             style="margin-left: -45px;">
           <!-- 一级菜单 -->
-          <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id"
+          <el-submenu  :index="item.menuId+''" v-for="item in menuList" :key="item.id"
                       :disabled="item.status==1">
             <template slot="title">
               <i :class="'icon iconfont icon-'+item.icon">&nbsp;&nbsp;</i>
@@ -46,8 +46,9 @@
             </template>
             <!-- 二级菜单 -->
             <template v-for="item2 in item.children">
-              <el-submenu v-if="item2.menuId == 108" :index="'/' + item2.path"
-                          :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 5px">
+              <el-submenu  v-if="item2.menuId == 108" :index="'/' + item2.path"
+                          :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 5px"
+                           @click="saveNavState('/' + item2.path, index)">
                 <template slot="title">
                   <e-icon :icon-name="item2.icon"></e-icon>
                   <span>{{ item2.menuName }}</span>
@@ -77,11 +78,6 @@
       </el-main>
     </el-container>
   </el-container>
-
-
-  <!--  <el-button type="info" @click="userInfo()"> 个人中心</el-button>-->
-  <!--  <el-button type="info" @click="logout()"> 退出</el-button>-->
-
 </template>
 
 <script>
@@ -129,6 +125,11 @@ export default {
     this.res = JSON.parse(window.sessionStorage.getItem("user"));
     this.getMenuList();
     // this.getUserInfo();
+    const selectedMenu = localStorage.getItem('selectedMenu');
+    if (selectedMenu) {
+      // 设置菜单的选中状态
+      this.$router.push(selectedMenu);
+    }
   },
   methods: {
     userInfo1: function () {
@@ -170,6 +171,11 @@ export default {
     //   window.sessionStorage.clear();
     //   this.$router.push("/login")
     // },
+    saveNavState(path, index) {
+      localStorage.setItem('selectedMenu', index);
+      alert(path)
+      // 执行其他逻辑
+    }
 
 
   },
