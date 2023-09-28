@@ -1,5 +1,11 @@
 <template>
   <div>
+    <!-- 面包屑导航 -->
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>社区管理</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br/>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="`showSearch`">
       <el-form-item label="小区名称" prop="roleName">
         <el-input
@@ -323,6 +329,7 @@ export default {
         communityName: "",
         communityCode: ""
       }
+      this.getCommunityList();
     },
     handleClose(done) {
       this.$confirm('确认关闭？')
@@ -452,11 +459,9 @@ export default {
       this.form.communityName = r.communityName
       this.form.communityDetailedAddress = r.communityDetailedAddress
       this.form.communityId = r.communityId
-      this.form.communityProvenceCode=this.selectedOptions[0];
-      this.form.communityCityCode=this.selectedOptions[1];
-      this.form.communityTownCode=this.selectedOptions[2];
+      this.selectedOptions =!r? []:[r.communityProvenceCode, r.communityCityCode, r.communityTownCode]
       this.open = true;
-      // this.type=r.dictType;
+// this.type=r.dictType;
       this.title = "修改";
     },
     // 表单重置

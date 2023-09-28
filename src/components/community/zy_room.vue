@@ -93,6 +93,18 @@
 
       <el-col :span="1.5">
         <el-button
+            type="danger"
+            plain
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="delRooms"
+        >删除
+        </el-button>
+      </el-col>
+
+      <el-col :span="1.5">
+        <el-button
             type="warning"
             plain
             icon="el-icon-download"
@@ -103,7 +115,7 @@
       </el-col>
     </el-row>
     <!--渲染表格-->
-    <el-table :data="roomList" @selection-change="selectionChangeHandle" ref="list">
+    <el-table :data="roomList" @selection-change="handleSelectionChange" ref="list">
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="序号" width="120" type="index">
         <template slot-scope=""></template>
@@ -196,11 +208,12 @@
     <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="handleClose">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
-          <el-form-item label="小区" prop="communityId">
+          <el-form-item label="小区" prop="communityId" v-if="!form.roomId">
             <el-select
                 v-model="form.communityId"
                 placeholder="小区"
                 clearable
+                @change="changeCommunity2"
                 style="width: 240px">
               <el-option
                   v-for="dict in communityPotion"
@@ -210,28 +223,29 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="楼栋" prop="buildingId">
+          <el-form-item label="楼栋" prop="buildingId" v-if="!form.roomId">
             <el-select
                 v-model="form.buildingId"
                 placeholder="楼栋"
                 clearable
+                @change="changeBuilding2"
                 style="width: 240px">
               <el-option
-                  v-for="dict in buildingPotionEdit"
+                  v-for="dict in buildingPotion2"
                   :key="dict.buildingId"
                   :label="dict.buildingName"
                   :value="dict.buildingId"
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="单元" prop="unitId">
+          <el-form-item label="单元" prop="unitId" v-if="!form.roomId">
             <el-select
                 v-model="form.unitId"
                 placeholder="单元"
                 clearable
                 style="width: 240px">
               <el-option
-                  v-for="dict in unitPotionEdit"
+                  v-for="dict in unitPotion2"
                   :key="dict.unitId"
                   :label="dict.unitName"
                   :value="dict.unitId"
@@ -311,19 +325,22 @@ export default {
       options: [],
       communityPotion: [],
       buildingPotion: [],
+      buildingPotion2: [],
       buildingPotionEdit: [],
       unitPotion: [],
+      unitPotion2: [],
       unitPotionEdit: [],
       roomStatusList: [],
       houseTypeList: [],
+
+      multiple: true,
 
 
       //导出集合
       deriveList: [],
 
       statusPotion: [],
-      //导出的对象
-      derives: {},
+
       rules: {
         communityId: [
           {required: true, message: "小区名不能为空", trigger: "blur"}
@@ -389,8 +406,6 @@ export default {
         //单元name
         unitName: "",
       },
-      //角色列表区域
-      delId: "",
       //room数据
       roomList: [],
       // 总条数
@@ -416,7 +431,7 @@ export default {
      * 导出方法
      */
     async derive() {
-      const {data: res} = await this.$http.post(`excel/list`, this.deriveList)
+      const {data: res} = await this.$http.post(`excel/roomList`, this.deriveList)
       if (res.status == 200) {
         //成功导出
         this.$message.success(res.msg + ",路径为：" + res.path)
@@ -427,27 +442,41 @@ export default {
       }
     }
     ,
-    //把选中的那条记录的roleId属性放到deriveList中
-    selectionChangeHandle(val) {
-      this.deriveList = []
-      for (let i = 0; i < val.length; i++) {
-        //concat方法在数组后追加内容。
-        this.deriveList = this.deriveList.concat(val[i].roleId)
-      }
-    }
-    ,
+    // 多选框选中数据
+    handleSelectionChange(selection) {
+      this.deriveList = selection.map(item => item.roomId);
+      this.single = selection.length != 1;
+      this.multiple = !selection.length;
+    },
+
     changeCommunity() {
       this.$http.get('zyRoom/getBuilding', {
         params: this.queryParams
-      }).then(res=>{
+      }).then(res => {
         this.buildingPotion = res.data.building
       })
     },
     changeBuilding() {
       this.$http.get('zyRoom/getUnit', {
         params: this.queryParams
-      }).then(res=>{
+      }).then(res => {
         this.unitPotion = res.data.unit11
+      })
+    },
+    changeCommunity2() {
+      let communityId = this.form.communityId
+      this.$http.get('zyRoom/getBuilding', {
+        params: {communityId}
+      }).then(res => {
+        this.buildingPotion2 = res.data.building
+      })
+    },
+    changeBuilding2() {
+      let buildingId = this.form.buildingId
+      this.$http.get('zyRoom/getUnit',{
+        params: {buildingId}
+      }).then(res => {
+        this.unitPotion2 = res.data.unit11
       })
     },
     async getStatus() {
@@ -455,15 +484,44 @@ export default {
       this.communityPotion = res.community
       this.roomStatusList = res.roomStatus
       this.houseTypeList = res.houseType
-      this.$http.get('zyRoom/getUnit').then(res2=>{
+      this.$http.get('zyRoom/getUnit').then(res2 => {
         this.unitPotionEdit = res2.data.unit11
       })
-      this.$http.get('zyRoom/getBuilding').then(res3=>{
+      this.$http.get('zyRoom/getBuilding').then(res3 => {
         this.buildingPotionEdit = res3.data.building
       })
     }
     ,
-    //删除角色
+    //批量删除
+    async delRooms() {
+      console.log(this.deriveList, "cccccccc")
+      if (this.deriveList.length==0){
+        this.$message.error("请选择删除的数据")
+      }
+      const confirmResult = await this.$confirm('确认要批量删除吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).catch(err => err)
+
+      // 如果用户点击确认，则confirmResult 为'confirm'
+      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+      await this.$http.post('zyRoom/deleteRooms', this.deriveList).then(res => {
+        if (this.queryParams.current > Math.ceil((this.total - this.deriveList.length) / this.queryParams.size)) {
+          this.queryParams.current = Math.ceil((this.total - this.deriveList.length) / this.queryParams.size);
+        }
+        if (res.data.status == 200) {
+          this.$message.success(res.data.msg)
+          this.getRoomList();
+        } else if (res.data.status == 201) {
+          this.$message.error(res.data.msg)
+        }
+      })
+    },
+    //删除房屋
     async deleteRoom(room) {
       const confirmResult = await this.$confirm('确认要删除' + '"' + room.roomName + '"房屋吗?', "警告", {
         confirmButtonText: "确定",
@@ -475,15 +533,18 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('已经取消删除')
       }
-      await this.$http.delete('zyRoom/deleteRoom/' + room.roomId).then(res => {
+      this.$http.delete('zyRoom/deleteRoom/' + room.roomId).then(res => {
         if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
           this.queryParams.current = Math.ceil((this.total - 1) / this.queryParams.size);
         }
-        if (res.data == 1) {
+        // if (this.queryParams.current==0 || this.queryParams.current <0 ){
+        //   this.queryParams.current=1
+        // }
+        if (res.data.data == 1) {
           this.$message.success("删除成功")
           this.getRoomList();
-        } else if (res.data == 0) {
-          this.$message.error(res.data.msg)
+        } else if (res.data.data == 0) {
+          this.$message.error("删除失败,请检测该房屋是否已出售!")
         }
       })
     }
@@ -496,9 +557,7 @@ export default {
       this.roomList = res.data;
 
       this.total = res.total
-    }
-    ,
-
+    },
     // 取消按钮
     cancel() {
       this.open = false;
@@ -523,9 +582,14 @@ export default {
       this.title = "新增房屋";
       this.open = true;
       this.reset();
+      this.buildingPotion2 = ''
+      this.unitPotion2 = ''
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      this.reset();
+      this.buildingPotion2 = ''
+      this.unitPotion2 = ''
       this.form = structuredClone(row)
 
       this.open = true;
@@ -534,31 +598,36 @@ export default {
     },
     //新增或修改角色
     async saveRole() {
-
-      if (this.form.roomId != '') {
-        let res = await this.$http.put("zyRoom/editRoom", this.form);
-        if (res.data.status === 200) {
-          this.open = false;
-          this.$message.success("修改成功")
-          await this.getRoomList();
-          this.menuOptions = {}
-        } else {
-          this.$message.error(res.data.msg);
+      this.$refs["form"].validate(valid => {
+        if (valid) {
+          if (this.form.roomId != '') {
+            this.$http.put("zyRoom/editRoom", this.form).then(res => {
+              if (res.data.status === 200) {
+                this.open = false;
+                this.$message.success("修改成功")
+                this.getRoomList();
+                this.menuOptions = {}
+              } else {
+                this.$message.error(res.data.msg);
+              }
+            })
+          } else {
+            this.form.roomId = Date.now();
+            this.$http.put("zyRoom/addRoom", this.form).then(res => {
+              console.log(res, "ccccccc")
+              if (res.data.status === 200) {
+                this.open = false;
+                this.$message.success("新增成功")
+                this.getRoomList();
+              } else {
+                this.$message.error(res.data.msg);
+                this.form.roomId = '';
+              }
+            })
+          }
         }
-      } else {
-        this.form.roomId = Date.now();
-        let res = await this.$http.put("zyRoom/addRoom", this.form);
-        if (res.data.status === 200) {
-          this.open = false;
-          this.$message.success("新增成功")
-          await this.getRoomList();
-        } else {
-          this.$message.error(res.data.msg);
-          this.form.roomId='';
-        }
-      }
-    }
-    ,
+      })
+    },
     // 表单重置
     reset() {
       this.form = {
@@ -605,22 +674,19 @@ export default {
         //单元name
         unitName: "",
       };
-    }
-    ,
+    },
     //x关闭
     handleClose() {
       this.open = false;
       this.reset()
-    }
-    ,
+    },
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {
       console.log('asda' + val)
       // 更新每页展示数据size
       this.queryParams.size = val
       this.getRoomList();
-    }
-    ,
+    },
     // @current-change页码点击事件
     handleCurrentChange(val) {
       console.log('asda' + val)
@@ -628,9 +694,6 @@ export default {
       this.queryParams.current = val
       this.getRoomList();
     },
-    handleChange(value) {
-      console.log(value);
-    }
   }
 }
 </script>

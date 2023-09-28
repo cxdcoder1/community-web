@@ -207,15 +207,13 @@
             <el-input v-model.trim="form.dictType" placeholder="请输入字典类型"/>
           </el-form-item>
           <el-form-item label="状态" prop="status">
-              <el-radio-group v-model="form.status">
-                <el-radio
-                    v-for="dict in statusPotion"
-                    :key="dict.dictValue"
-                    :label="dict.dictLabel"
-                    :value="dict.dictValue"
-                >{{ dict.dictLabel}}
-                </el-radio>
-              </el-radio-group>
+            <el-radio-group v-model="form.status">
+              <el-radio v-for="dict in this.statusPotion"
+                        :key="dict.dictValue"
+                        :label="dict.dictValue">
+                {{ dict.dictLabel }}
+              </el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item label="备注">
             <el-input v-model.trim="form.remark" type="textarea" placeholder="请输入内容"></el-input>

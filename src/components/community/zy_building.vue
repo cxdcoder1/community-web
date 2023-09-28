@@ -318,6 +318,7 @@ export default {
           // 清空选中的数据
           this.ids = [];
         } else {
+          console.log(res,"xxxxxxx")
           this.$message.error(res.data.msg);
           // 清空选中的数据
           this.getBuildingList();

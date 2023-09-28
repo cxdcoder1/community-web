@@ -3,7 +3,7 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>社区资产/单元信息</el-breadcrumb-item>
+      <el-breadcrumb-item>单元信息</el-breadcrumb-item>
     </el-breadcrumb>
     <br/>
     <el-card>
@@ -105,6 +105,7 @@
           <template slot-scope="scope">{{ scope.row.zyBuilding.buildingName }}</template>
         </el-table-column>
         <el-table-column label="单元名称" align="center" key="unitName" prop="unitName"/>
+        <el-table-column label="单元编号" align="center" key="unitCode" prop="unitCode"/>
         <el-table-column label="层数" align="center" key="unitLevel" prop="unitLevel"/>
         <el-table-column label="建筑面积" align="center" key="unitAcreage" prop="unitAcreage"/>
         <el-table-column label="是否有电梯" align="center" key="unitHaveElevator">
@@ -353,18 +354,26 @@ export default {
             //新增
             this.unitForm.unitId = Date.now();
             res = await this.$http.post("zyUnit/addUnit", this.unitForm);
+            if (res.data.status == 200) {
+              this.open = false;
+              this.$message.success(res.data.msg);
+              this.getUnitList();
+            } else {
+              this.$message.error(res.data.msg);
+              this.unitForm.unitId = 0;
+            }
           } else {
             //修改
             res = await this.$http.post("zyUnit/updateUnit", this.unitForm);
+            if (res.data.status == 200) {
+              this.open = false;
+              this.$message.success(res.data.msg);
+              this.getUnitList();
+            } else {
+              this.$message.error(res.data.msg);
+            }
           }
-          if (res.data.status == 200) {
-            this.open = false;
-            this.$message.success(res.data.msg);
-            this.getUnitList();
-          } else {
-            this.$message.error(res.data.msg);
-            this.unitForm.unitId = 0;
-          }
+
         } else {
           this.$message.error('请输入正确信息');
         }

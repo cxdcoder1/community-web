@@ -125,12 +125,10 @@
             <el-col :span="12">
               <el-form-item label="部门状态">
                 <el-radio-group v-model="form.status">
-                  <el-radio
-                      v-for="dict in statusPotion"
-                      :key="dict.dictValue"
-                      :label="dict.dictLabel"
-                      :value="dict.dictValue"
-                  >
+                  <el-radio v-for="dict in this.statusPotion"
+                            :key="dict.dictValue"
+                            :label="dict.dictValue">
+                    {{ dict.dictLabel }}
                   </el-radio>
                 </el-radio-group>
               </el-form-item>
@@ -227,6 +225,7 @@ export default {
   methods: {
     async getStatus() {
       const {data: res} = await this.$http.get('sysRole/statusOption')
+      console.log(res,"ccccccccc")
       this.statusPotion=res.data;
     },
     //新增修改表单取消
