@@ -346,8 +346,6 @@
 </template>
 
 <script>
-// import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, deptTreeSelect } from "@/api/system/user";
-// import { getToken } from "@/utils/auth";
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
@@ -356,24 +354,7 @@ export default {
   name: "User",
   components: {Treeselect},
   dicts: 'sys_normal_disable',
-  // watch: {
-  //   "form.roleIds"(value) {
-  //     if (!isNaN(value)) {
-  //       let data = this.roleOptions.find((item) => item.roleId == value);
-  //       if (data == undefined) {
-  //         this.form.roleIds = null;
-  //       }
-  //     }
-  //   },
-  //   "form.postIds"(value) {
-  //     if (!isNaN(value)) {
-  //       let data = this.postOptions.find((item) => item.postId == value);
-  //       if (data == undefined) {
-  //         this.form.postIds = null;
-  //       }
-  //     }
-  //   },
-  // },
+
   data() {
     return {
 
@@ -618,7 +599,7 @@ export default {
     async getStatus() {
       const {data: res} = await this.$http.get('sysUser/statusOption')
       this.statusPotion = res.data;
-      console.log('ads', res.data)
+      console.log('zzzzzzzzzzzzzz', res.data)
       // console.log(this.deptOptions)
       // console.log(res.data.records)
       // console.log(this.deptOptions);

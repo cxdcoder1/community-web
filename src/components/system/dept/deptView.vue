@@ -225,7 +225,6 @@ export default {
   methods: {
     async getStatus() {
       const {data: res} = await this.$http.get('sysRole/statusOption')
-      console.log(res,"ccccccccc")
       this.statusPotion=res.data;
     },
     //新增修改表单取消

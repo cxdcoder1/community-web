@@ -66,7 +66,6 @@
             icon="el-icon-download"
             size="mini"
             @click="derive()"
-            v-hasPermi="['system:dict:export']"
         >导出
         </el-button>
       </el-col>
@@ -77,7 +76,6 @@
             icon="el-icon-download"
             size="mini"
             @click="handleDelete()"
-            v-hasPermi="['system:dict:export']"
         >删除
         </el-button>
       </el-col>
@@ -88,7 +86,6 @@
             icon="el-icon-refresh"
             size="mini"
             @click="handleRefreshCache"
-            v-hasPermi="['system:dict:remove']"
         >刷新缓存
         </el-button>
       </el-col>
@@ -322,14 +319,6 @@ export default {
       }
 
     },
-    // //把选中的那条记录的roleId属性放到deriveList中
-    // selectionChangeHandle(val) {
-    //   this.deriveList = []
-    //   for (let i = 0; i < val.length; i++) {
-    //     //concat方法在数组后追加内容。
-    //     this.deriveList = this.deriveList.concat(val[i].roleId)
-    //   }
-    // },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.dictId)

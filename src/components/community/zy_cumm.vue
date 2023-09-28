@@ -3,23 +3,23 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>社区管理</el-breadcrumb-item>
+      <el-breadcrumb-item>社区资产/小区信息</el-breadcrumb-item>
     </el-breadcrumb>
-    <br/>
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="`showSearch`">
-      <el-form-item label="小区名称" prop="roleName">
+    <br>
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true">
+      <el-form-item label="小区名称" prop="communityName">
         <el-input
             v-model="queryParams.communityName"
-            placeholder="请输入角色名称"
+            placeholder="请输入小区名称"
             clearable
             style="width: 240px"
             @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="小区编码" prop="roleKey">
+      <el-form-item label="小区编码" prop="communityCode">
         <el-input
             v-model="queryParams.communityCode"
-            placeholder="请输入权限字符"
+            placeholder="请输入小区编码"
             clearable
             style="width: 240px"
             @keyup.enter.native="handleQuery"
@@ -44,12 +44,12 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="warning"
+            type="danger"
             plain
-            icon="el-icon-download"
+            icon="el-icon-delete"
             size="mini"
+            :disabled="multiple"
             @click="handleDelete()"
-            v-hasPermi="['system:dict:export']"
         >删除
         </el-button>
       </el-col>
@@ -67,9 +67,9 @@
 
     <el-table :data="communityList" @selection-change="selectionChangeHandle" ref="list">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="小区id" align="center" key="userId" prop="communityId"/>
-      <el-table-column label="小区名称" align="center" key="userName" prop="communityName"/>
-      <el-table-column label="小区编码" align="center" key="nickName" prop="communityCode"/>
+      <el-table-column label="小区id" align="center" key="communityId" prop="communityId"/>
+      <el-table-column label="小区名称" align="center" key="communityName" prop="communityName"/>
+      <el-table-column label="小区编码" align="center" key="communityCode" prop="communityCode"/>
       <el-table-column label="省" align="center" key="communityProvenceCode">
         <template slot-scope="scope">{{ addressText(scope.row.communityProvenceCode) }}</template>
       </el-table-column>
@@ -193,6 +193,7 @@
           <template slot-scope="scope">
             <el-button
                 style="border: none;"
+                :disabled="scope.row.status !=='0'"
                 v-if="scope.row.deptId !== form2.deptId && scope.row.deptId !== 100"
                 @click="updReal(scope.row)">选择</el-button>
             <el-button
@@ -233,6 +234,8 @@ export default {
       total: 0,
       // 表格数据
       communityList: [],
+      //
+      multiple: true,
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -250,9 +253,7 @@ export default {
         communityProvenceCode:"",
         communityCityCode:"",
         communityTownCode:"",
-
       },
-      deptId:"",
       //查询条件
       deptInfoTree: {
         deptName: '',
@@ -264,9 +265,9 @@ export default {
         communityName: undefined,
         remark: undefined,
         communityDetailedAddress:undefined,
-        communityProvenceCode:"",
-        communityCityCode:"",
-        communityTownCode:""
+        communityProvenceCode:undefined,
+        communityCityCode:undefined,
+        communityTownCode:undefined
       },
 
       form2: {
@@ -293,7 +294,6 @@ export default {
     };
   }, created() {
     this.getCommunityList();
-    this.getStatus();
   },
   methods: {
     addressText(code){
@@ -303,17 +303,17 @@ export default {
     handleChange (value) {
       console.log(value)
     },
+
     async getCommunityList() {
       const {data: res} = await this.$http.get('zyCommunity/getCommunityAll', {
         params: this.queryParams
       })
-
-      console.log(this.deptId)
+      this.total = res.data.total
+      this.communityList = res.data.records
+      console.log("res",res)
+      console.log("total",this.total);
       const {data: res2} = await this.$http.post("sysDept/treeDeptLists",this.deptInfoTree);
       this.deptList = res2.menuList;
-      this.communityList = res.data.records
-      this.total = res.data.total
-      console.log(res)
     },
 
     /** 搜索按钮操作 */
@@ -349,7 +349,7 @@ export default {
         return this.$message.info('已经取消删除')
       }
       await this.$http.delete('zyCommunity/delCummunity?id=' + r.communityId).then(res => {
-        console.log(r.communityId)
+        //页码修正
         if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
           this.queryParams.current = Math.ceil((this.total - 1) / this.queryParams.size);
         }
@@ -383,6 +383,7 @@ export default {
         //concat方法在数组后追加内容。
         this.deriveList = this.deriveList.concat(val[i].communityId)
       }
+      this.multiple = !this.$refs.list.selection.length;
     },
 
     /** 删除按钮操作 */
@@ -428,22 +429,26 @@ export default {
       this.queryParams.current = val
       this.getCommunityList();
     },
+    //新增按钮
     handleAdd() {
       this.open = true;
       this.reset()
       this.title = "添加";
     },
+    //更换物业按钮
     replacement(r) {
       this.dialogVisible = true;
       this.form2.communityId=r.communityId
       this.form2.deptId=r.deptId
       console.log("123",this.form2.communityId)
     },
+    //获取选择的编号信息
     updReal(r){
       this.form2.dept=r.deptId
       console.log("234",this.form2.dept)
       // 高亮显示逻辑
     },
+    //确定选择
     async updReplaCement(){
       let res = await this.$http.put("zyCommunity/replacement?communityId="+this.form2.communityId+"&deptId="+this.form2.dept);
       console.log(res)
@@ -451,7 +456,6 @@ export default {
       this.getCommunityList()
 
     },
-
     /** 修改按钮操作 */
     handleUpdate(r) {
       this.reset()
@@ -476,15 +480,18 @@ export default {
         communityTownCode:""
       };
     },
+    //修改和新增
     async saveRole() {
-
       // this.form.status = this.form.status == "正常" ? '0' : '1';
+      // 判断是否是null
       if (this.form.communityName == 0 || this.form.communityDetailedAddress == 0 ||
           this.form.communityDetailedAddress == null || this.form.communityName == null) {
         this.$message.error("请输入参数")
         return
       }
+      //this.form.communityId不为0：修改
       if (this.form.communityId != 0) {
+        //获取省市级信息
         this.form.communityProvenceCode=this.selectedOptions[0];
         this.form.communityCityCode=this.selectedOptions[1];
         this.form.communityTownCode=this.selectedOptions[2];
@@ -498,6 +505,7 @@ export default {
           this.$message.error(res.data.msg);
         }
       }
+      //this.form.communityId为0：新增
       if (this.form.communityId == 0 ) {
         this.form.communityId=Date.now()
         this.form.communityCode='COMMUNITY_'+Date.now()
@@ -510,9 +518,15 @@ export default {
         if (res.data.status === 200) {
           this.open = false;
           this.$message.success("新增成功")
-          this.open = false;
+          this.form = {
+            communityName: undefined,
+            remark: undefined,
+            communityDetailedAddress:undefined,
+            communityProvenceCode:"",
+            communityCityCode:"",
+            communityTownCode:""
+          };
           this.getCommunityList();
-          this.reset()
         } else {
           this.form.communityId = 0
           this.$message.error(res.data.msg);
