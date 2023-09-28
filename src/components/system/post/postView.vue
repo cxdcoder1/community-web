@@ -132,6 +132,7 @@
           </el-form-item>
           <el-form-item label="岗位状态" prop="status">
             <el-radio-group v-model="form.status">
+              <el-radio v-for="dict in this.statusPotion" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel}}</el-radio>
               <el-radio v-for="dict in this.statusPotion"
                         :key="dict.dictValue"
                         :label="dict.dictValue">
