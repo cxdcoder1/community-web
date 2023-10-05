@@ -51,6 +51,8 @@
           type="danger"
           icon="el-icon-delete"
           size="mini"
+          plain
+          :disabled="multiple"
           @click="batchDelete(ids)"
       >删除
       </el-button>
@@ -176,6 +178,10 @@ export default {
       },
       // 显示搜索条件
       showSearch: true,
+      // 非单个禁用
+      single: true,
+      // 非多个禁用
+      multiple: true,
     }
   },
   async created() {
@@ -297,6 +303,8 @@ export default {
         this.derivesA = this.derivesA.concat(val[i].buildingId)
         this.ids=this.derivesA;
       }
+      this.single = val.length != 1;
+      this.multiple = !val.length;
     },
     async batchDelete() {
       if (this.ids.length==0){

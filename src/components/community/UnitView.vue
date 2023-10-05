@@ -110,7 +110,12 @@
         <el-table-column label="建筑面积" align="center" key="unitAcreage" prop="unitAcreage"/>
         <el-table-column label="是否有电梯" align="center" key="unitHaveElevator">
 
-          <template slot-scope="scope">{{ scope.row.unitHaveElevator == '0' ? '是' : '否' }}</template>
+          <template slot-scope="scope">
+<!--            {{ scope.row.unitHaveElevator == '0' ? '是' : '否' }}-->
+          <el-tag v-if="scope.row.unitHaveElevator == 0">是</el-tag>
+            <el-tag v-else-if="scope.row.unitHaveElevator == 1" type="danger">否</el-tag>
+            <el-tag v-else type="info">未填写</el-tag>
+          </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center" key="createTime">
           <template slot-scope="scope">

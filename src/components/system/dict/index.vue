@@ -71,10 +71,11 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="warning"
+            type="danger"
             plain
-            icon="el-icon-download"
+            icon="el-icon-delete"
             size="mini"
+            :disabled="multiple"
             @click="handleDelete()"
         >删除
         </el-button>

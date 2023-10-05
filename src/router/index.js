@@ -16,6 +16,7 @@ import post from "@/components/system/post/postView.vue"
 import building from "@/components/community/zy_building.vue"
 import unit from "@/components/community/UnitView.vue";
 import zy_room from "@/components/community/zy_room";
+import swagger from "@/components/system/tool/swaggerView.vue";
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,7 @@ const routes = [
             {path: '/community', component: community},
             {path: '/unit',component: unit},
             {path: '/room',component: zy_room},
+            {path: '/swagger',component: swagger},
             // 路由配置
             {
                 path: '/data/:dictId',
