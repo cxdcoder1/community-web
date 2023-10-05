@@ -71,10 +71,11 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-            type="warning"
+            type="danger"
             plain
-            icon="el-icon-download"
+            icon="el-icon-delete"
             size="mini"
+            :disabled="multiple"
             @click="handleDelete()"
         >删除
         </el-button>
@@ -140,48 +141,6 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <!--    <el-table  :data="typeList" @selection-change="handleSelectionChange">-->
-    <!--      <el-table-column type="selection" width="55" align="center"  />-->
-    <!--      <el-table-column label="字典编号" align="center" prop="dictId" />-->
-    <!--      <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />-->
-    <!--      <el-table-column label="字典类型" align="center" :show-overflow-tooltip="true">-->
-    <!--        <template slot-scope="scope">-->
-    <!--          <router-link :to="'/system/dict-data/index/' + scope.row.dictId" class="link-type">-->
-    <!--            <span>{{ scope.row.dictType }}</span>-->
-    <!--          </router-link>-->
-    <!--        </template>-->
-    <!--      </el-table-column>-->
-    <!--      <el-table-column label="状态" align="center" prop="status">-->
-    <!--        <template slot-scope="scope">-->
-    <!--          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>-->
-    <!--        </template>-->
-    <!--      </el-table-column>-->
-    <!--      <el-table-column label="备注" align="center" prop="remark"  />-->
-    <!--      <el-table-column label="创建时间" align="center" prop="createTime" width="180">-->
-    <!--        <template slot-scope="scope">-->
-    <!--          <span>{{ parseTime(scope.row.createTime) }}</span>-->
-    <!--        </template>-->
-    <!--      </el-table-column>-->
-    <!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
-    <!--        <template slot-scope="scope">-->
-    <!--          <el-button-->
-    <!--              size="mini"-->
-    <!--              type="text"-->
-    <!--              icon="el-icon-edit"-->
-    <!--              @click="handleUpdate(scope.row)"-->
-    <!--              v-hasPermi="['system:dict:edit']"-->
-    <!--          >修改</el-button>-->
-    <!--          <el-button-->
-    <!--              size="mini"-->
-    <!--              type="text"-->
-    <!--              icon="el-icon-delete"-->
-    <!--              @click="handleDelete(scope.row)"-->
-    <!--              v-hasPermi="['system:dict:remove']"-->
-    <!--          >删除</el-button>-->
-    <!--        </template>-->
-    <!--      </el-table-column>-->
-    <!--    </el-table>-->
 
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="handleClose">
@@ -300,7 +259,8 @@ export default {
   },
   methods: {
     async getStatus() {
-      const {data: res} = await this.$http.get('sysRole/statusOption')
+      const {data: res} = await this.$http.get('sysDictType/dictStatusOption')
+      console.log("123",res.data)
       this.statusPotion=res.data;
     },
     /**
@@ -449,7 +409,9 @@ export default {
       //   this.$store.dispatch('dict/cleanDict');
       // });
     }, async saveRole() {
-      this.form.status= this.form.status == "正常"?'0':'1';
+
+      console.log(this.form.status)
+
       if(this.form.dictType == 0 || this.form.dictName == 0 || this.form.dictType == null || this.form.dictName == null ){
         this.$message.error("请输入参数")
         return

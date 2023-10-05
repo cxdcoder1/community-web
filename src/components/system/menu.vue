@@ -195,8 +195,12 @@
                 显示状态
               </span>
               <el-radio-group v-model="form.visible">
-                <el-radio :label="'0'">显示</el-radio>
-                <el-radio :label="'1'">隐藏</el-radio>
+                <el-radio    v-for="dict in showPotion"
+                             :key="dict.dictValue"
+                             :label="dict.dictValue"
+                >
+                  {{ dict.dictLabel }}
+                </el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -211,8 +215,9 @@
               <el-radio-group v-model="form.status">
                 <el-radio    v-for="dict in statusPotion"
                              :key="dict.dictValue"
-                             :label="dict.dictLabel"
-                             :value="dict.dictValue">
+                             :label="dict.dictValue"
+                             >
+                  {{ dict.dictLabel }}
                   </el-radio>
               </el-radio-group>
             </el-form-item>
@@ -244,6 +249,7 @@ export default {
       updateSysMenuShow: false,
       treeData: [], // 初始化为一个空数组
       statusPotion:[],
+      showPotion:[],
       form: {
         menuType: 'M',
         status: '0',
@@ -304,15 +310,20 @@ export default {
   created() {
     this.getSysMenu();
     this.getStatus();
+    this.getShow();
   },
 
   methods: {
+    async getShow() {
+      const {data: res} = await this.$http.get('sysMenu/menuShowsOption')
+      this.showPotion=res.data;
+      console.log("123",this.showPotion)
+    },
     async getStatus() {
-      const {data: res} = await this.$http.get('sysRole/statusOption')
+      const {data: res} = await this.$http.get('sysMenu/menuStatusOption')
       this.statusPotion=res.data;
     },
     async saveMenu() {
-      this.form.status= this.form.status == "正常"?'0':'1';
 
       if (!this.form.menuName) {
         // 部门名称为空，提示用户输入值
@@ -329,8 +340,6 @@ export default {
         this.$message.error('路由不能为空');
         return;
       }
-
-
       let res;
       if (this.form.menuId == null || this.form.menuId == 0) {
         res = await this.$http.post('sysMenu/addMenu', this.form);

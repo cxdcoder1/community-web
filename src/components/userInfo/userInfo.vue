@@ -1,5 +1,4 @@
 <template>
-
   <el-form ref="form" :model="user" :rules="rules" label-width="80px">
     <el-form-item label="用户昵称" prop="nickName">
       <el-input v-model.trim="user.nickName" maxlength="30" onkeyup="this.value=this.value.replace(/[, ]/g,'')"/>
@@ -12,8 +11,12 @@
     </el-form-item>
     <el-form-item label="性别">
       <el-radio-group v-model="user.sex">
-        <el-radio label="0">男</el-radio>
-        <el-radio label="1">女</el-radio>
+        <el-radio    v-for="dict in userInfoSex"
+                     :key="dict.dictValue"
+                     :label="dict.dictValue"
+        >
+          {{ dict.dictLabel }}
+        </el-radio>
       </el-radio-group>
     </el-form-item>
     <el-form-item>
@@ -34,6 +37,7 @@ export default {
   },
   data() {
     return {
+      userInfoSex:[],
       // 表单校验
       rules: {
         nickName: [
@@ -58,13 +62,20 @@ export default {
       }
     };
   },
+  created() {
+    this.getSexs();
+  },
   methods: {
+    async getSexs() {
+      const {data: res} = await this.$http.get('sysUser/userInfoSex')
+      this.userInfoSex=res.data;
+      console.log(this.userInfoSex)
+    },
     submit: function (user) {
       console.log(user)
       this.$refs["form"].validate(async valid => {
         if (valid) {
           const {data: res} = await this.$http.put('sysUser/updataUser', user)
-          alert("修改成功!")
           // location.reload();
           // console.log(111)
           // console.log(res)

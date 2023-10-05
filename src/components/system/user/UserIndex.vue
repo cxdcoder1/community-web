@@ -597,7 +597,7 @@ export default {
       console.log("from",formData)
     },
     async getStatus() {
-      const {data: res} = await this.$http.get('sysUser/statusOption')
+      const {data: res} = await this.$http.get('sysUser/userStatusOption')
       this.statusPotion = res.data;
       console.log('zzzzzzzzzzzzzz', res.data)
       // console.log(this.deptOptions)

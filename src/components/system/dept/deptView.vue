@@ -218,13 +218,16 @@ export default {
   created() {
     this.search();
     this.getStatus();
+
     //树形结构的table默认展开第一级
     // 放入默认展开行
     this.expands.push(this.deptList[0].deptId)
   },
   methods: {
+
+
     async getStatus() {
-      const {data: res} = await this.$http.get('sysRole/statusOption')
+      const {data: res} = await this.$http.get('sysDept/deptStatusOption')
       this.statusPotion=res.data;
     },
     //新增修改表单取消

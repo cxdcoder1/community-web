@@ -326,7 +326,7 @@ export default {
 
         },
         async getStatus() {
-          const {data: res} = await this.$http.get('sysRole/statusOption')
+          const {data: res} = await this.$http.get('sysRole/roleStatusOption')
           this.statusPotion=res.data;
         },
         //把选中的那条记录的roleId属性放到deriveList中

@@ -3,7 +3,7 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>社区资产/小区信息</el-breadcrumb-item>
+      <el-breadcrumb-item>小区信息</el-breadcrumb-item>
     </el-breadcrumb>
     <br>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true">
@@ -125,7 +125,7 @@
     <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="cancel">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
-          <el-form-item label="id" prop="communityId" v-if="form.communityId != '0'" :style="{ opacity: '0.5' }"
+          <el-form-item label="id" prop="communityId" hidden="hidden" v-if="form.communityId != '0'" :style="{ opacity: '0.5' }"
                         :class="{ 'readonly-input': true }">
             <el-input v-model.trim="form.communityId" placeholder="请输入id" readonly/>
           </el-form-item>

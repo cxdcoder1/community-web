@@ -132,7 +132,6 @@
           </el-form-item>
           <el-form-item label="岗位状态" prop="status">
             <el-radio-group v-model="form.status">
-              <el-radio v-for="dict in this.statusPotion" :key="dict.dictValue" :label="dict.dictValue">{{ dict.dictLabel}}</el-radio>
               <el-radio v-for="dict in this.statusPotion"
                         :key="dict.dictValue"
                         :label="dict.dictValue">
@@ -266,8 +265,7 @@ export default {
           })
         },
         async getStatus() {
-          console.log('sadas', this.dicts)
-          const {data: res} = await this.$http.get('sysUser//statusOption')
+          const {data: res} = await this.$http.get('sysPost/postStatusOption')
           this.statusPotion = res.data;
           console.log('ads', res.data)
           // console.log(this.deptOptions)
@@ -286,7 +284,6 @@ export default {
               return this.$message.info('已经取消删除')
             }
             await this.$http.delete('sysPost/delPost/'+row.postId).then(res => {
-              console.log(res,"zzzzzzzzzzzzzzzzzzzz")
               if (res.data.status == 200) {
                 this.$message.success(res.data.msg)
                 this.getPostList();
