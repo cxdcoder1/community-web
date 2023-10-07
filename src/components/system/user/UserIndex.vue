@@ -319,7 +319,6 @@
           :before-upload="beforeAvatarUpload"
           :http-request="uploadHttpRequest"
           :auto-upload="true"
-
           name="file"
           drag
           multiple
@@ -538,9 +537,6 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).catch(err => err)
-
-      // 如果用户点击确认，则confirmResult 为'confirm'
-      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
       if (confirmResult !== 'confirm') {
         return this.$message.info('已经取消删除')
       }

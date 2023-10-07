@@ -49,11 +49,11 @@
       </el-button>
       <el-button
           type="danger"
+          plain
           icon="el-icon-delete"
           size="mini"
-          plain
-          :disabled="multiple"
           @click="batchDelete(ids)"
+          :disabled="multiple"
       >删除
       </el-button>
       <el-button
@@ -160,6 +160,9 @@ export default {
       selectedOption: '',
       // 总条数
       total: 0,
+      // 非单个禁用
+      multiple: true,
+      single: true,
       ids:[],
       derivesA:[],
       open: false,
@@ -178,10 +181,7 @@ export default {
       },
       // 显示搜索条件
       showSearch: true,
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
+
     }
   },
   async created() {
@@ -297,6 +297,7 @@ export default {
     },
     //把选中的那条记录的postId属性放到deriveList中
     selectionChangeHandle(val) {
+      this.multiple = !val.length;
       this.derivesA = []
       for (let i = 0; i < val.length; i++) {
         //concat方法在数组后追加内容。
@@ -307,10 +308,6 @@ export default {
       this.multiple = !val.length;
     },
     async batchDelete() {
-      if (this.ids.length==0){
-        this.$message.error("请选择要删除的数据")
-        return ;
-      }
       const confirmResult = await this.$confirm('确认要删除' + this.ids.length + '条数据吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -341,6 +338,7 @@ export default {
         //成功导出
         this.$message.success(res.msg + ",路径为：" + res.path)
         this.$refs.list.clearSelection(); // el-table上绑定ref="list"
+        this.getBuildingList();
       } else if (res.status == 201) {
         //导出失败
         this.$message.error(res.msg)

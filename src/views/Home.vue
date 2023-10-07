@@ -26,8 +26,8 @@
     <el-container>
       <!-- 侧边栏 -->
       <el-aside class="el-aside" width="175px" style="margin: 0px;padding: 0px">
-
         <el-menu
+            :default-active="activePath"
             :data="menuList"
             text-color="black"
             unique-opened
@@ -39,16 +39,17 @@
             style="margin-left: -45px;">
           <!-- 一级菜单 -->
           <el-submenu  :index="item.menuId+''" v-for="item in menuList" :key="item.id"
-                      :disabled="item.status==1">
+                      :disabled="item.status==1"  >
             <template slot="title">
               <i :class="'icon iconfont icon-'+item.icon">&nbsp;&nbsp;</i>
               <span>{{ item.menuName }}</span>
             </template>
             <!-- 二级菜单 -->
-            <template v-for="item2 in item.children">
-              <el-submenu  v-if="item2.menuId == 108" :index="'/' + item2.path"
+            <template v-for="item2 in item.children" >
+              <el-submenu @click="saveNavStates"
+                          v-if="item2.menuId == 108"
                           :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 5px"
-                           @click="saveNavState('/' + item2.path, index)">
+                          >
                 <template slot="title">
                   <e-icon :icon-name="item2.icon"></e-icon>
                   <span>{{ item2.menuName }}</span>
@@ -62,10 +63,11 @@
                 </el-menu-item>
               </el-submenu>
               <el-menu-item v-else class="el-menu-item"
+                            @click="saveNavState('/'+item2.path)"
                             :index="'/' + item2.path" :key="item2.menuId" :disabled="item2.status==1"
                             style="padding-left: 70px">
                 <!-- 图标 -->
-                <i :class="'icon iconfont icon-'+item2.icon">&nbsp;&nbsp;</i>
+                <i :class="'icon iconfont icon-'+item2.icon" >&nbsp;&nbsp;</i>
                 <template slot="title">{{ item2.menuName }}</template>
               </el-menu-item>
             </template>
@@ -99,13 +101,12 @@ export default {
     $route(fo) {
       this.tabs = JSON.parse(window.localStorage.getItem("tabs")) || [];
       this.path = fo.path;
-      console.log(this.path)
     },
   },
   data() {
     return {
-      showSubmenu: null,// 控制展开的三级菜单的二级菜单项的菜单ID
-
+      // 被激活的链接地址
+      activePath: '',
       status: "",
       res: 0, // 初始化一个res变量，用于接收查询
       menuList: [],
@@ -117,19 +118,10 @@ export default {
     }
   },
   created() {
+    this.activePath = window.sessionStorage.getItem('activePath')
     this.res = this.$route.query.res; // 将查询参数的值赋给res变量
-    // console.log(this.$route.query.res)
-    // if(this.res==null){
-    //   this.res=2
-    // }
     this.res = JSON.parse(window.sessionStorage.getItem("user"));
     this.getMenuList();
-    // this.getUserInfo();
-    const selectedMenu = localStorage.getItem('selectedMenu');
-    if (selectedMenu) {
-      // 设置菜单的选中状态
-      this.$router.push(selectedMenu);
-    }
   },
   methods: {
     userInfo1: function () {
@@ -144,39 +136,28 @@ export default {
     handleSelect(index) {
       this.activeIndex = index
     },
-    // handleCommand(command) {
-    //   this.$message('click on item ' + command);
-    // },
     getUserInfo: async function () {
       //取出当前登录的用户
       let user = JSON.parse(window.sessionStorage.getItem("user"));
       this.sysUser = user;
     },
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
+    // handleOpen(key, keyPath) {
+    //   console.log(key, keyPath);
+    // },
+    // handleClose(key, keyPath) {
+    //   console.log(key, keyPath);
+    // },
     async getMenuList() {
-      // let user = JSON.parse(window.sessionStorage.getItem('user'));
-      console.log(this.res.userId)
       let res = await this.$http.get('sysMenu/getTreeMenu/' + this.res.userId);
       this.menuList = res.data.data;
     },
     index() {
       this.$router.push("/index")
     },
-    // out() {
-    //   window.sessionStorage.clear();
-    //   this.$router.push("/login")
-    // },
-    saveNavState(path, index) {
-      localStorage.setItem('selectedMenu', index);
-      alert(path)
-      // 执行其他逻辑
-    }
-
+    saveNavState(path){
+      //点击二级菜单的时候保存被点击的二级菜单信息
+      window.sessionStorage.setItem("activePath",path);
+    },
 
   },
 

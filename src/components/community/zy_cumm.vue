@@ -432,6 +432,7 @@ export default {
     //新增按钮
     handleAdd() {
       this.open = true;
+      this.selectedOptions = undefined
       this.reset()
       this.title = "添加";
     },

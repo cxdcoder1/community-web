@@ -397,7 +397,6 @@ export default {
           // this.reset();
         },
         async getRoleList() {
-
           const {data: res} = await this.$http.get('sysRole/list', {
             params: this.queryParams
           })

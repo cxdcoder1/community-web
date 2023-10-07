@@ -46,6 +46,7 @@
     </el-button>
     <el-button
         type="danger"
+        plain
         icon="el-icon-delete"
         size="mini"
         @click="batchDelete(ids)"
@@ -182,6 +183,7 @@ export default {
       // 是否显示弹出层
       open: false,
       dictList: [],
+
       // 显示搜索条件
       showSearch: true,
 
@@ -193,7 +195,7 @@ export default {
       //导出的对象
       derives: {},
       //导出集合
-      derivesA: {},
+      derivesA: [],
 
       // 查询参数
       queryParams: {
