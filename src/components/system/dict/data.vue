@@ -284,6 +284,11 @@ export default {
     this.getList()
   },
   methods: {
+    async getStatus() {
+      const {data: res} = await this.$http.get('sysDictType/dictStatusOption')
+      console.log("123",res.data)
+      this.statusPotion=res.data;
+    },
     /** 查询字典类型详细 */
     getType(dictId) {
       this.$http.get("sysDictType/getDictType/" + dictId).then(response => {
@@ -299,10 +304,6 @@ export default {
         // console.log("测试", response.data.data)
         this.typeOptions = response.data.data;
       });
-    },
-    async getStatus() {
-      const {data: res} = await this.$http.get('sysRole/statusOption')
-      this.statusPotion=res.data;
     },
     /** 查询字典数据列表 */
     getList() {

@@ -241,7 +241,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="用户性别">
+            <el-form-item label="用户性别" prop="sex">
               <el-select v-model="form.sex" placeholder="请选择性别">
                 <el-option
                     v-for="dict in sexList"
@@ -266,7 +266,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="岗位">
+            <el-form-item label="岗位" prop="postIds">
               <el-select v-model="form.postIds" placeholder="请选择岗位">
                 <el-option
                     v-for="item in postOptions"
@@ -278,7 +278,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="角色">
+            <el-form-item label="角色" prop="roleIds">
               <el-select v-model="form.roleIds" placeholder="请选择角色">
                 <el-option
                     v-for="item in roleOptions"
@@ -441,6 +441,9 @@ export default {
         nickName: [
           {required: true, message: "用户昵称不能为空", trigger: "blur"}
         ],
+        sex: [
+          {required: true, message: "用户性别不能为空", trigger: "blur"}
+        ],
         password: [
           {required: true, message: "用户密码不能为空", trigger: "blur"},
           {min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur'}
@@ -453,12 +456,22 @@ export default {
           }
         ],
         phonenumber: [
+          {required: true, message: "用户手机号不能为空", trigger: "blur"},
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
             message: "请输入正确的手机号码",
             trigger: "blur"
           }
-        ]
+        ],
+        deptId: [
+          {required: true, message: "部门不能为空", trigger: "blur"},
+        ],
+        postIds: [
+          {required: true, message: "岗位不能为空", trigger: "blur"},
+        ],
+        roleIds: [
+          {required: true, message: "角色不能为空", trigger: "blur"},
+        ],
       },
       // 用户导入参数
       upload: {
@@ -475,8 +488,8 @@ export default {
         // 上传的地址
         url: "http://localhost:8080/#/excel/into"
       },
-      uploadFile:{},
-      format:[],
+      uploadFile: {},
+      format: [],
 
     };
   },
@@ -571,8 +584,8 @@ export default {
 
     },
     //上传前
-    beforeAvatarUpload(file){
-      console.log("文件",file)
+    beforeAvatarUpload(file) {
+      console.log("文件", file)
       const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
       const whiteList = ["xls", "xlsx"];
 
@@ -586,11 +599,11 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!');
         return false;
       }
-      this.uploadFile=file
+      this.uploadFile = file
       let formData = new FormData();
-      formData.append('file',file)
-      this.format=formData
-      console.log("from",formData)
+      formData.append('file', file)
+      this.format = formData
+      console.log("from", formData)
     },
     async getStatus() {
       const {data: res} = await this.$http.get('sysUser/userStatusOption')
@@ -638,8 +651,8 @@ export default {
     },
     // 用户状态修改
     handleStatusChange(row) {
-      let text = row.status === "0" ? "启用" : "停用";
-      this.$confirm('确认要' + text + row.userName + '角色吗?', "警告", {
+
+      this.$confirm('确认要'  + row.userName + '角色吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -736,6 +749,9 @@ export default {
         console.log(value)
         this.$http.put("sysUser/resetPwd?id=" + row.userId + "&pwd=" + value);
         this.$message.success('重置密码成功')
+        // 修改成功后重新登录
+        window.sessionStorage.removeItem();
+        this.$router.push('/login');
       }).catch(() => {
       });
     },
@@ -784,7 +800,8 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function () {
-      this.form.status= this.form.status == "正常"?'0':'1';
+      this.form.status = this.form.status == "正常" ? '0' : '1';
+
       this.$refs["form"].validate(valid => {
         console.log(this.form, "ccccccccccc")
         if (valid) {
@@ -826,7 +843,8 @@ export default {
         //导出失败
         this.$message.error(res.msg)
       }
-    },
+    }
+    ,
     normalizer(node) {
       if (node.children && !node.children.length) {
         delete node.children;
@@ -836,7 +854,8 @@ export default {
         label: node.deptName,
         children: node.children
       };
-    },
+    }
+    ,
   }
 }
 </script>

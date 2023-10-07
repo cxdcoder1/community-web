@@ -17,6 +17,7 @@ import building from "@/components/community/zy_building.vue"
 import unit from "@/components/community/UnitView.vue";
 import zy_room from "@/components/community/zy_room";
 import swagger from "@/components/system/tool/swaggerView.vue";
+import ownerRoom from "@/components/ownerRoom/owner_room.vue";
 import logininfor from "@/components/log/logininfor";
 import operlog from "@/components/system/log/operationaLogs.vue";
 
@@ -46,6 +47,7 @@ const routes = [
             {path: '/swagger',component: swagger},
             {path: '/logininfor',component: logininfor},
             {path: '/operlog',component: operlog},
+            {path: '/ownerRoom',component: ownerRoom},
             // 路由配置
             {
                 path: '/data/:dictId',

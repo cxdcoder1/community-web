@@ -184,7 +184,7 @@
         </el-form-item>
 
         <el-form-item label="层数" prop="unitLevel">
-          <el-input-number v-model="unitForm.unitLevel" controls-position="right" :min="0"/>
+          <el-input-number :precision="0" v-model="unitForm.unitLevel" controls-position="right" :min="0"/>
         </el-form-item>
 
         <el-form-item label="建筑面积" prop="unitAcreage">
