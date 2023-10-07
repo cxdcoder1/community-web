@@ -115,8 +115,8 @@
       <el-table-column label="操作地点" align="center" prop="operLocation" :show-overflow-tooltip="true" />
       <el-table-column label="操作状态" align="center" prop="status">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status === 0 ? '' : 'danger'">
-            {{ scope.row.status === 0 ? '成功' : '失败' }}
+          <el-tag :type="scope.row.status === '0' ? '' : 'danger'">
+            {{ scope.row.status === '0' ? '成功' : '失败' }}
           </el-tag>
         </template>
       </el-table-column>
@@ -169,8 +169,8 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="操作状态：">
-              <div v-if="form.status === 0">成功</div>
-              <div v-else-if="form.status === 1">失败</div>
+              <div v-if="form.status == 0">成功</div>
+              <div v-else-if="form.status == 1">失败</div>
             </el-form-item>
           </el-col>
           <el-col :span="10">

@@ -25,7 +25,7 @@
 
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside class="el-aside" width="175px" style="margin: 0px;padding: 0px">
+      <el-aside class="el-aside" width="178px" style="margin: 0px;padding: 0px">
         <el-menu
             :default-active="activePath"
             :data="menuList"

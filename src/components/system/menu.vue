@@ -43,7 +43,7 @@
         row-key="menuId"
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
     >
-      <el-table-column label="排序" width="120">
+      <el-table-column label="排序" width="130">
         <template slot-scope="scope">{{ scope.row.menuName }}</template>
       </el-table-column>
       <el-table-column prop="icon" label="图标" align="center" width="100">
