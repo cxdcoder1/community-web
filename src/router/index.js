@@ -17,6 +17,7 @@ import building from "@/components/community/zy_building.vue"
 import unit from "@/components/community/UnitView.vue";
 import zy_room from "@/components/community/zy_room";
 import swagger from "@/components/system/tool/swaggerView.vue";
+import logininfor from "@/components/log/logininfor";
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,7 @@ const routes = [
             {path: '/unit',component: unit},
             {path: '/room',component: zy_room},
             {path: '/swagger',component: swagger},
+            {path: '/logininfor',component: logininfor},
             // 路由配置
             {
                 path: '/data/:dictId',
