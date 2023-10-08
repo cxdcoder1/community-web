@@ -1,11 +1,14 @@
+
 <template>
+
   <el-container class="container">
     <!-- 头部区域 -->
-    <el-header height="80px">
+
+    <el-header height="80px"   >
       <!-- logo -->
-      <img src="../assets/logo.png" width="100px" style="padding-left: -130px" alt=""/>
+      <img src="../assets/123123.png" width="100px" style="padding-left: -130px" alt=""/>
       <!-- 顶部标题 -->
-      <span style="position: sticky; top: 25px; margin-left: -83%;"> 智慧社区管理后台</span>
+      <span style="position: absolute; top: 24.5px; padding-left:108px "> 智慧社区管理后台</span>
       <!-- 顶部标题 -->
 
       <el-dropdown>
@@ -13,8 +16,8 @@
         <div class="block">
           <el-avatar :size="60" :src=res.avatar></el-avatar>
         </div>
-        <template #dropdown>
-          <el-dropdown-menu>
+        <template #dropdown >
+          <el-dropdown-menu >
             <el-dropdown-item><span @click="userInfo1()">个人中心</span></el-dropdown-item>
             <el-dropdown-item><span @click="logout()">退出登录</span></el-dropdown-item>
           </el-dropdown-menu>
@@ -23,19 +26,16 @@
 
     </el-header>
 
-    <el-container>
+    <el-container >
       <!-- 侧边栏 -->
-      <el-aside class="el-aside" width="178px" style="margin: 0px;padding: 0px">
+      <el-aside class="el-aside" width="190px" style="background-color:#404040FF;">
         <el-menu
             :default-active="activePath"
             :data="menuList"
-            text-color="black"
+            text-color="white"
+            background-color="#404040FF"
             unique-opened
             router
-            background-color="#D3dce6"
-            @open="handleOpen"
-            @close="handleClose"
-            active-text-color="#ffd04b"
             style="margin-left: -45px;">
           <!-- 一级菜单 -->
           <el-submenu  :index="item.menuId+''" v-for="item in menuList" :key="item.id"
@@ -73,7 +73,10 @@
             </template>
           </el-submenu>
         </el-menu>
+
+
       </el-aside>
+
       <!-- 主体结构 -->
       <el-main>
         <router-view></router-view>
@@ -114,7 +117,7 @@ export default {
       sysUser: {},
       activeIndex: '',
       isShow: true,
-      activeColor: '#409EFF'
+      activeColor: '#acb0b0'
     }
   },
   created() {
@@ -174,6 +177,7 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
+
 }
 
 .container {
@@ -188,6 +192,7 @@ html, body {
 }
 
 .container {
+
   height: 100vh;
   width: 100vw;
 }
@@ -218,7 +223,7 @@ html, body {
 }
 
 .el-header {
-  background-color: #373d41;
+  background-color: #30363b;
   display: flex;
   justify-content: space-between;
   padding-left: 0;
@@ -240,22 +245,22 @@ html, body {
 }
 
 .el-footer {
-  background-color: #B3C0D1;
+  background-color: #fff;
   color: #333;
   text-align: center;
   line-height: 60px;
 }
 
 .el-aside {
-  background-color: #D3DCE6;
+  background-color:#fff;
   color: #333;
   text-align: center;
   line-height: 200px;
-
+  overflow: hidden;
 }
 
 .el-main {
-  background-color: #E9EEF3;
+  background-color: #fff;
   color: #333;
   //text-align: center;
   line-height: 20px;

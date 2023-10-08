@@ -1,5 +1,11 @@
 <template>
   <div class="app-container">
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item >字典管理</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br>
+    <el-card>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="字典名称" prop="dictName">
         <el-input
@@ -190,6 +196,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
+      </el-card>
   </div>
 </template>
 

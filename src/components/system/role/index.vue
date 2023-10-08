@@ -1,11 +1,14 @@
 <template>
   <div class="app-container">
     <!-- 面包屑导航 -->
+
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>角色管理</el-breadcrumb-item>
     </el-breadcrumb>
+
     <br>
+    <el-card>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="`showSearch`">
       <el-form-item label="角色名称" prop="roleName">
         <el-input
@@ -200,7 +203,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
-
+    </el-card>
   </div>
 </template>
 

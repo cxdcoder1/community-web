@@ -48,12 +48,15 @@
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="handlereview(scope.row)">
             <template v-if="scope.row.roomStatus == 1">
-              <i class="el-icon-view"></i>
+              <i class="el-icon-tickets"></i>
+            </template>
+            <template v-else-if="scope.row.roomStatus == 0">
+              <i class="el-icon-thumb"></i>
             </template>
             <template v-else>
               <i class="el-icon-edit"></i>
             </template>
-            {{ scope.row.roomStatus == 1 ? "查看详情" : "审核" }}
+            {{ scope.row.roomStatus == 1 ? "查看详情" : (scope.row.roomStatus == 2 ? "再次审核" : "审核") }}
           </el-button>
         </template>
       </el-table-column>
@@ -132,7 +135,7 @@ export default {
       open:false,
       dialogVisible: false,
 
-      statusPotion: [{dictLabel: "已绑定", dictValue: 1}, {dictLabel: "审核中", dictValue: 0}],
+      statusPotion: [{dictLabel: "已绑定", dictValue: 1}, {dictLabel: "审核中", dictValue: 0}, {dictLabel: "审核失败", dictValue: 2}],
       //搜索
       queryParams: {
         current: 1,
@@ -200,7 +203,7 @@ export default {
       this.getOwnerRoomList();
     },
     async handlereview(r) {
-      if(r.roomStatus == 0){
+      if(r.roomStatus == 0 || r.roomStatus ==2){
         this.dialogVisible = true;
         this.form = structuredClone(r);
       }

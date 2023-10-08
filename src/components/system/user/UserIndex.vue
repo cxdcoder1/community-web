@@ -21,6 +21,7 @@
       </el-col>
       <!--      用户数据-->
       <el-col :span="20" :xs="24">
+        <el-card>
         <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch"
                  label-width="68px">
           <el-form-item label="用户名称" prop="userName">
@@ -191,8 +192,9 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="total">
         </el-pagination>
-
+        </el-card>
       </el-col>
+
     </el-row>
 
     <!-- 添加或修改用户配置对话框 -->
@@ -414,7 +416,7 @@ export default {
       // 查询参数
       queryParams: {
         current: 1,
-        size: 5,
+        size: 2,
         userName: undefined,
         phonenumber: undefined,
         status: undefined,
