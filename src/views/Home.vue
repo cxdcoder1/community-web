@@ -59,7 +59,10 @@
                               :index="'/' + item3.path" v-for="item3 in item2.children"
                               :key="item3.menuId" :disabled="item3.status==1" style="padding-left: 90px">
                   <e-icon :icon-name="item3.icon"></e-icon>
-                  <template slot="title">{{ item3.menuName }}</template>
+                  <template slot="title">
+                    <e-icon :icon-name="item3.icon"></e-icon>
+                   <span>{{ item3.menuName }}</span>
+                  </template>
                 </el-menu-item>
               </el-submenu>
               <el-menu-item v-else class="el-menu-item"

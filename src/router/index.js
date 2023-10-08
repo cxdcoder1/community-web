@@ -20,7 +20,7 @@ import swagger from "@/components/system/tool/swaggerView.vue";
 import ownerRoom from "@/components/ownerRoom/owner_room.vue";
 import logininfor from "@/components/log/logininfor";
 import operlog from "@/components/system/log/operationaLogs.vue";
-
+import owners from "@/components/ownerRoom/ownerRomms.vue"
 
 
 Vue.use(VueRouter)
@@ -48,6 +48,7 @@ const routes = [
             {path: '/logininfor',component: logininfor},
             {path: '/operlog',component: operlog},
             {path: '/ownerRoom',component: ownerRoom},
+            {path: '/owner',component: owners},
             // 路由配置
             {
                 path: '/data/:dictId',
