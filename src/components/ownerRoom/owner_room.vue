@@ -230,7 +230,7 @@ export default {
       this.form.createTime=year + "-" + month + "-" + day;
       this.form.updateTime=year + "-" + month + "-" + day;
       this.form.createBy=res.createBy;
-      // 同意或拒绝决定
+      this.form.recordAuditType='Web';      // 同意或拒绝决定
       this.form.roomStatus=i;
 
       console.log(this.form.ownerRoomId)
@@ -240,6 +240,7 @@ export default {
           .then(_=> {
             this.$message.success("执行成功")
             this.dialogVisible=false
+            this.inputData=""
            this.getOwnerRoomList()
           })
           .catch(error => {

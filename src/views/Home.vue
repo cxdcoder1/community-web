@@ -174,7 +174,6 @@ export default {
 
 <style lang="less" scoped>
 
-
 html, body {
   height: 100%;
   width: 100%;
