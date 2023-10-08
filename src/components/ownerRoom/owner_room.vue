@@ -5,6 +5,7 @@
       <el-breadcrumb-item>业主审核</el-breadcrumb-item>
     </el-breadcrumb>
     <br>
+    <el-card>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true">
       <el-form-item label="绑定状态" prop="status">
         <el-select v-model="queryParams.roomStatus" placeholder="绑定状态" clearable>
@@ -116,7 +117,7 @@
         <el-table-column label="备注" align="center" width="200px" prop="remark"/>
       </el-table>
     </el-dialog>
-
+      </el-card>
   </div>
 </template>
 
@@ -143,7 +144,6 @@ export default {
         roomStatus: undefined
       },
       form:{
-
         recordId:"",
         ownerRoomId:"",
         communityId:"",
@@ -222,7 +222,7 @@ export default {
       var month = currentDate.getMonth() + 1;  // 获取当前月份（注意：月份是从 0 开始的，所以需要加 1）
       var day = currentDate.getDate();  // 获取当前日期
 
-// 如果您希望在请求后端 API 时使用当前日期，可以将其格式化为适当的字符串格式
+      // 如果您希望在请求后端 API 时使用当前日期，可以将其格式化为适当的字符串格式
 
       let res = JSON.parse(window.sessionStorage.getItem("user"));
       this.form.recordId=Date.now();

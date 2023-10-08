@@ -6,6 +6,7 @@
       <el-breadcrumb-item>小区信息</el-breadcrumb-item>
     </el-breadcrumb>
     <br>
+    <el-card>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true">
       <el-form-item label="小区名称" prop="communityName">
         <el-input
@@ -213,7 +214,7 @@
         <el-button type="primary" @click="updReplaCement()">确 定</el-button>
       </span>
     </el-dialog>
-
+      </el-card>
   </div>
 
 </template>

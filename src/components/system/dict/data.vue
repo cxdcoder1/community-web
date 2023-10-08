@@ -6,7 +6,7 @@
       <el-breadcrumb-item :to="{path: '/dict'}">字典管理</el-breadcrumb-item>
       <el-breadcrumb-item>字典数据</el-breadcrumb-item>
     </el-breadcrumb>
-    <br>
+    <br>`
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="字典名称" prop="dictType">
         <el-select v-model="queryParams.dictType">

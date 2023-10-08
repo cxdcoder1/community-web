@@ -28,12 +28,12 @@
 
     <el-container >
       <!-- 侧边栏 -->
-      <el-aside class="el-aside" width="190px" style="background-color:#404040FF;">
+      <el-aside class="el-aside" width="190px" style="background-color:#273445;">
         <el-menu
             :default-active="activePath"
             :data="menuList"
             text-color="white"
-            background-color="#404040FF"
+            background-color="#273445"
             unique-opened
             router
             style="margin-left: -45px;">
@@ -59,7 +59,10 @@
                               :index="'/' + item3.path" v-for="item3 in item2.children"
                               :key="item3.menuId" :disabled="item3.status==1" style="padding-left: 90px">
                   <e-icon :icon-name="item3.icon"></e-icon>
-                  <template slot="title">{{ item3.menuName }}</template>
+                  <template slot="title">
+                    <e-icon :icon-name="item3.icon"></e-icon>
+                   <span>{{ item3.menuName }}</span>
+                  </template>
                 </el-menu-item>
               </el-submenu>
               <el-menu-item v-else class="el-menu-item"
@@ -223,7 +226,7 @@ html, body {
 }
 
 .el-header {
-  background-color: #30363b;
+  background-color: #304156;
   display: flex;
   justify-content: space-between;
   padding-left: 0;

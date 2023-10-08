@@ -91,7 +91,7 @@
             label="楼栋面积"
             width="180"
         ></el-table-column>
-        <el-table-column label="创建时间" width="150">
+        <el-table-column label="创建时间" width="160">
           <template slot-scope="scope">{{ scope.row.createTime | dateFormat }}</template>
         </el-table-column>
         <el-table-column
@@ -168,6 +168,7 @@ export default {
       open: false,
       //小区集合
       zyCommunityList: {},
+      id:"",
       //楼栋集合
       buildingList: {},
       // 查询参数
@@ -176,7 +177,7 @@ export default {
         pageSize: 10,
         buildingName: "",
         buildingCode: "",
-        communityId: "1",
+        communityId: "",
         communityName: ""
       },
       // 显示搜索条件
@@ -227,6 +228,7 @@ export default {
       this.getBuildingList();
     },
     update(row) {
+      this.id=row.communityId
       this.title = "修改楼栋"
       this.open = true;
       this.form = structuredClone(row)
@@ -239,6 +241,7 @@ export default {
       this.form.buildingCode="Code"+Date.now();
     },
     submitForm(){
+
       this.$refs.form.validate(async valid => {
         if (valid){
           let res;
@@ -249,7 +252,7 @@ export default {
             })
           }
           else {
-              res=await  this.$http.put("zyBuilding/updateBuilding",this.form)
+              res=await  this.$http.put("zyBuilding/updateBuilding/"+this.id,this.form)
           }
           if (res.data.status === 200) {
             this.open = false;
