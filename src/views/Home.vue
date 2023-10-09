@@ -51,14 +51,14 @@
                           :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 5px"
                           >
                 <template slot="title">
-                  <e-icon :icon-name="item2.icon"></e-icon>
+                  <i :class="'icon iconfont icon-'+item2.icon">&nbsp;&nbsp;</i>
                   <span>{{ item2.menuName }}</span>
                 </template>
                 <!-- 三级菜单 -->
                 <el-menu-item class="el-menu-item"
                               :index="'/' + item3.path" v-for="item3 in item2.children"
                               :key="item3.menuId" :disabled="item3.status==1" style="padding-left: 90px">
-                  <e-icon :icon-name="item3.icon"></e-icon>
+                  <i :class="'icon iconfont icon-'+item3.icon">&nbsp;&nbsp;</i>
                   <template slot="title">
                     <e-icon :icon-name="item3.icon"></e-icon>
                    <span>{{ item3.menuName }}</span>

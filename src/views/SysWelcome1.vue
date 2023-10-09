@@ -1,13 +1,20 @@
 <template>
-  <div>欢迎来到智慧社区管理系统</div>
+  <div>
+    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+      <el-calendar v-model="dateValue">
+      </el-calendar>
+    </el-row>
+  </div>
+
 </template>
 
 <script>
+
 export default {
-  name: 'HomeM'
+  name: 'HomeM',
 }
 </script>
 
-<style scoped>
+<style  scoped>
 
 </style>

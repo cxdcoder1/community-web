@@ -1,5 +1,10 @@
 <template>
   <div class="app-container">
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item >用户管理</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br>
     <el-row :gutter="20">
       <!--部门数据-->
       <el-col :span="4">

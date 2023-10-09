@@ -5,6 +5,7 @@
       <el-breadcrumb-item>岗位管理</el-breadcrumb-item>
     </el-breadcrumb>
     <br>
+    <el-card>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="岗位编码" prop="postCode">
         <el-input
@@ -37,6 +38,7 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+
     <el-button
         type="primary"
         icon="el-icon-plus"
@@ -61,6 +63,7 @@
         @click="derive()"
     >导出
     </el-button>
+    </el-card>
     <el-card>
       <el-table
           ref="multipleTable"
