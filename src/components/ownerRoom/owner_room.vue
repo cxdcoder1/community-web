@@ -229,6 +229,7 @@ export default {
       this.form.recordAuditOpinion=this.inputData;
       this.form.createTime=year + "-" + month + "-" + day;
       this.form.updateTime=year + "-" + month + "-" + day;
+      console.log(res.createBy)
       this.form.createBy=res.createBy;
       this.form.recordAuditType='Web';      // 同意或拒绝决定
       this.form.roomStatus=i;
