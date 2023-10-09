@@ -265,7 +265,11 @@ export default {
     this.getStatus();
   },
    methods: {
-
+     async getStatus() {
+       const {data: res} = await this.$http.get('sysDictType/dictStatusOption')
+       console.log("123",res.data)
+       this.statusPotion=res.data;
+     },
     /**
      * 导出方法
      */
@@ -313,13 +317,12 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        dictId: 0,
-        dictName: undefined,
-        dictType: undefined,
-        status: "0",
-        remark: undefined
+        dictName: '',
+        dictType: '',
+        status: '',
+        createTime: "",
+        updateTime: ""
       };
-
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -333,10 +336,8 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.dateRange = [];
-      // this.resetForm("queryForm");
-      this.reset();
-
-      this.handleQuery();
+      this.queryParams = {};
+      this.getList()
     },
     /** 新增按钮操作 */
     handleAdd() {

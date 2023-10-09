@@ -79,7 +79,7 @@
 
       <span slot="footer" class="dialog-footer">
         <el-input v-model="inputData" placeholder="请输入内容"></el-input>
-        <br>
+          <p></p>
         <el-button @click="reviewReplaCement(2)">拒 绝</el-button>
         <el-button type="primary" @click="reviewReplaCement(1)">同 意</el-button>
       </span>
@@ -171,7 +171,6 @@ export default {
       const {data: res} = await this.$http.get('zyOwnerRoom/getOwnerRoomAll', {
         params: this.queryParams
       })
-
       console.log("res", res)
       this.total = res.data.total
       this.OroomList = res.data.records
@@ -216,19 +215,22 @@ export default {
     },
     // eslint-disable-next-line no-unused-vars
     reviewReplaCement(i){
-      // 获取输入框值
-      var currentDate = new Date();  // 创建 Date 对象，表示当前日期和时间
-      var year = currentDate.getFullYear();  // 获取当前年份
-      var month = currentDate.getMonth() + 1;  // 获取当前月份（注意：月份是从 0 开始的，所以需要加 1）
-      var day = currentDate.getDate();  // 获取当前日期
 
-      // 如果您希望在请求后端 API 时使用当前日期，可以将其格式化为适当的字符串格式
+// 获取输入框值
+        var currentDate = new Date(); // 创建 Date 对象，表示当前日期和时间
+        var year = currentDate.getFullYear(); // 获取当前年份
+        var month = currentDate.getMonth() + 1; // 获取当前月份（注意：月份是从 0 开始的，所以需要加 1）
+        var day = currentDate.getDate(); // 获取当前日期
+        var hour = String(currentDate.getHours()).padStart(2, '0');
+        var minute = String(currentDate.getMinutes()).padStart(2, '0');
+        var second = String(currentDate.getSeconds()).padStart(2, '0');
+// 如果您希望在请求后端 API 时使用当前日期，可以将其格式化为适当的字符串格式
 
       let res = JSON.parse(window.sessionStorage.getItem("user"));
       this.form.recordId=Date.now();
       this.form.recordAuditOpinion=this.inputData;
-      this.form.createTime=year + "-" + month + "-" + day;
-      this.form.updateTime=year + "-" + month + "-" + day;
+      this.form.createTime=year + "-" + month + "-" + day+" "+hour+":"+minute+":"+second;
+      this.form.updateTime=year + "-" + month + "-" + day+" "+hour+":"+minute+":"+second;
       console.log(res.createBy)
       this.form.createBy=res.createBy;
       this.form.recordAuditType='Web';      // 同意或拒绝决定

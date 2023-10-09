@@ -10,10 +10,10 @@
     <el-card>
     <el-form :model="sysMenu" ref="queryForm" size="small" :inline="true" v-show="showSearch">
       <el-form-item label="菜单名称" prop="menuName">
-        <el-input v-model="sysMenu.menuName" placeholder="请输入菜单名称" clearable @keyup.enter.native="handleQuery"/>
+        <el-input v-model.trim="sysMenu.menuName" placeholder="请输入菜单名称" clearable @keyup.enter.native="handleQuery"/>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="sysMenu.status" placeholder="菜单状态" clearable>
+        <el-select v-model.trim="sysMenu.status" placeholder="菜单状态" clearable>
           <el-option
               v-for="dict in statusPotion"
               :key="dict.dictValue"

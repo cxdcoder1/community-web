@@ -21,7 +21,7 @@ import ownerRoom from "@/components/ownerRoom/owner_room.vue";
 import logininfor from "@/components/log/logininfor";
 import operlog from "@/components/system/log/operationaLogs.vue";
 import owners from "@/components/ownerRoom/ownerRomms.vue"
-
+import interaction from "@/components/interaction/interaction.vue"
 
 Vue.use(VueRouter)
 
@@ -49,6 +49,7 @@ const routes = [
             {path: '/operlog',component: operlog},
             {path: '/ownerRoom',component: ownerRoom},
             {path: '/owner',component: owners},
+            {path: '/interaction',component: interaction},
             // 路由配置
             {
                 path: '/data/:dictId',

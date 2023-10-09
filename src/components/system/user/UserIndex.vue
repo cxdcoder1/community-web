@@ -31,7 +31,7 @@
                  label-width="68px">
           <el-form-item label="用户名称" prop="userName">
             <el-input
-                v-model="queryParams.userName"
+                v-model.trim="queryParams.userName"
                 placeholder="请输入用户名称"
                 clearable
                 style="width: 240px"
@@ -40,7 +40,7 @@
           </el-form-item>
           <el-form-item label="手机号码" prop="phonenumber">
             <el-input
-                v-model="queryParams.phonenumber"
+                v-model.trim="queryParams.phonenumber"
                 placeholder="请输入手机号码"
                 clearable
                 style="width: 240px"
@@ -49,7 +49,7 @@
           </el-form-item>
           <el-form-item label="状态" prop="status">
             <el-select
-                v-model="queryParams.status"
+                v-model.trim="queryParams.status"
                 placeholder="用户状态"
                 clearable
                 style="width: 240px"

@@ -9,18 +9,15 @@
       <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
         <!-- 用户名 -->
         <el-form-item  prop="phonenumber">
-          <el-input v-model="loginForm.phonenumber" prefix-icon="el-icon-user-solid"  ></el-input>
+          <el-input  v-model="loginForm.phonenumber"  class="input-border-style" prefix-icon="el-icon-user-solid"  ></el-input>
         </el-form-item>
-
         <!-- 密码 -->
         <el-form-item prop="password">
-          <el-input type="password" v-model="loginForm.password" prefix-icon="el-icon-s-cooperation" ></el-input>
+          <el-input type="password"  class="input-border-style" v-model="loginForm.password" prefix-icon="el-icon-s-cooperation" show-password></el-input>
         </el-form-item>
-
         <!--                <div>-->
         <Vcode :show="isShow" @success="success" @close="close"/>
         <!--                </div>-->
-
         <!-- 按钮 -->
         <el-form-item class="btns">
           <el-button type="primary" @click="login()">登录</el-button>
@@ -120,10 +117,7 @@ export default {
 // console.log(res.data);
 // return this.$router.push({name:'/home',params:{user:res.user}});
     },
-      },
-
-
-
+  },
 };
 </script>
 
@@ -136,6 +130,7 @@ export default {
   background-size:100% 100%;
 }
 .login_container {
+
   background-color: #2b5b6b;
   width: 100%;
   height: 100%;
@@ -149,8 +144,8 @@ html, body {
   height: 100%;
 }
 .login_box {
-  width: 450px;
-  height: 300px;
+  width: 470px;
+  height: 350px;
   background: #030e21;
   border-radius: 3px;
   position: absolute;
@@ -158,7 +153,6 @@ html, body {
   top: 50%;
   opacity: 0.7;
   transform: translate(-50%, -50%);
-
   .avatar_box {
     height: 130px;
     width: 130px;
@@ -170,7 +164,6 @@ html, body {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
-
   }
 }
 
@@ -180,10 +173,23 @@ html, body {
   width: 100%;
   padding: 0 20px;
   box-sizing: border-box;
+  height: 230px;
+
 }
 
 .btns {
-  margin-top: 10px;
+  padding-top: 20px;
   text-align: center;
 }
+
+.btns .el-button{
+  margin: 0px 20px;
+}
+.input-border-style{
+
+
+  // el-input__inner是el-input的input类名
+}
+
+
 </style>

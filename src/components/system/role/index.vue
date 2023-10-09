@@ -12,7 +12,7 @@
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="`showSearch`">
       <el-form-item label="角色名称" prop="roleName">
         <el-input
-            v-model="queryParams.roleName"
+            v-model.trim="queryParams.roleName"
             placeholder="请输入角色名称"
             clearable
             style="width: 240px"
@@ -21,7 +21,7 @@
       </el-form-item>
       <el-form-item label="权限字符" prop="roleKey">
         <el-input
-            v-model="queryParams.roleKey"
+            v-model.trim="queryParams.roleKey"
             placeholder="请输入权限字符"
             clearable
             style="width: 240px"

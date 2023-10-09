@@ -1,0 +1,274 @@
+<template>
+  <div>
+  <!-- 面包屑导航 -->
+  <el-breadcrumb separator="/">
+    <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+    <el-breadcrumb-item>社区互动</el-breadcrumb-item>
+  </el-breadcrumb>
+    <br>
+    <el-card>
+    <el-form :model="queryParams" ref="queryForm" size="small"  :inline="true">
+      <el-form-item label="业主昵称" prop="ownerNickname">
+        <el-input
+            v-model.trim="queryParams.ownerNickname"
+            placeholder="请输入业主昵称"
+            clearable
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="业主姓名" prop="ownerRealName">
+        <el-input
+            v-model.trim="queryParams.ownerRealName"
+            placeholder="请输入业主姓名"
+            clearable
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="手机号码" prop="ownerPhoneNumber">
+        <el-input
+            v-model.trim="queryParams.ownerPhoneNumber"
+            placeholder="请输入手机号码"
+            clearable
+            style="width: 240px"
+            @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-select v-model="queryParams.communityId" @change="updateQueryParams">
+          <el-option
+              v-for="item in this.zyCommunityList"
+              :key="item.communityId"
+              :label="item.communityName"
+              :value="item.communityId"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
+    <el-table :data="InteractionList" ref="list">
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="序号" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.$index + 1 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="业主昵称" align="center" key="ownerNickname" prop="ownerNickname"/>
+      <el-table-column label="业主名称" align="center" key="ownerRealName" prop="ownerRealName"/>
+      <el-table-column label="业主电话" align="center" key="ownerPhoneNumber" prop="ownerPhoneNumber"/>
+      <el-table-column label="创建时间" align="center" key="createTime" prop="createTime">
+        <template slot-scope="scope">
+          <span>{{ scope.row.createTime|dateFormat }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="内容" align="center" key="content" prop="content"/>
+      <el-table-column label="图片" align="center" key="filesUrl" prop="filesUrl" />
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
+          <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-s-tools"
+              @click="handlereview(scope.row)">
+            更多操作
+          </el-button>
+          <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-delete"
+              @click="remove(scope.row)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryParams.current"
+        :page-sizes="[1, 5, 10,20]"
+        :page-size="queryParams.size"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
+    </el-pagination>
+
+      <el-dialog
+          title="社区互动详情"
+          :visible.sync="dialogVisible"
+          append-to-body :before-close="handleClose"
+      >
+        <div v-for="(item, index) in InteraList" :key="item.interaction_id">
+          <h3 v-if="index === 0">{{ item.ownerNickname }}</h3>
+          <p v-if="index === 0">{{ item.createTime }}</p>
+          <p v-if="index === 0">{{ item.content }}</p>
+        </div>
+        <el-table
+            :data="InteraList"
+           >
+          <el-table-column >
+            <template slot-scope="scope">
+              <div v-if="scope.row.commentOwnerNickname">
+                {{scope.row.commentOwnerNickname}}
+                <br>
+                回复：{{scope.row.parentId == -1 ? "":scope.row.parentId}} {{scope.row.commentContent}}
+                <br>
+                <el-button
+                    size="mini"
+                    type="text"
+                    icon="el-icon-delete"
+                    @click="delInter(scope.row)"
+                >
+                  删除
+                </el-button>
+              </div>
+            </template>
+          </el-table-column>
+
+        </el-table>
+      </el-dialog>
+    </el-card>
+  </div>
+
+</template>
+
+<script>
+import index from "vuex";
+
+export default {
+  computed: {
+    index() {
+      return index
+    }
+  },
+  data() {
+    return {
+      zyCommunityList: {},
+      // 总条数
+      total: 0,
+
+      dialogVisible:false,
+
+      queryParams: {
+        current: 1,
+        size: 20,
+        communityId: "",
+        ownerNickname: "",
+        ownerRealName: "",
+        ownerPhoneNumber: ""
+      },
+      InteractionList: [],
+
+      InteraList:[],
+    }
+  }, created() {
+    this.getInteractionService();
+    this.communityList();
+  },
+  methods: {
+    async communityList() {
+      const {data: res} = await this.$http.get("zyBuilding/getCommunityList");
+      console.log("123",res)
+      this.zyCommunityList = res.data;
+      this.queryParams.communityId = this.zyCommunityList[0].communityId;
+    },
+    async getInteractionService() {
+
+      const {data: res} = await this.$http.get('zyCommunityInteraction/getInteractionService', {
+        params: this.queryParams
+      })
+      this.total = res.data.total
+      this.InteractionList = res.data.records
+      console.log("total", this.total);
+    },
+    /** 搜索按钮操作 */
+    handleQuery() {
+      this.queryParams.current = 1;
+      this.getInteractionService();
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.queryParams.ownerNickname = '';
+      this.queryParams.ownerRealName = '';
+      this.queryParams.ownerPhoneNumber = '';
+      this.getInteractionService();
+    },
+    handleSizeChange(val) {
+      this.queryParams.size = val
+      this.getInteractionService();
+    },
+    // @current-change页码点击事件
+    handleCurrentChange(val) {
+      this.queryParams.current = val
+      this.getInteractionService();
+    },
+    updateQueryParams() {
+      this.getInteractionService();
+    },
+    async remove(r) {
+      const confirmResult = await this.$confirm('确认要删除' + '"' + '"吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).catch(err => err)
+
+      // 如果用户点击确认，则confirmResult 为'confirm'
+      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+      let res = await this.$http.put("zyCommunityInteraction/delInteraction?id=" + r.interactionId + "&type=" + 1);
+      this.$message.success("删除成功")
+      this.getInteractionService();
+    },
+    async handlereview(r) {
+      this.dialogVisible=true
+
+      console.log(this.InteraList.ownerNickname,"123")
+
+      const {data: res} = await this.$http.get("zyCommunityInteraction/getInteractionList?interactionId="+r.interactionId);
+      console.log("214",res)
+      this.InteraList = res.data;
+
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+    },
+    async delInter(r){
+      console.log("qwqe",r.commentId)
+      const confirmResult = await this.$confirm('确认要删除'  + '"吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).catch(err => err)
+
+      // 如果用户点击确认，则confirmResult 为'confirm'
+      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+      let res = await this.$http.delete("zyCommunityInteraction/updDelFlag?id=" + r.commentId);
+      this.$message.success("删除成功")
+
+      this.handlereview(r);
+    }
+
+  }
+}
+</script>
+
+
+<style scoped>
+.multiline-cell {
+  white-space: normal;
+  word-wrap: break-word;
+}
+</style>

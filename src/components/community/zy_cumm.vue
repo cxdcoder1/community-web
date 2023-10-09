@@ -10,7 +10,7 @@
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true">
       <el-form-item label="小区名称" prop="communityName">
         <el-input
-            v-model="queryParams.communityName"
+            v-model.trim="queryParams.communityName"
             placeholder="请输入小区名称"
             clearable
             style="width: 240px"
@@ -19,7 +19,7 @@
       </el-form-item>
       <el-form-item label="小区编码" prop="communityCode">
         <el-input
-            v-model="queryParams.communityCode"
+            v-model.trim="queryParams.communityCode"
             placeholder="请输入小区编码"
             clearable
             style="width: 240px"
@@ -292,7 +292,7 @@ export default {
           {required: true, message: "该字段不能为空", trigger: "blur"}
         ]
       }
-    };
+    }
   }, created() {
     this.getCommunityList();
   },
