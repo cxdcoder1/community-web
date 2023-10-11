@@ -241,7 +241,6 @@ export default {
       this.form.buildingCode="Code"+Date.now();
     },
     submitForm(){
-
       this.$refs.form.validate(async valid => {
         if (valid){
           let res;

@@ -20,7 +20,10 @@ import swagger from "@/components/system/tool/swaggerView.vue";
 import ownerRoom from "@/components/ownerRoom/owner_room.vue";
 import logininfor from "@/components/log/logininfor";
 import operlog from "@/components/system/log/operationaLogs.vue";
-import owners from "@/components/ownerRoom/ownerRomms.vue"
+import owners from "@/components/ownerRoom/owner_romms.vue"
+import visitors from "@/components/ownerRoom/zy_visitor.vue"
+import repairs from "@/components/ownerRoom/zy_repair.vue"
+import suggests from "@/components/ownerRoom/zy_complaint_suggest.vue"
 import interaction from "@/components/interaction/interaction.vue"
 
 Vue.use(VueRouter)
@@ -50,6 +53,9 @@ const routes = [
             {path: '/ownerRoom',component: ownerRoom},
             {path: '/owner',component: owners},
             {path: '/interaction',component: interaction},
+            {path: '/visitor',component: visitors},
+            {path: '/repair',component: repairs},
+            {path: '/suggest',component: suggests},
             // 路由配置
             {
                 path: '/data/:dictId',

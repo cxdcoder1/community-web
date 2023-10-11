@@ -71,19 +71,21 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
-    <el-dialog
-        title="审核"
-        :visible.sync="dialogVisible"
-        append-to-body :before-close="handleClose"
-    >
-
-      <span slot="footer" class="dialog-footer">
-        <el-input v-model="inputData" placeholder="请输入内容"></el-input>
-          <p></p>
-        <el-button @click="reviewReplaCement(2)">拒 绝</el-button>
-        <el-button type="primary" @click="reviewReplaCement(1)">同 意</el-button>
-      </span>
-    </el-dialog>
+      <el-dialog
+          title="审核"
+          :visible.sync="dialogVisible"
+          append-to-body
+          :before-close="handleClose"
+      >
+  <span slot="footer" class="dialog-footer" style="display: flex; align-items: center; justify-content: center;">
+    <el-input v-model="inputData" placeholder="请输入内容" style="width: 400px;"></el-input>
+    <br>
+      <div style="margin-left: 100px">
+    <el-button @click="reviewReplaCement(2)" type="danger" size="small">拒绝</el-button>
+    <el-button type="primary" @click="reviewReplaCement(1)" size="small">同意</el-button>
+      </div>
+  </span>
+      </el-dialog>
     <el-dialog
         title="流程"
         :visible.sync="open"
