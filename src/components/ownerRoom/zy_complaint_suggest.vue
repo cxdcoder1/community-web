@@ -226,11 +226,17 @@ export  default{
     async submitForm() {
       //  alert(this.form.remark)
       // alert(this.complaintSuggestId)
-      let res = await this.$http.put("zyComplaintSuggest/remark/" + this.complaintSuggestId, this.form)
+      let param = {
+        complaintSuggestId:this.complaintSuggestId,
+        remark:this.form.remark
+      }
+
+      let res = await this.$http.post("zyComplaintSuggest/remark" ,param)
       if (res.data.status === 200) {
         this.opens = false;
         this.$message.success(res.data.msg);
         this.getZyComplaintSuggestList();
+
       } else {
         this.$message.error(res.data.msg);
       }

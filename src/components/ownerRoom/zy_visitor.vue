@@ -90,9 +90,19 @@
           {{ scope.row.createTime | dateFormat }}
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="备注" align="center" prop="remark">
+        <template slot-scope="scope">
+          <span v-if="scope.row.remark === '0'">同意</span>
+          <span v-if="scope.row.remark === '1'">拒绝</span>
+          <span v-if="scope.row.remark === '2'">待处理</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        ---
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.remark === '0'" type="danger" size="small" @click="update(scope.row)">拒绝</el-button>
+          <el-button v-if="scope.row.remark === '1'" type="success" size="small" @click="update(scope.row)">同意</el-button>
+          <el-button v-if="scope.row.remark === '2'" type="success" size="small" @click="update(scope.row)">同意</el-button>
+        </template>
       </el-table-column>
   </el-table>
     <el-pagination
@@ -190,9 +200,17 @@ export  default {
         //成功导出
         this.$message.success(res.msg + ",路径为：" + res.path)
         this.$refs.list.clearSelection(); // el-table上绑定ref="list"
-        this.getBuildingList();
       } else if (res.status == 201) {
         //导出失败
+        this.$message.error(res.msg)
+      }
+    },
+    async update(row) {
+      const {data: res} = await this.$http.put(`zyVisitor/updateRemark/`+row.visitorId)
+      if (res.status == 200) {
+        this.$message.success(res.msg)
+        this.getZyVisitorList();
+      } else if (res.status == 201) {
         this.$message.error(res.msg)
       }
     }

@@ -140,7 +140,6 @@
           <el-form-item label="报修状态" prop="repairState" label-width="98px">
             <el-input v-model="form.repairState" style="width: 200px"/>
           </el-form-item>
-
         </el-col>
       </el-row>
       <el-row class="mb8">
