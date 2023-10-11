@@ -457,7 +457,12 @@ export default {
       // 更新当前页数是第几页
       this.queryParams.current = val
       this.getList();
-    }
+    },
+     async getStatus() {
+       const {data: res} = await this.$http.get('sysDictType/dictStatusOption')
+       console.log("123",res.data)
+       this.statusPotion=res.data;
+     },
   }
 };
 </script>

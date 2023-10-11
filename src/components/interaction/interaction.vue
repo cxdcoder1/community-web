@@ -105,28 +105,30 @@
           :visible.sync="dialogVisible"
           append-to-body :before-close="handleClose"
       >
-        <div v-for="(item, index) in InteraList" :key="item.interaction_id">
-          <h3 v-if="index === 0">
-            <el-image :src="item.ownerPortrait"/>
-            {{ item.ownerNickname }}
-          </h3>
-          <p v-if="index === 0">{{ item.createTime | dateFormat }}</p>
-          <p v-if="index === 0">{{ item.content }}</p>
+        <div v-for="i in InteractionList">
+          <div v-if="i.interactionId === ctid">
+            <h3><el-image :src="i.ownerPortrait"/>
+              <span>{{ i.ownerNickname }}</span>&nbsp;
+              <span>{{ i.createTime |dateFormat }}
+              </span></h3>
+            <p></p>
+            <p>{{ i.content }}</p>
+          </div>
         </div>
-        <el-table
-            :data="InteraList"
-        >
+
+        <el-table :data="InteraList">
           <el-table-column>
             <template slot-scope="scope">
               <div v-if="scope.row.commentOwnerNickname" class="el_div">
-                <!--                <el-image v-for="url in urls" :key="url" :src="url" lazy></el-image>-->
+                <!--<el-image v-for="url in urls" :key="url" :src="url" lazy></el-image>-->
                 <el-image :src="scope.row.ownerPortrait"/>
-                <span style="padding-top: 10px">{{ scope.row.ownerRealName }}</span>
-
+                <span style="padding-top: -10px">{{ scope.row.ownerRealName }}</span>
                 <br>
                 <span style="font-size: 12px;">{{ scope.row.commentCreateTime }}</span>
                 <br>
-                回复：{{scope.row.parentId == -1?"":scope.row.ownerNickname}} {{ scope.row.commentContent}}
+                回复&nbsp;<span style="color:blue ">{{ scope.row.parentId == -1 ? "" : scope.row.ownerNickname }}</span>&nbsp;<b>:</b>{{
+                  scope.row.commentContent
+                }}
                 <br>
                 <el-button
                     size="mini"
@@ -143,7 +145,6 @@
       </el-dialog>
     </el-card>
   </div>
-
 </template>
 
 <script>
@@ -158,7 +159,6 @@ export default {
   },
   data() {
     return {
-
 
       zyCommunityList: {},
       // 总条数
@@ -178,11 +178,20 @@ export default {
 
       parentIds: [],
 
-      ownerNickNames:[],
+      ownerNickNames: [],
 
       UserName: undefined,
 
       InteraList: [],
+
+      IntText: [{
+        ownerPortrait: "",
+        ownerNickname: "",
+        createTime: "",
+        content: ""
+      }],
+
+      ctid: undefined
     }
   }, created() {
     this.getInteractionService();
@@ -228,53 +237,6 @@ export default {
     updateQueryParams() {
       this.getInteractionService();
     },
-    async remove(r) {
-      const confirmResult = await this.$confirm('确认要删除' + '吗?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).catch(err => err)
-
-      // 如果用户点击确认，则confirmResult 为'confirm'
-      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
-      if (confirmResult !== 'confirm') {
-        return this.$message.info('已经取消删除')
-      }
-      let res = await this.$http.put("zyCommunityInteraction/delInteraction?id=" + r.interactionId + "&type=" + 1);
-      this.$message.success("删除成功")
-      this.getInteractionService();
-    },
-    async handlereview(r) {
-      this.dialogVisible = true
-
-      const {data: res} = await this.$http.get("zyCommunityInteraction/getInteractionList?interactionId=" + r.interactionId);
-      console.log("214", res)
-      this.InteraList = res.data;
-
-      console.log(r.interactionId)
-      const {data:res2} = await this.$http.get("zyCommunityInteraction/getParentIds?id=" + r.interactionId);
-      console.log("回复数据",res2.objectsName);
-
-      for(let i=0;i<res2.objectsName.length;i++){
-          this.InteraList.forEach((InteraList, i) => {
-            Vue.set(InteraList,'replyownerNickName',res2.objectsName[i]);
-          });
-      }
-
-
-
-      console.log("最后数据:",this.InteraList)
-
-
-
-    }
-    },
-
-    handleClose(done) {
-
-            done();
-
-    },
     async delInter(r) {
       console.log("qwqe", r.commentId)
       const confirmResult = await this.$confirm('确认要删除' + '"吗?', "警告", {
@@ -290,11 +252,53 @@ export default {
       }
       let res = await this.$http.delete("zyCommunityInteraction/updDelFlag?id=" + r.commentId);
       this.$message.success("删除成功")
-
       this.handlereview(r);
+    },
+    async remove(r) {
+      const confirmResult = await this.$confirm('确认要删除' + '吗?', "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).catch(err => err)
+      // 如果用户点击确认，则confirmResult 为'confirm'
+      // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+      let res = await this.$http.put("zyCommunityInteraction/delInteraction?id=" + r.interactionId + "&type=" + 1);
+      this.$message.success("删除成功")
+      this.getInteractionService();
+    },
+    handleClose(done) {
+      done();
+    },
+    async handlereview(r) {
+      this.dialogVisible = true
+
+      this.ctid = r.interactionId;
+
+      console.log("帖子数据", this.IntText)
+
+      const {data: res} = await this.$http.get("zyCommunityInteraction/getInteractionList?interactionId=" + r.interactionId);
+      console.log("214", res)
+      this.InteraList = res.data;
+
+
+      console.log(r.interactionId)
+      const {data: res2} = await this.$http.get("zyCommunityInteraction/getParentIds?id=" + r.interactionId);
+      console.log("回复数据", res2.objectsName);
+
+      for (let i = 0; i < res2.objectsName.length; i++) {
+        this.InteraList.forEach((InteraList, i) => {
+          Vue.set(InteraList, 'replyownerNickName', res2.objectsName[i]);
+        });
+      }
+
     }
 
   }
+
+}
 
 </script>
 
@@ -310,18 +314,22 @@ export default {
   height: 50px;
   border-radius: 50%;
   color: rgba(0, 0, 0, 0.5);
+
 }
 
 .el-table .el-image {
   width: 50px;
   height: 50px;
+
 }
+
 
 .h3 {
   padding: 10px 20px;
 }
 
 .el_div {
+
   margin-left: 20px;
 }
 </style>

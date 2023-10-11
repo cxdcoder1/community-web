@@ -46,7 +46,8 @@
             </template>
             <!-- 二级菜单 -->
             <template v-for="item2 in item.children" >
-              <el-submenu @click="saveNavStates"
+              <el-submenu  @click="saveNavState('/'+item.path)"
+                           :index="'/' + item.path"
                           v-if="item2.menuId == 108"
                           :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 5px"
                           >
@@ -56,7 +57,9 @@
                 </template>
                 <!-- 三级菜单 -->
                 <el-menu-item class="el-menu-item"
-                              :index="'/' + item3.path" v-for="item3 in item2.children"
+                              @click="saveNavState('/'+item3.path)"
+                              :index="'/' + item3.path"
+                              v-for="item3 in item2.children"
                               :key="item3.menuId" :disabled="item3.status==1" style="padding-left: 90px">
                   <i :class="'icon iconfont icon-'+item3.icon">&nbsp;&nbsp;</i>
                   <template slot="title">
@@ -67,7 +70,8 @@
               </el-submenu>
               <el-menu-item v-else class="el-menu-item"
                             @click="saveNavState('/'+item2.path)"
-                            :index="'/' + item2.path" :key="item2.menuId" :disabled="item2.status==1"
+                            :index="'/' + item2.path"
+                            :key="item2.menuId" :disabled="item2.status==1"
                             style="padding-left: 70px">
                 <!-- 图标 -->
                 <i :class="'icon iconfont icon-'+item2.icon" >&nbsp;&nbsp;</i>
@@ -76,8 +80,6 @@
             </template>
           </el-submenu>
         </el-menu>
-
-
       </el-aside>
 
       <!-- 主体结构 -->
