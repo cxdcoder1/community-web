@@ -174,7 +174,6 @@
                   type="text"
                   icon="el-icon-delete"
                   @click="delUser(scope.row)"
-
               >删除
               </el-button>
               <el-button
@@ -262,7 +261,7 @@
           <el-col :span="12">
             <el-form-item label="状态">
               <el-radio-group v-model="form.status">
-                <el-radio v-for="dict in this.statusPotion"
+                <el-radio v-for="dict in statusPotion"
                           :key="dict.dictValue"
                           :label="dict.dictValue">
                   {{ dict.dictLabel }}
@@ -510,8 +509,8 @@ export default {
     async getList() {
       this.queryParams.createTime = this.dateRange[0]
       this.queryParams.updateTime = this.dateRange[1]
-      console.log(this.queryParams.current)
-      console.log(this.queryParams.size)
+      // console.log(this.queryParams.current)
+      // console.log(this.queryParams.size)
       const {data: res} = await this.$http.get('sysUser/sysUserList', {
         params: this.queryParams
       })
@@ -624,14 +623,32 @@ export default {
     /** 查询部门下拉树结构 */
     getDeptTree() {
       this.$http.post("sysUser/getDeptList", {}).then(response => {
-        console.log("cccccccccc", response)
+        console.log("cccccccccc", response.data.menuList)
         this.deptOptions = response.data.menuList;
+        // addDisabledProperty(this.deptOptions);
+        // console.log(this.deptOptions,"ccccccccccccc")
       });
-
+//       // 在数据中为每个选项对象添加一个 disabled 属性
+//       function addDisabledProperty(options) {
+//         for (const option of options) {
+//           option.disabled = shouldDisableOption(option); // 根据条件判断是否禁用选项
+//
+//           if (option.children) {
+//             addDisabledProperty(option.children); // 递归处理子选项
+//           }
+//         }
+//       }
+// // 判断是否禁用选项的示例条件函数
+//       function shouldDisableOption(option) {
+//         // 根据你的条件逻辑返回 true 或 false
+//         // 例如，禁用 ID 为 1 的选项：
+//         return option.deptId ==100 || option.deptId ==101 || option.deptId ==102;
+//       }
       this.$http.post("sysDept/getDeptList", {}).then(response => {
         this.leftDeptTree = response.data.menuList;
       });
     },
+
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {
       console.log('asda' + val)
@@ -807,7 +824,7 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function () {
-      this.form.status = this.form.status == "正常" ? '0' : '1';
+      // this.form.status = this.form.status == "正常" ? '0' : '1';
 
       this.$refs["form"].validate(valid => {
         console.log(this.form, "ccccccccccc")

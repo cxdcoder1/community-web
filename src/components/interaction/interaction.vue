@@ -51,6 +51,7 @@
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
+
       <el-table :data="InteractionList" ref="list">
         <el-table-column type="selection" width="55" align="center"/>
         <el-table-column label="序号" align="center">
@@ -69,9 +70,16 @@
         <el-table-column label="内容" align="center" key="content" prop="content"/>
         <el-table-column label="图片" align="center" key="ownerPortrait" prop="ownerPortrait">
           <template slot-scope="scope">
-            <el-image :src="scope.row.ownerPortrait"/>
+            <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-picture"
+                @click="ShowImage(scope.row)">
+             显示图片
+            </el-button>
           </template>
         </el-table-column>
+
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button
@@ -100,33 +108,42 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
       </el-pagination>
+
       <el-dialog
           title="社区互动详情"
           :visible.sync="dialogVisible"
-          append-to-body :before-close="handleClose"
-      >
-        <div v-for="i in InteractionList">
+          append-to-body :before-close="handleClose">
+        <div v-for="i in InteractionList" key="i.interactionId">
           <div v-if="i.interactionId === ctid">
-            <h3><el-image :src="i.ownerPortrait"/>
+            <h3>
+              <el-image class="eimage" :src="i.ownerPortrait"/>
               <span>{{ i.ownerNickname }}</span>&nbsp;
               <span>{{ i.createTime |dateFormat }}
               </span></h3>
-            <p></p>
             <p>{{ i.content }}</p>
           </div>
         </div>
-
+        <span class="block" v-for="fit in timages" :key="fit">
+          <el-image
+              style="width: 100px; height: 100px;margin:1px 3px;"
+              :src="fit"
+              :fit="fit"></el-image>
+        </span>
         <el-table :data="InteraList">
-          <el-table-column>
+          <el-table-column style="background-color: #f5f5f5;" >
             <template slot-scope="scope">
               <div v-if="scope.row.commentOwnerNickname" class="el_div">
                 <!--<el-image v-for="url in urls" :key="url" :src="url" lazy></el-image>-->
-                <el-image :src="scope.row.ownerPortrait"/>
-                <span style="padding-top: -10px">{{ scope.row.ownerRealName }}</span>
+                <el-image style="
+                          width:50px;
+                          height: 50px;
+                          border-radius: 50%;
+                          color: rgba(0, 0, 0, 0.5);" :src="scope.row.ownerPortrait"/>
+                <span style="padding-top: -10px">{{ scope.row.commentOwnerNickname }}</span>
                 <br>
                 <span style="font-size: 12px;">{{ scope.row.commentCreateTime }}</span>
                 <br>
-                回复&nbsp;<span style="color:blue ">{{ scope.row.parentId == -1 ? "" : scope.row.ownerNickname }}</span>&nbsp;<b>:</b>{{
+                回复&nbsp;<span style="color:blue ">{{ scope.row.parentId == -1 ? "帖子" : scope.row.ownerNickname }}</span>&nbsp;<b>:</b>{{
                   scope.row.commentContent
                 }}
                 <br>
@@ -143,6 +160,12 @@
           </el-table-column>
         </el-table>
       </el-dialog>
+      <el-dialog
+          title="帖子图片详情"
+          :visible.sync="open"
+          append-to-body :before-close="handleClose">
+        <el-image style="max-width: 15%; max-height: 20% ; object-fit: contain;margin-left:10px" v-for="url in images" :key="url" :src="url" />
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -150,6 +173,7 @@
 <script>
 import index from "vuex";
 import Vue from "vue";
+
 
 export default {
   computed: {
@@ -176,6 +200,8 @@ export default {
       },
       InteractionList: [],
 
+      open:false,
+
       parentIds: [],
 
       ownerNickNames: [],
@@ -191,11 +217,23 @@ export default {
         content: ""
       }],
 
+      image:{
+        images:[],
+        pid:[]
+      },
+
+      timages:[],
+
+      images:[],
+      pid:[],
+
       ctid: undefined
     }
   }, created() {
     this.getInteractionService();
     this.communityList();
+
+
   },
   methods: {
     async communityList() {
@@ -238,19 +276,18 @@ export default {
       this.getInteractionService();
     },
     async delInter(r) {
-      console.log("qwqe", r.commentId)
+      console.log("commentId", r.commentId)
       const confirmResult = await this.$confirm('确认要删除' + '"吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).catch(err => err)
-
       // 如果用户点击确认，则confirmResult 为'confirm'
       // 如果用户点击取消, 则confirmResult获取的就是catch的错误消息'cancel'
       if (confirmResult !== 'confirm') {
         return this.$message.info('已经取消删除')
       }
-      let res = await this.$http.delete("zyCommunityInteraction/updDelFlag?id=" + r.commentId);
+      let res = await this.$http.put("zyCommunityInteraction/getCommentParentIds?id=" + r.commentId);
       this.$message.success("删除成功")
       this.handlereview(r);
     },
@@ -273,26 +310,44 @@ export default {
       done();
     },
     async handlereview(r) {
+
+      const {data: rs} = await this.$http.get("zyCommunityInteraction/getFeilsUrl?id=" + r.interactionId);
+      console.log("rs",rs)
+      this.image.images=rs.FilesUrl
+      this.image.pid=rs.ParentId
+
+      this.timages= rs.FilesUrl;
+
+      console.log("FilesUrl", this.image.images)
+      console.log("ParentId",this.image.pid)
+
       this.dialogVisible = true
 
       this.ctid = r.interactionId;
 
-      console.log("帖子数据", this.IntText)
-
       const {data: res} = await this.$http.get("zyCommunityInteraction/getInteractionList?interactionId=" + r.interactionId);
-      console.log("214", res)
+
       this.InteraList = res.data;
 
-
-      console.log(r.interactionId)
       const {data: res2} = await this.$http.get("zyCommunityInteraction/getParentIds?id=" + r.interactionId);
-      console.log("回复数据", res2.objectsName);
+
 
       for (let i = 0; i < res2.objectsName.length; i++) {
         this.InteraList.forEach((InteraList, i) => {
           Vue.set(InteraList, 'replyownerNickName', res2.objectsName[i]);
         });
       }
+
+    },
+    async ShowImage(r){
+      this.open=true;
+      const {data: res} = await this.$http.get("zyCommunityInteraction/getFeilsUrl?id=" + r.interactionId);
+      console.log("res",res)
+      this.images=res.FilesUrl
+      this.pid=res.ParentId
+      console.log("FilesUrl",this.images)
+      console.log("ParentId",this.pid)
+
 
     }
 
@@ -309,27 +364,28 @@ export default {
   word-wrap: break-word;
 }
 
-.el-dialog .el-image {
+.el-dialog .eimage {
   width: 50px;
   height: 50px;
   border-radius: 50%;
   color: rgba(0, 0, 0, 0.5);
-
 }
 
 .el-table .el-image {
   width: 50px;
   height: 50px;
-
 }
-
 
 .h3 {
   padding: 10px 20px;
 }
 
+.custom-column {
+  background-color: #f5f5f5; /* 设置背景色，可以替换为任意颜色值 */
+}
+
 .el_div {
 
-  margin-left: 20px;
+  margin-left: 30px;
 }
 </style>
