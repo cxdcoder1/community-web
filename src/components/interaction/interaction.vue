@@ -51,6 +51,7 @@
           <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
+
       <el-table :data="InteractionList" ref="list">
         <el-table-column type="selection" width="55" align="center"/>
         <el-table-column label="序号" align="center">
@@ -67,9 +68,9 @@
           </template>
         </el-table-column>
         <el-table-column label="内容" align="center" key="content" prop="content"/>
-        <el-table-column label="图片" align="center" key="ownerPortrait" prop="ownerPortrait">
+        <el-table-column label="图片" align="center" key="filesUrl" prop="filesUrl">
           <template slot-scope="scope">
-            <el-image :src="scope.row.ownerPortrait"/>
+            <el-image :src="scope.row.filesUrl"/>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -107,7 +108,7 @@
       >
         <div v-for="i in InteractionList">
           <div v-if="i.interactionId === ctid">
-            <h3><el-image :src="i.ownerPortrait"/>
+            <h3><el-image :src="i.filesUrl"/>
               <span>{{ i.ownerNickname }}</span>&nbsp;
               <span>{{ i.createTime |dateFormat }}
               </span></h3>
@@ -211,7 +212,7 @@ export default {
       })
       this.total = res.data.total
       this.InteractionList = res.data.records
-      console.log("total", this.total);
+      console.log("total11111111", this.InteractionList);
     },
     /** 搜索按钮操作 */
     handleQuery() {
