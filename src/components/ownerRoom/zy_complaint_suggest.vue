@@ -118,6 +118,7 @@
 export  default{
   data(){
     return{
+      total:"",
       form: {
         remark:""
       },
@@ -157,6 +158,7 @@ export  default{
       this.zyCommunityList = res.data;
       this.queryParams.communityId = this.zyCommunityList[0].communityId;
     },
+    //获取投诉列表
     async getZyComplaintSuggestList() {
       const {data: res1} = await this.$http.get("zyComplaintSuggest/zyComplaintSuggestDtoList", {
         params: this.queryParams
@@ -197,6 +199,7 @@ export  default{
         this.ids=this.derivesA;
       }
     },
+    //导出
     async derive() {
       const {data: res} = await this.$http.post(`excel/suggestList`, this.derivesA)
       if (res.status == 200) {
@@ -209,6 +212,7 @@ export  default{
         this.$message.error(res.msg)
       }
     },
+    //回复
     update(row){
       this.opens=true;
       this.complaintSuggestId=row.complaintSuggestId;
@@ -218,25 +222,24 @@ export  default{
       this.opens = false;
       this.reset();
     },
+    //重置表单
     reset() {
       this.form = {
       remark: undefined
       };
     },
+    //回复评论
     async submitForm() {
-      //  alert(this.form.remark)
-      // alert(this.complaintSuggestId)
       let param = {
         complaintSuggestId:this.complaintSuggestId,
         remark:this.form.remark
       }
-
       let res = await this.$http.post("zyComplaintSuggest/remark" ,param)
       if (res.data.status === 200) {
         this.opens = false;
         this.$message.success(res.data.msg);
+        this.reset()
         this.getZyComplaintSuggestList();
-
       } else {
         this.$message.error(res.data.msg);
       }

@@ -92,16 +92,17 @@
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark">
         <template slot-scope="scope">
-          <span v-if="scope.row.remark === '0'">同意</span>
-          <span v-if="scope.row.remark === '1'">拒绝</span>
-          <span v-if="scope.row.remark === '2'">待处理</span>
+          <el-tag :type="scope.row.remark === '1' ? 'danger' : ''">
+<!--            {{ scope.row.remark === '0' ? '同意' : (scope.row.remark === '1' ? '<span style="color: red;">拒绝</span>' : '待处理') }}-->
+            {{ scope.row.remark === '0' ? '同意' : (scope.row.remark === '1' ? ' 拒绝' : '待处理') }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.remark === '0'" type="danger" size="small" @click="update(scope.row)">拒绝</el-button>
-          <el-button v-if="scope.row.remark === '1'" type="success" size="small" @click="update(scope.row)">同意</el-button>
-          <el-button v-if="scope.row.remark === '2'" type="success" size="small" @click="update(scope.row)">同意</el-button>
+          <el-button v-if="scope.row.remark === '2'" type="primary" size="small" @click="update(scope.row)">同意</el-button>
+          <el-button v-if="scope.row.remark === '2'" type="danger" size="small" @click="update(scope.row)">拒绝</el-button>
+          <span v-else>已处理</span>
         </template>
       </el-table-column>
   </el-table>
@@ -122,6 +123,7 @@
 export  default {
     data(){
       return{
+        total:"",
         //导出集合
         derivesA:[],
         //搜索条件
@@ -205,15 +207,19 @@ export  default {
         this.$message.error(res.msg)
       }
     },
+    //同意或拒绝访客邀请
     async update(row) {
       const {data: res} = await this.$http.put(`zyVisitor/updateRemark/`+row.visitorId)
       if (res.status == 200) {
         this.$message.success(res.msg)
         this.getZyVisitorList();
+        // 修改对应的数据
       } else if (res.status == 201) {
         this.$message.error(res.msg)
       }
-    }
+
+    },
+
   }
 }
 </script>

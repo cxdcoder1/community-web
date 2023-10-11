@@ -271,6 +271,7 @@
 export default {
   data(){
     return{
+      total:"",
       derivesA:[],
       open:false,
       //绑定状态

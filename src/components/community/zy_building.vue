@@ -257,6 +257,7 @@ export default {
             this.open = false;
             this.$message.success(res.data.msg);
             this.getBuildingList();
+
           } else {
             this.$message.error(res.data.msg);
           }
