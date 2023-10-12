@@ -49,8 +49,18 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="状态" prop="remark">
+        <el-select v-model="queryParams.remark" placeholder="请选择状态" clearable size="small">
+          <el-option
+              v-for="item in remarkList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-button
-          style="margin-top: 2px"
+          style="margin-top: 8px"
           type="warning"
           plain
           size="mini"
@@ -59,7 +69,6 @@
       >导出
       </el-button>
     </div>
-
   </el-form>
   </el-card>
   <el-card>
@@ -123,6 +132,16 @@
 export  default {
     data(){
       return{
+        remarkList: [{
+          value: '0',
+          label: '同意'
+        },{
+          value: '1',
+          label: '拒绝'
+        },{
+          value: '2',
+          label: '待处理'
+        }],
         total:"",
         //导出集合
         derivesA:[],
@@ -135,7 +154,8 @@ export  default {
           visitorName: null,
           visitorPhoneNumber: null,
           visitorDate: null,
-          communityId:""
+          communityId:"",
+          remark:""
         },
         //小区集合
         zyCommunityList: {},

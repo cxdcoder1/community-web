@@ -75,10 +75,11 @@
       </el-table-column>
       <el-table-column label="图片" align="center" prop="filesUrl">
         <template slot-scope="scope">
-          <el-image style="width: 30px; height: 30px" :src="scope.row.filesUrl[1]" :preview-src-list="scope.row.filesUrl">
-            <div slot="error" class="image-slot">
-              <i class="el-icon-picture-outline"></i>
-            </div>
+          <el-image style="width: 30px; height: 30px" :src="scope.row.filesUrl">
+<!--            <div slot="error" class="image-slot">-->
+<!--              <i class="el-icon-picture-outline"></i>-->
+<!--            </div>-->
+<!--            <el-image :src="filesUrl"/>-->
           </el-image>
         </template>
       </el-table-column>
@@ -94,7 +95,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="queryParams.current"
-        :page-sizes="[1, 5, 20]"
+        :page-sizes="[1, 5, 10]"
         :page-size="queryParams.size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
