@@ -75,12 +75,13 @@
       </el-table-column>
       <el-table-column label="图片" align="center" prop="filesUrl">
         <template slot-scope="scope">
-          <el-image style="width: 30px; height: 30px" :src="scope.row.filesUrl">
-<!--            <div slot="error" class="image-slot">-->
-<!--              <i class="el-icon-picture-outline"></i>-->
-<!--            </div>-->
-<!--            <el-image :src="filesUrl"/>-->
-          </el-image>
+          <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-picture"
+              @click="ShowImage(scope.row)">
+            显示图片
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column label="备注" align="center" prop="remark">
@@ -111,6 +112,12 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+        title="图片详情"
+        :visible.sync="open"
+        append-to-body :before-close="handleClose">
+      <el-image style="max-width: 15%; max-height: 20% ; object-fit: contain;margin-left:10px" v-for="url in images" :key="url" :src="url" />
+    </el-dialog>
   </el-card>
   <br>
 </div>
@@ -119,6 +126,7 @@
 export  default{
   data(){
     return{
+      open:false,
       total:"",
       form: {
         remark:""
@@ -244,6 +252,15 @@ export  default{
       } else {
         this.$message.error(res.data.msg);
       }
+    },
+    async ShowImage(r){
+      this.open=true;
+      const {data: res} = await this.$http.get("zyCommunityInteraction/getFeilsUrl?id=" + r.complaintSuggestId);
+      console.log("res",res)
+      this.images=res.FilesUrl
+      this.pid=res.ParentId
+      console.log("FilesUrl",this.images)
+      console.log("ParentId",this.pid)
     }
   }
 }
