@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 面包屑导航 -->
-    <el-breadcrumb separator="/">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>社区互动</el-breadcrumb-item>
     </el-breadcrumb>
@@ -36,6 +36,10 @@
           />
         </el-form-item>
         <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+        <el-form-item>
           <el-select v-model="queryParams.communityId" @change="updateQueryParams">
             <el-option
                 v-for="item in this.zyCommunityList"
@@ -45,10 +49,6 @@
             >
             </el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-          <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
@@ -123,12 +123,16 @@
             <p>{{ i.content }}</p>
           </div>
         </div>
+
+
+
         <span class="block" v-for="fit in timages" :key="fit">
           <el-image
               style="width: 100px; height: 100px;margin:1px 3px;"
               :src="fit"
               :fit="fit"></el-image>
         </span>
+
         <el-table :data="InteraList">
           <el-table-column style="background-color: #f5f5f5;" >
             <template slot-scope="scope">
@@ -164,7 +168,16 @@
           title="帖子图片详情"
           :visible.sync="open"
           append-to-body :before-close="handleClose">
-        <el-image style="max-width: 15%; max-height: 20% ; object-fit: contain;margin-left:10px" v-for="url in images" :key="url" :src="url" />
+
+        <template>
+          <el-carousel :interval="4000" type="card" height="200px">
+            <el-carousel-item v-for="item in images" :key="item">
+              <h3 class="medium"><el-image :src="item" /></h3>
+            </el-carousel-item>
+          </el-carousel>
+        </template>
+
+<!--        <el-image style="max-width: 15%; max-height: 20% ; object-fit: contain;margin-left:10px" v-for="url in images" :key="url" :src="url" />-->
       </el-dialog>
     </el-card>
   </div>
@@ -232,15 +245,13 @@ export default {
   }, created() {
     this.getInteractionService();
     this.communityList();
-
-
   },
   methods: {
     async communityList() {
       const {data: res} = await this.$http.get("zyBuilding/getCommunityList");
       console.log("123", res)
       this.zyCommunityList = res.data;
-      this.queryParams.communityId = this.zyCommunityList[0].communityId;
+      this.queryParams.communityId = this.zyCommunityList.communityId;
     },
     async getInteractionService() {
 
@@ -273,6 +284,7 @@ export default {
       this.getInteractionService();
     },
     updateQueryParams() {
+
       this.getInteractionService();
     },
     async delInter(r) {
@@ -388,4 +400,21 @@ export default {
 
   margin-left: 30px;
 }
+
+.el-carousel__item h3 {
+  color: #475669;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n+1) {
+  background-color: #d3dce6;
+}
+
 </style>

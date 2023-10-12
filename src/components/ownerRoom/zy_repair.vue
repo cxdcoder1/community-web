@@ -1,6 +1,6 @@
 <template>
 <div>
-  <el-breadcrumb separator="/">
+  <el-breadcrumb separator-class="el-icon-arrow-right">
     <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
     <el-breadcrumb-item>报修管理 / 报修信息</el-breadcrumb-item>
   </el-breadcrumb>

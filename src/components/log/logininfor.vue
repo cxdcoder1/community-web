@@ -1,5 +1,13 @@
 <template>
+
+
   <div class="app-container">
+    <!-- 面包屑导航 -->
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>登录日志</el-breadcrumb-item>
+    </el-breadcrumb>
+    <br>
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="登录地址" prop="ipaddr">
         <el-input

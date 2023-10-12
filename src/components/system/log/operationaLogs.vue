@@ -1,8 +1,8 @@
 <template>
 <div>
-  <el-breadcrumb separator="/">
+  <el-breadcrumb separator-class="el-icon-arrow-right">
     <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-    <el-breadcrumb-item>日志管理 / 操作日志</el-breadcrumb-item>
+    <el-breadcrumb-item>操作日志</el-breadcrumb-item>
   </el-breadcrumb>
   <br>
   <el-card>
