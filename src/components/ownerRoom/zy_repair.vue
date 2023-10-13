@@ -79,16 +79,7 @@
         align="center">
     </el-table-column>
     <el-table-column label="报修编号" align="center" prop="repairNum" width="180"/>
-    <el-table-column label="报修状态" align="center" prop="repairState">
-      <template slot-scope="scope">
-        <span v-if="scope.row.repairState === 'Pending'">待处理</span>
-        <span v-else-if="scope.row.repairState === 'Allocated'">已分派</span>
-        <span v-else-if="scope.row.repairState === 'Processing'">处理中</span>
-        <span v-else-if="scope.row.repairState === 'Processed'">已处理</span>
-        <span v-else-if="scope.row.repairState ==='No_Processed'">不处理</span>
-        <span v-else-if="scope.row.repairState ==='Cancelled'">已取消</span>
-      </template>
-    </el-table-column>
+    <el-table-column label="报修状态" align="center" prop="repairState" :formatter="repairStatusFormat"/>
     <el-table-column label="业主姓名" align="center" prop="ownerRealName" />
     <el-table-column label="业主电话" align="center" prop="ownerPhoneNumber" />
     <el-table-column label="报修内容" align="center" prop="repairContent" />
@@ -132,28 +123,36 @@
     <el-form ref="form" :model="form" >
       <el-row class="mb8">
         <el-col :span="1.5">
-          <el-form-item label="报修编号" prop="repairNum" label-width="98px">
-            <el-input v-model="form.repairNum" style="width: 200px"/>
+          <el-form-item label="报修编号" prop="repairNum" label-width="98px" >
+            <el-input v-model="form.repairNum" style="width: 200px" readonly/>
           </el-form-item>
         </el-col>
         <el-col :span="1.5">
           <el-form-item label="报修状态" prop="repairState" label-width="98px">
-            <el-input v-model="form.repairState" style="width: 200px"/>
+            <el-select v-model="form.repairState" placeholder="请选择报修状态" clearable size="small">
+              <el-option
+                  v-for="item in repairOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row class="mb8">
         <el-col :span="1.5">
-          <el-form-item label="业主姓名" prop="userId" label-width="98px">
-            <el-input v-model="form.ownerRealName" style="width: 200px"/>
+          <el-form-item label="业主姓名" prop="userId" label-width="98px" >
+            <el-input v-model="form.ownerRealName" style="width: 200px" readonly/>
           </el-form-item>
         </el-col>
         <el-col :span="1.5">
-          <el-form-item label="创建时间" prop="createTime" label-width="98px">
+          <el-form-item label="创建时间" prop="createTime" label-width="98px" readonly>
             <el-date-picker clearable size="small" style="width: 200px"
                             v-model="form.createTime"
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
+
             >
             </el-date-picker>
           </el-form-item>
@@ -161,21 +160,23 @@
       </el-row>
       <el-row class="mb8">
         <el-col :span="1.5">
-          <el-form-item label="派单时间" prop="assignmentTime" label-width="98px">
+          <el-form-item label="派单时间" prop="assignmentTime" label-width="98px" readonly>
             <el-date-picker clearable size="small" style="width: 200px"
                             v-model="form.assignmentTime"
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
+
             >
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="1.5">
-          <el-form-item label="接单时间" prop="receivingOrdersTime" label-width="98px">
+          <el-form-item label="接单时间" prop="receivingOrdersTime" label-width="98px" >
             <el-date-picker clearable size="small" style="width: 200px"
                             v-model="form.receivingOrdersTime"
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
+
             >
             </el-date-picker>
           </el-form-item>
@@ -207,7 +208,7 @@
         <el-col :span="1.5">
           <el-form-item label="期待上门时间" prop="doorTime" label-width="98px">
             <el-date-picker clearable size="small" style="width: 200px"
-                            v-model="form.doorTime"
+                            v-model="form.doorTime "
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
             >
@@ -215,32 +216,34 @@
           </el-form-item>
         </el-col>
         <el-col :span="1.5">
-          <el-form-item label="分派人id" prop="assignmentId" label-width="98px">
-            <el-input v-model="form.assignmentId" style="width: 200px"/>
+          <el-form-item label="处理人Id" prop="assignmentId" label-width="98px">
+            <el-input v-model="form.assignmentId" style="width: 200px" readonly/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="1.5">
           <el-form-item label="处理人姓名" prop="completeName" label-width="98px">
-            <el-input v-model="form.completeName" style="width: 200px"/>
+            <el-select v-model="form.completeName" style="width: 200px"  @change="updateNumber">
+              <el-option v-for="user in userList" :key="user.userName" :label="user.userName" :value="user.userName"></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="1.5">
           <el-form-item label="处理人电话" prop="completePhone" label-width="98px">
-            <el-input v-model="form.completePhone" style="width: 200px"/>
+            <el-input v-model="this.number" style="width: 200px"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="1.5">
-          <el-form-item label="报修内容" label-width="98px">
-            <el-input v-model="form.repairContent" :min-height="192" style="width: 200px"/>
+          <el-form-item label="报修内容" label-width="98px" >
+            <el-input v-model="form.repairContent" :min-height="192" style="width: 200px" readonly/>
           </el-form-item>
         </el-col>
         <el-col :span="1.5">
-          <el-form-item label="详细地址" prop="address" label-width="98px">
-            <el-input v-model="form.address" style="width: 200px"/>
+          <el-form-item label="详细地址" prop="address" label-width="98px" >
+            <el-input v-model="form.address" style="width: 200px" readonly/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -251,13 +254,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="1.5">
-          <el-form-item label="小区ID" prop="communityId" label-width="98px">
-            <el-input v-model="form.communityId" style="width: 200px"/>
+          <el-form-item label="小区ID" prop="communityId" label-width="98px" >
+            <el-input v-model="form.communityId" style="width: 200px" readonly/>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="update()">确定</el-button>
       <el-button @click="open=false">取 消</el-button>
     </div>
   </el-dialog>
@@ -271,35 +275,29 @@
 export default {
   data(){
     return{
+      numbers:"",
       total:"",
       derivesA:[],
       open:false,
       //绑定状态
       repairOption: [{
-        value: 'Pending',
+        value: '0',
         label: '待处理'
       },{
-        value: 'Allocated',
+        value: '1',
         label: '已分派'
       },{
-        value: 'Processing',
-        label: '处理中'
-      },{
-        value: 'Processed',
-        label: '已处理'
-      },{
-        value: 'No_Processed',
-        label: '不处理'
-      },{
-        value: 'Cancelled',
-        label: '已取消'
+        value: '2',
+        label: '已完成'
       }],
+      number:"",
       // 表单参数
       form: {},
       //搜索条件
       showSearch:true,
       //小区集合
       zyCommunityList: {},
+      userList:{},
       zyRepairList:{},
       queryParams: {
         pageNum: 1,
@@ -314,14 +312,32 @@ export default {
    async created() {
      await this.getCommunityList();
      await this.getZyRepairList();
+     await this.getUserList();
    },
   methods:{
+    // 类型翻译
+    repairStatusFormat(row) {
+      if(row.repairState === '0'){
+        return '待处理';
+      }else if(row.repairState === '1'){
+        return '已分派';
+      }else if(row.repairState === '2'){
+        return '已完成';
+      }
+    },
     // 获取小区
     async getCommunityList() {
       const {data: res} = await this.$http.get("zyBuilding/getCommunityList");
       this.zyCommunityList = res.data;
       this.queryParams.communityId = this.zyCommunityList[0].communityId;
+      await this.getUserList();
+
     },
+     async getUserList() {
+       const {data: res} = await this.$http.post("zyRepair/getUserList/" + this.queryParams.communityId);
+       this.userList = res.data;
+       console.log(this.userList)
+     },
     async getZyRepairList() {
       const {data: res1} = await this.$http.get("zyRepair/zyRepairDtoList", {
         params: this.queryParams
@@ -332,6 +348,7 @@ export default {
     //小区下拉框事件变化
     updateQueryParams() {
       this.getZyRepairList();
+      this.getUserList();
     },
     //分页
     handleSizeChange(val) {
@@ -362,15 +379,33 @@ export default {
         this.ids=this.derivesA;
       }
     },
-    oper(row){
+    async oper(row) {
       //给查看详情表单赋值
-      this.open=true;
+      this.open = true;
+      this.numbers = this.number
       this.form = structuredClone(row)
+      let res = await this.$http.post("zyRepair/getNumber?name=" + this.form.completeName);
+      this.number = res.data.data
     },
     derive(){
       alert(this.derivesA)
+    },
+    async update() {
+      let res1 = JSON.parse(window.sessionStorage.getItem("user"));
+      this.form.assignmentId=res1.userId
+      let res = await this.$http.put("zyRepair/edit",this.form)
+      if (res.data.status === 200) {
+        this.open = false;
+        this.$message.success(res.data.msg);
+        this.getZyRepairList();
+      } else {
+        this.$message.error(res.data.msg);
+      }
+    },
+    async updateNumber() {
+      let res = await this.$http.post("zyRepair/getNumber?name="+ this.form.completeName);
+      this.number=res.data.data
     }
-
   }
 }
 </script>

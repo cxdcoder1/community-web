@@ -249,7 +249,6 @@ export default {
   methods: {
     async communityList() {
       const {data: res} = await this.$http.get("zyBuilding/getCommunityList");
-      console.log("123", res)
       this.zyCommunityList = res.data;
       this.queryParams.communityId = this.zyCommunityList.communityId;
     },
@@ -324,26 +323,14 @@ export default {
     async handlereview(r) {
 
       const {data: rs} = await this.$http.get("zyCommunityInteraction/getFeilsUrl?id=" + r.interactionId);
-      console.log("rs",rs)
       this.image.images=rs.FilesUrl
       this.image.pid=rs.ParentId
-
       this.timages= rs.FilesUrl;
-
-      console.log("FilesUrl", this.image.images)
-      console.log("ParentId",this.image.pid)
-
       this.dialogVisible = true
-
       this.ctid = r.interactionId;
-
       const {data: res} = await this.$http.get("zyCommunityInteraction/getInteractionList?interactionId=" + r.interactionId);
-
       this.InteraList = res.data;
-
       const {data: res2} = await this.$http.get("zyCommunityInteraction/getParentIds?id=" + r.interactionId);
-
-
       for (let i = 0; i < res2.objectsName.length; i++) {
         this.InteraList.forEach((InteraList, i) => {
           Vue.set(InteraList, 'replyownerNickName', res2.objectsName[i]);
@@ -354,13 +341,9 @@ export default {
     async ShowImage(r){
       this.open=true;
       const {data: res} = await this.$http.get("zyCommunityInteraction/getFeilsUrl?id=" + r.interactionId);
-      console.log("res",res)
+
       this.images=res.FilesUrl
       this.pid=res.ParentId
-      console.log("FilesUrl",this.images)
-      console.log("ParentId",this.pid)
-
-
     }
 
   }
