@@ -84,14 +84,19 @@
     <el-table-column label="业主电话" align="center" prop="ownerPhoneNumber" />
     <el-table-column label="报修内容" align="center" prop="repairContent" />
     <el-table-column label="详细地址" align="center" prop="address" />
-    <el-table-column label="创建时间" align="center" prop="completeTime" width="180">
+    <el-table-column label="创建时间" align="center" width="180">
       <template slot-scope="scope">
-        {{ scope.row.completeTime | dateFormat }}
+        {{ scope.row.createTime}}
       </template>
+
+<!--      <template slot-scope="scope">-->
+<!--        {{ scope.row.doorTime | moment('YYYY-MM-DD') }}-->
+<!--      </template>-->
+
     </el-table-column>
     <el-table-column label="期待上门时间" align="center" prop="doorTime" width="180">
       <template slot-scope="scope">
-        {{ scope.row.doorTime | dateFormat }}
+        {{ scope.row.doorTime }}
       </template>
     </el-table-column>
     <el-table-column label="处理人姓名" align="center" prop="completeName" />
@@ -147,12 +152,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="1.5">
-          <el-form-item label="创建时间" prop="createTime" label-width="98px" readonly>
+          <el-form-item label="创建时间" prop="createTime" label-width="98px" >
             <el-date-picker clearable size="small" style="width: 200px"
                             v-model="form.createTime"
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
-
+                            readonly
             >
             </el-date-picker>
           </el-form-item>
@@ -160,13 +165,12 @@
       </el-row>
       <el-row class="mb8">
         <el-col :span="1.5">
-          <el-form-item label="派单时间" prop="assignmentTime" label-width="98px" readonly>
+          <el-form-item label="派单时间" prop="assignmentTime" label-width="98px" >
             <el-date-picker clearable size="small" style="width: 200px"
                             v-model="form.assignmentTime"
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
-
-            >
+                           >
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -176,7 +180,6 @@
                             v-model="form.receivingOrdersTime"
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
-
             >
             </el-date-picker>
           </el-form-item>
@@ -199,6 +202,7 @@
                             v-model="form.cancelTime"
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
+
             >
             </el-date-picker>
           </el-form-item>
@@ -211,6 +215,7 @@
                             v-model="form.doorTime "
                             type="datetime"
                             value-format="yyyy-MM-dd HH:mm:ss"
+                            readonly
             >
             </el-date-picker>
           </el-form-item>
@@ -270,11 +275,20 @@
 </template>
 
 <script>
-
-
+import moment from 'moment';
 export default {
+  filters: {
+    moment: function (value, formatString) {
+      if (value) {
+        return moment(value).format(formatString);
+      } else {
+        return '';
+      }
+    }
+  },
   data(){
     return{
+      updateBy:"",
       numbers:"",
       total:"",
       derivesA:[],
@@ -383,7 +397,14 @@ export default {
       //给查看详情表单赋值
       this.open = true;
       this.numbers = this.number
+
+
       this.form = structuredClone(row)
+
+      console.log("",this.form.assignmentTime)
+
+
+
       let res = await this.$http.post("zyRepair/getNumber?name=" + this.form.completeName);
       this.number = res.data.data
     },
@@ -391,8 +412,11 @@ export default {
       alert(this.derivesA)
     },
     async update() {
+
+
       let res1 = JSON.parse(window.sessionStorage.getItem("user"));
       this.form.assignmentId=res1.userId
+      this.form.updateBy=res1.userName
       let res = await this.$http.put("zyRepair/edit",this.form)
       if (res.data.status === 200) {
         this.open = false;
@@ -405,7 +429,8 @@ export default {
     async updateNumber() {
       let res = await this.$http.post("zyRepair/getNumber?name="+ this.form.completeName);
       this.number=res.data.data
-    }
+    },
+
   }
 }
 </script>
