@@ -67,8 +67,8 @@
           <template slot-scope="scope">{{ scope.row.createTime | dateFormat }}</template>
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-          <template slot-scope="scope">
-            <el-button size="mini" type="text" icon="el-icon-plus"  @click="updateDept(scope.row)">修改</el-button>
+          <template slot-scope="scope" v-if="scope.row.deptName!='智慧社区'">
+            <el-button  size="mini" type="text" icon="el-icon-plus"  @click="updateDept(scope.row)">修改</el-button>
             <el-button size="mini" type="text" icon="el-icon-plus"  @click="Add(scope.row)">新增</el-button>
             <el-button size="mini" type="text" icon="el-icon-delete"
                        @click="deleteDept(scope.row)">删除

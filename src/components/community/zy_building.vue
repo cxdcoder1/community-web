@@ -247,12 +247,12 @@ export default {
           let res;
           if (this.form.buildingId==null){
             this.form.buildingId=Date.now();
-              res = await this.$http.get("zyBuilding/insertBuilding",{
+            res = await this.$http.get("zyBuilding/insertBuilding",{
               params:this.form
             })
           }
           else {
-              res=await  this.$http.put("zyBuilding/updateBuilding/"+this.id,this.form)
+            res=await  this.$http.put("zyBuilding/updateBuilding/"+this.id,this.form)
           }
           if (res.data.status === 200) {
             this.open = false;
@@ -260,6 +260,7 @@ export default {
             this.getBuildingList();
 
           } else {
+            this.form.buildingId=undefined
             this.$message.error(res.data.msg);
           }
         }

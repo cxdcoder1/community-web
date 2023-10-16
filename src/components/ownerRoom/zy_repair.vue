@@ -410,8 +410,17 @@ export default {
       let res = await this.$http.post("zyRepair/getNumber?name=" + this.form.completeName);
       this.number = res.data.data
     },
-    derive() {
-      alert(this.derivesA)
+    //导出方法
+    async derive() {
+      const {data: res} = await this.$http.post(`excel/getZyRepairListS`, this.derivesA)
+      if (res.status == 200) {
+        //成功导出
+        this.$message.success(res.msg + ",路径为：" + res.path)
+        this.$refs.list.clearSelection(); // el-table上绑定ref="list"
+      } else if (res.status == 201) {
+        //导出失败
+        this.$message.error(res.msg)
+      }
     },
     async update() {
       let res1 = JSON.parse(window.sessionStorage.getItem("user"));
