@@ -43,8 +43,7 @@
         >导出
         </el-button>
       </el-form>
-    </el-card>
-    <el-card>
+
       <el-table
           ref="multipleTable"
           :data="zyComplaintSuggestList"
@@ -119,11 +118,12 @@
           append-to-body >
 
         <template>
-          <el-carousel :interval="4000" type="card" height="200px">
-            <el-carousel-item v-for="item in images" :key="item">
-              <h3 class="medium"><el-image :src="item" /></h3>
+          <el-carousel v-if="images.length > 0" :interval="4000" type="card" height="200px">
+            <el-carousel-item   v-for="item in images" :key="item">
+              <h3  class="medium"><el-image :src="item" /></h3>
             </el-carousel-item>
           </el-carousel>
+          <el-empty v-else description="暂无图片"></el-empty>
         </template>
 
 

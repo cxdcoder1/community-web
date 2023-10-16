@@ -15,6 +15,7 @@
         <el-form-item prop="password">
           <el-input type="password"  class="input-border-style" v-model="loginForm.password" prefix-icon="el-icon-s-cooperation" show-password></el-input>
         </el-form-item>
+
         <!--                <div>-->
         <Vcode :show="isShow" @success="success" @close="close"/>
         <!--                </div>-->

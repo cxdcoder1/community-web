@@ -25,6 +25,8 @@ import visitors from "@/components/ownerRoom/zy_visitor.vue"
 import repairs from "@/components/ownerRoom/zy_repair.vue"
 import suggests from "@/components/ownerRoom/zy_complaint_suggest.vue"
 import interaction from "@/components/interaction/interaction.vue"
+import server from "@/components/server/index.vue";
+
 
 Vue.use(VueRouter)
 
@@ -56,6 +58,7 @@ const routes = [
             {path: '/visitor',component: visitors},
             {path: '/repair',component: repairs},
             {path: '/suggest',component: suggests},
+            {path: '/server',component: server},
             // 路由配置
             {
                 path: '/data/:dictId',

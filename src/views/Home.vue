@@ -113,6 +113,7 @@ export default {
   },
   data() {
     return {
+      collapse: true,   // 菜单收缩状态
       // 被激活的链接地址
       activePath: '',
       status: "",
@@ -166,7 +167,12 @@ export default {
       //点击二级菜单的时候保存被点击的二级菜单信息
       window.sessionStorage.setItem("activePath",path);
     },
-
+    handleMouseEnter() {
+      this.collapse = false;
+    },
+    handleMouseLeave() {
+      this.collapse = true;
+    }
   },
 
 

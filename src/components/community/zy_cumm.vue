@@ -295,6 +295,7 @@ export default {
     }
   }, created() {
     this.getCommunityList();
+
   },
   methods: {
     addressText(code){
@@ -304,7 +305,6 @@ export default {
     handleChange (value) {
       console.log(value)
     },
-
     async getCommunityList() {
       const {data: res} = await this.$http.get('zyCommunity/getCommunityAll', {
         params: this.queryParams
@@ -315,6 +315,7 @@ export default {
       console.log("total",this.total);
       const {data: res2} = await this.$http.post("sysDept/treeDeptLists",this.deptInfoTree);
       this.deptList = res2.menuList;
+
     },
 
     /** 搜索按钮操作 */
@@ -367,7 +368,9 @@ export default {
      * 导出方法
      */
     async derive() {
-      const {data: res} = await this.$http.post(`excel/Communitylist`, this.deriveList)
+      // this.$refs.list.selection.map(item=>item.dictId)
+      console.log("list",this.$refs.list.selection.map(item=>item.communityId))
+      const {data: res} = await this.$http.post('excel/Communitylist', this.$refs.list.selection.map(item=>item.communityId))
       if (res.status == 200) {
         //成功导出
         this.$message.success(res.msg + ",路径为：" + res.path)
@@ -442,6 +445,7 @@ export default {
       this.dialogVisible = true;
       this.form2.communityId=r.communityId
       this.form2.deptId=r.deptId
+      console.log("deptId",r.deptId)
       console.log("123",this.form2.communityId)
     },
     //获取选择的编号信息
@@ -452,10 +456,18 @@ export default {
     },
     //确定选择
     async updReplaCement(){
-      let res = await this.$http.put("zyCommunity/replacement?communityId="+this.form2.communityId+"&deptId="+this.form2.dept);
-      console.log(res)
-      this.dialogVisible = false;
-      this.getCommunityList()
+      console.log("123", this.form2.dept)
+      console.log("123", this.form2.deptId)
+      if(this.form2.dept  === this.form2.deptId || this.form2.dept==""){
+        this.dialogVisible = false
+        this.$message.success('更改成功')
+        return
+      }
+        let res = await this.$http.put("zyCommunity/replacement?communityId="+this.form2.communityId+"&deptId="+this.form2.dept);
+        console.log(res)
+        this.dialogVisible = false;
+        this.$message.success('更改成功')
+        this.getCommunityList()
 
     },
     /** 修改按钮操作 */

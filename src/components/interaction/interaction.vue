@@ -123,9 +123,6 @@
             <p>{{ i.content }}</p>
           </div>
         </div>
-
-
-
         <span class="block" v-for="fit in timages" :key="fit">
           <el-image
               style="width: 100px; height: 100px;margin:1px 3px;"
@@ -133,7 +130,8 @@
               :fit="fit"></el-image>
         </span>
 
-        <el-table :data="InteraList">
+        <div class="el-div">
+        <el-table v-if="InteraList.length > 0" :data="InteraList">
           <el-table-column style="background-color: #f5f5f5;" >
             <template slot-scope="scope">
               <div v-if="scope.row.commentOwnerNickname" class="el_div">
@@ -163,6 +161,8 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-empty v-else description="暂无评论"></el-empty>
+        </div>
       </el-dialog>
       <el-dialog
           title="帖子图片详情"
@@ -170,11 +170,12 @@
           append-to-body :before-close="handleClose">
 
         <template>
-          <el-carousel :interval="4000" type="card" height="200px">
-            <el-carousel-item v-for="item in images" :key="item">
-              <h3 class="medium"><el-image :src="item" /></h3>
+          <el-carousel v-if="images.length > 0" :interval="4000" type="card" height="200px">
+            <el-carousel-item   v-for="item in images" :key="item">
+              <h3  class="medium"><el-image :src="item" /></h3>
             </el-carousel-item>
           </el-carousel>
+          <el-empty v-else description="暂无图片"></el-empty>
         </template>
 
 <!--        <el-image style="max-width: 15%; max-height: 20% ; object-fit: contain;margin-left:10px" v-for="url in images" :key="url" :src="url" />-->
@@ -323,14 +324,26 @@ export default {
     async handlereview(r) {
 
       const {data: rs} = await this.$http.get("zyCommunityInteraction/getFeilsUrl?id=" + r.interactionId);
+      console.log("rs",rs)
       this.image.images=rs.FilesUrl
       this.image.pid=rs.ParentId
+
       this.timages= rs.FilesUrl;
+
+      console.log("FilesUrl", this.image.images)
+      console.log("ParentId",this.image.pid)
+
       this.dialogVisible = true
+
       this.ctid = r.interactionId;
+
       const {data: res} = await this.$http.get("zyCommunityInteraction/getInteractionList?interactionId=" + r.interactionId);
+
       this.InteraList = res.data;
+
       const {data: res2} = await this.$http.get("zyCommunityInteraction/getParentIds?id=" + r.interactionId);
+
+
       for (let i = 0; i < res2.objectsName.length; i++) {
         this.InteraList.forEach((InteraList, i) => {
           Vue.set(InteraList, 'replyownerNickName', res2.objectsName[i]);
@@ -344,6 +357,10 @@ export default {
 
       this.images=res.FilesUrl
       this.pid=res.ParentId
+      console.log("FilesUrl",this.images)
+      console.log("ParentId",this.pid)
+
+
     }
 
   }
@@ -398,6 +415,10 @@ export default {
 
 .el-carousel__item:nth-child(2n+1) {
   background-color: #d3dce6;
+}
+
+el-div{
+  background-color: red;
 }
 
 </style>
