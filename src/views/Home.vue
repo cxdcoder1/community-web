@@ -1,10 +1,9 @@
-
 <template>
 
   <el-container class="container">
     <!-- 头部区域 -->
 
-    <el-header height="80px"   >
+    <el-header height="80px">
       <!-- logo -->
       <img src="../assets/123123.png" width="100px" style="padding-left: -130px" alt=""/>
       <!-- 顶部标题 -->
@@ -16,8 +15,8 @@
         <div class="block">
           <el-avatar :size="60" :src=res.avatar></el-avatar>
         </div>
-        <template #dropdown >
-          <el-dropdown-menu >
+        <template #dropdown>
+          <el-dropdown-menu>
             <el-dropdown-item><span @click="userInfo1()">个人中心</span></el-dropdown-item>
             <el-dropdown-item><span @click="logout()">退出登录</span></el-dropdown-item>
           </el-dropdown-menu>
@@ -26,7 +25,7 @@
 
     </el-header>
 
-    <el-container >
+    <el-container>
       <!-- 侧边栏 -->
       <el-aside class="el-aside" width="190px" style="background-color:#273445;">
         <el-menu
@@ -38,19 +37,19 @@
             router
             style="margin-left: -45px;">
           <!-- 一级菜单 -->
-          <el-submenu  :index="item.menuId+''" v-for="item in menuList" :key="item.id"
-                      :disabled="item.status==1"  >
+          <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id"
+                      :disabled="item.status==1">
             <template slot="title">
               <i :class="'icon iconfont icon-'+item.icon">&nbsp;&nbsp;</i>
               <span>{{ item.menuName }}</span>
             </template>
             <!-- 二级菜单 -->
-            <template v-for="item2 in item.children" >
-              <el-submenu  @click="saveNavState('/'+item.path)"
-                           :index="'/' + item.path"
+            <template v-for="item2 in item.children">
+              <el-submenu @click="saveNavState('/'+item.path)"
+                          :index="'/' + item.path"
                           v-if="item2.menuId == 108"
                           :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 5px"
-                          >
+              >
                 <template slot="title">
                   <i :class="'icon iconfont icon-'+item2.icon">&nbsp;&nbsp;</i>
                   <span>{{ item2.menuName }}</span>
@@ -64,7 +63,7 @@
                   <i :class="'icon iconfont icon-'+item3.icon">&nbsp;&nbsp;</i>
                   <template slot="title">
                     <e-icon :icon-name="item3.icon"></e-icon>
-                   <span>{{ item3.menuName }}</span>
+                    <span>{{ item3.menuName }}</span>
                   </template>
                 </el-menu-item>
               </el-submenu>
@@ -74,7 +73,7 @@
                             :key="item2.menuId" :disabled="item2.status==1"
                             style="padding-left: 70px">
                 <!-- 图标 -->
-                <i :class="'icon iconfont icon-'+item2.icon" >&nbsp;&nbsp;</i>
+                <i :class="'icon iconfont icon-'+item2.icon">&nbsp;&nbsp;</i>
                 <template slot="title">{{ item2.menuName }}</template>
               </el-menu-item>
             </template>
@@ -163,9 +162,9 @@ export default {
     index() {
       this.$router.push("/index")
     },
-    saveNavState(path){
+    saveNavState(path) {
       //点击二级菜单的时候保存被点击的二级菜单信息
-      window.sessionStorage.setItem("activePath",path);
+      window.sessionStorage.setItem("activePath", path);
     },
     handleMouseEnter() {
       this.collapse = false;
@@ -262,7 +261,7 @@ html, body {
 }
 
 .el-aside {
-  background-color:#fff;
+  background-color: #fff;
   color: #333;
   text-align: center;
   line-height: 200px;

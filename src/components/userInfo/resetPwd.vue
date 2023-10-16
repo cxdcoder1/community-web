@@ -72,7 +72,7 @@ export default {
               }
             })
           } else {
-            this.$message.error("修改失败!")
+            this.$message.error("修改失败!旧密码错误")
           }
 
         }

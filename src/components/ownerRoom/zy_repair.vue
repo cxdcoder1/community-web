@@ -273,7 +273,7 @@
             </el-col>
           </el-row>
         </el-form>
-        <div slot="footer" >
+        <div slot="footer">
           <el-button type="primary" @click="update()">确定</el-button>
           <el-button @click="open=false">取 消</el-button>
         </div>
@@ -338,7 +338,7 @@ export default {
         return '已分派';
       } else if (row.repairState === '2') {
         return '已完成';
-      }else if (row.repairState === '3') {
+      } else if (row.repairState === '3') {
         return '已取消';
       }
     },
