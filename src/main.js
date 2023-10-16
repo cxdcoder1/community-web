@@ -12,6 +12,15 @@ import {MessageBox} from 'element-ui'
 import 'e-icon-picker/lib/index.css';
 import {analyzingIconForIconfont} from "e-icon-picker/src/utils";//引入解析json函数
 import iconfont from "./assets/fonts/iconfont/iconfont.json" //解析class
+import geoJson from '@/components/utils/china.json'
+import * as echarts from 'echarts'
+import dataV from '@jiaminghi/data-view'
+
+
+Vue.prototype.$echarts = echarts
+Vue.use(dataV)
+echarts.registerMap('china', geoJson);
+
 
 
 
@@ -50,3 +59,4 @@ Vue.filter('dateFormat', function(value) {
 
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 });
+
