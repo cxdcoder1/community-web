@@ -193,10 +193,10 @@ export default {
     getList() {
        this.$http.get("system/hardwareInfo").then(response => {
         this.server = response.data;
-      });
+       });
     },
     openLoading() {
-      this.$http.loading("正在加载服务监控数据，请稍候！");
+      this.loading("正在加载服务监控数据，请稍候！");
     }
   }
 };
