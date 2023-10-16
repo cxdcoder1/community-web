@@ -273,6 +273,7 @@ html, body {
   color: #333;
   //text-align: center;
   line-height: 20px;
+  padding:0;
 }
 
 body > .el-container {

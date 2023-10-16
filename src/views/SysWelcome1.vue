@@ -78,11 +78,11 @@
               <!-- 中国地图 -->
               <div id="china-map"></div>
               <!-- 折线图 -->
-              <div class="line_center">
-                <dv-border-box-8>
-                  <div id="line_center_diagram"></div>
-                </dv-border-box-8>
-              </div>
+<!--              <div class="line_center">-->
+<!--                <dv-border-box-8>-->
+<!--                  <div id="line_center_diagram"></div>-->
+<!--                </dv-border-box-8>-->
+<!--              </div>-->
             </el-col>
             <!-- 第三列 -->
             <el-col :span="6">
@@ -144,31 +144,7 @@ export default {
           {
             name: "周口",
             value: 55,
-          },
-          {
-            name: "南阳",
-            value: 120,
-          },
-          {
-            name: "西峡",
-            value: 78,
-          },
-          {
-            name: "驻马店",
-            value: 66,
-          },
-          {
-            name: "新乡",
-            value: 80,
-          },
-          {
-            name: "信阳",
-            value: 45,
-          },
-          {
-            name: "漯河",
-            value: 29,
-          },
+          }
         ],
       },
       //左侧饼图文字
@@ -655,14 +631,6 @@ export default {
       );
       //配置
       let option = {
-        //title可要可不要
-
-        // title: {
-        //   text: "查查的地图",
-        //   textStyle: {
-        //     color: "#ffffff",
-        //   },
-        // },
         legend: {
           show: true,
           selected: {},
@@ -1107,33 +1075,48 @@ export default {
 <style lang="scss">
 //全局样式部分！！！！
 * {
-  margin: 0;
-  padding: 0;
+  margin: 0px;
+  padding: 0px;
   list-style-type: none;
   outline: none;
   box-sizing: border-box;
-
 }
 html {
   margin: 0;
   padding: 0;
 }
 body {
-
+  overflow: hidden;
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.2em;
   background-color: #f1f1f1;
   margin: 0;
-  padding: 0px;
+  padding: 0;
+  position: absolute;
 }
 a {
   color: #343440;
   text-decoration: none;
 }
-
+//.el-main{
+//  padding-top: 0;
+//  padding-left: 0;
+//}
+.bg {
+  transform: scale(1); /* 初始缩放因子为1 */
+  transition: transform 0.3s ease; /* 添加过渡效果，使缩放平滑 */
+  //整体页面背景
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/1.png"); //背景图
+  background-size: cover; //背景尺寸
+  background-position: center center; //背景位置
+}
 //页面样式部分！！！！
 #index {
-
+  transform-origin: top left; /* 设置缩放基准点 */
+  transform: scale(0.8); /* 设置缩放因子 */
+  transition: transform 0.3s ease; /* 添加过渡效果，使缩放平滑 */
   color: #d3d6dd;
   width: 100%;
   height: 100%;
@@ -1141,21 +1124,12 @@ a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  transform-origin: left top;
   overflow: hidden;
-  .bg {
-
-    //整体页面背景
-    width: 100%;
-    height: 100%;
-    background-image: url("../assets/1.png"); //背景图
-    background-size: cover; //背景尺寸
-    background-position: center center; //背景位置
-  }
   //顶部右边装饰效果
   .title_left {
     width: 100%;
     height: 50px;
+    margin: 0 auto;
   }
   //顶部左边装饰效果
   .title_right {
@@ -1234,7 +1208,7 @@ a {
   .left_box1_rose_right {
     height: 85%;
     width: 55%;
-    position: absolute;
+    position: relative;
     right: 0;
     top: 0;
   }
@@ -1287,8 +1261,13 @@ a {
     height: 97%;
     margin-left: 3%;
   }
+  .el-main {
+    padding: 0;
+  }
 
-
+}
+#index::-webkit-scrollbar {
+  width: 0;
 }
 </style>
 
