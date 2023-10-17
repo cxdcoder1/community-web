@@ -12,7 +12,7 @@
                 :color="['#008CFF', '#00ADDD']"
             /></el-col>
             <el-col :span="12"
-            ><div class="title_text">数 据 可 视 化 系 统</div>
+            ><div class="title_text">智 慧 社 区 数 据 可 视 化 大  屏</div>
               <dv-decoration-5
                   class="title_center"
                   :color="['#008CFF', '#00ADDD']"
@@ -29,60 +29,50 @@
           <el-row>
             <!-- 第一列 -->
             <el-col :span="6">
-              <!-- 饼图部分 -->
               <div class="left_box1">
                 <dv-border-box-12>
-                  <div id="Rose_diagram"></div>
-                  <dv-active-ring-chart
-                      :config="config"
-                      class="left_box1_rose_right"
-                  />
-                  <div
-                      class="rose_text"
-                      v-for="(item, index) in numberData"
-                      :key="index"
-                  >
-                    <p>
-                      <span class="coin">￥</span>
-                      <span class="rose_text_nmb">{{
-                          item.number.number
-                        }}</span>
-                    </p>
-                    <p>
-                      <span>{{ item.text }}</span>
-                      <span class="colorYellow">(件)</span>
-                    </p>
-                  </div>
+                  <div id="Rose_diagram" style="margin-left: 70px"></div>
+<!--                  <dv-active-ring-chart-->
+<!--                      :config="config"-->
+<!--                      class="left_box1_rose_right"-->
+<!--                  />-->
+<!--                  <div-->
+<!--                      class="rose_text"-->
+<!--                      v-for="(item, index) in numberData"-->
+<!--                      :key="index"-->
+<!--                  >-->
+<!--                    <p>-->
+<!--                      <span class="coin">￥</span>-->
+<!--                      <span class="rose_text_nmb">{{-->
+<!--                          item.number.number-->
+<!--                        }}</span>-->
+<!--                    </p>-->
+<!--                    <p>-->
+<!--                      <span>{{ item.text }}</span>-->
+<!--                      <span class="colorYellow">(件)</span>-->
+<!--                    </p>-->
+<!--                  </div>-->
                 </dv-border-box-12>
               </div>
               <!-- 柱状图部分 -->
-              <div class="left_box2">
-                <dv-border-box-12 style="padding-top: 10px">
-                  <p style="margin-left: 15px">数据统计图</p>
-                  <div id="columnar"></div>
-                </dv-border-box-12>
-              </div>
               <!-- 轮播表格部分 -->
-              <div class="left_box3">
-                <dv-border-box-12 style="padding-top: 10px">
-                  <dv-scroll-board
-                      :config="board_info"
-                      class="carousel_list"
-                      oddRowBGC="#fff"
-                  />
-                </dv-border-box-12>
+              <div  class="user_skills" >
+                <div class="left_box3">
+                  <dv-border-box-12 style="padding-top: 10px">
+                    <dv-scroll-board
+                        :config="board_info"
+                        class="carousel_list"
+                        oddRowBGC="#fff"
+                    />
+                  </dv-border-box-12>
+                </div>
               </div>
+
             </el-col>
             <!-- 第二列 -->
             <el-col :span="12">
               <!-- 中国地图 -->
               <div id="china-map"></div>
-              <!-- 折线图 -->
-<!--              <div class="line_center">-->
-<!--                <dv-border-box-8>-->
-<!--                  <div id="line_center_diagram"></div>-->
-<!--                </dv-border-box-8>-->
-<!--              </div>-->
             </el-col>
             <!-- 第三列 -->
             <el-col :span="6">
@@ -90,21 +80,21 @@
               <div class="right_box1">
                 <dv-border-box-12>
                   <dv-decoration-7 style="width: 100%; height: 30px"
-                  >销 售 排 行 榜</dv-decoration-7
+                  >小 区 排 行 榜</dv-decoration-7
                   >
                   <dv-scroll-ranking-board
-                      :config="config"
+                      :config="cone"
                       style="width: 95%; height: 87%; margin-left: 2%"
                   />
                 </dv-border-box-12>
               </div>
               <!-- 虚线柱状图部分 -->
-              <div class="right_box2">
-                <dv-border-box-12 :reverse="true">
-                  <div id="dotter_bar"></div>
-                </dv-border-box-12>
-              </div>
-              <!-- 部分 -->
+<!--              <div class="right_box2">-->
+<!--                <dv-border-box-12 :reverse="true">-->
+<!--                  <div id="dotter_bar"></div>-->
+<!--                </dv-border-box-12>-->
+<!--              </div>-->
+<!--               部分-->
               <div class="right_box3">
                 <dv-border-box-12 :reverse="true">
                   <dv-conical-column-chart :config="cone" class="cone_box" />
@@ -138,50 +128,11 @@ export default {
       dateWeek: null,
       //周几
       weekday: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
-      //轮播排行榜
-      config: {
-        data: [
-          {
-            name: "周口",
-            value: 55,
-          }
-        ],
-      },
-      //左侧饼图文字
-      numberData: [
-        {
-          number: {
-            number: 15,
-          },
-          text: "今日构建总量",
-        },
-        {
-          number: {
-            number: 1144,
-          },
-          text: "总共完成数量",
-        },
-        {
-          number: {
-            number: 361,
-          },
-          text: "正在编译数量",
-        },
-      ],
       //左侧轮播表格配置项
       board_info: {
-        header: ["人员", "月产量", "月合格率"],
+        header: ["用户名", "登录地址", "登录状态"],
         data: [
-          ["张三", "10830", "90%"],
-          ["张四", "13500", "92%"],
-          ["张五", "10350", "97%"],
-          ["张六", "13300", "94%"],
-          ["张七", "12500", "95%"],
-          ["张八", "11500", "96%"],
-          ["张九", "12500", "89%"],
-          ["王六", "10360", "95%"],
-          ["王二", "10567", "91%"],
-          ["李四", "15721", "99%"],
+
         ],
         evenRowBGC: "#020308",
         oddRowBGC: "#382B47",
@@ -259,39 +210,13 @@ export default {
         },
       },
       //锥形柱状图
-      cone: {
+      cone : {
         data: [
-          {
-            name: "周口",
-            value: 55,
-          },
-          {
-            name: "南阳",
-            value: 120,
-          },
-          {
-            name: "西峡",
-            value: 71,
-          },
-          {
-            name: "驻马店",
-            value: 66,
-          },
-          {
-            name: "新乡",
-            value: 80,
-          },
-          {
-            name: "信阳",
-            value: 35,
-          },
-          {
-            name: "漯河",
-            value: 15,
-          },
+
         ],
         showValue: true,
       },
+
     };
   },
 
@@ -315,6 +240,10 @@ export default {
     //离开时删除计时器
     clearInterval(this.timing);
   },
+  created() {
+    this.getUserLogin()
+    this.getRoom();
+  },
   methods: {
     //右上角当前日期时间显示：每一秒更新一次最新时间
     timeFn() {
@@ -326,6 +255,30 @@ export default {
         //获取当前周几
         this.dateWeek = this.weekday[new Date().getDay()];
       }, 1000);
+    },
+    async getUserLogin(){
+      const {data: res} = await this.$http.get('sysLogininfor/getLoginUser');
+      this.board_info={
+      header:['用户名','登录地址','操作状态'],
+       data:res.data
+        }
+    },
+    async getRoom() {
+      const { data: res } = await this.$http.get('zyCommunity/getRoom');
+      const roomData = res.data;
+      // 转换成 key 和 value 的集合
+      const keyValuePairs = roomData.map(item => ({
+        name: item.communityName,
+        value: item.roomNum
+      }));
+
+      this.cone = {
+        data: keyValuePairs
+      };
+      this.series={
+        data:keyValuePairs
+      }
+      console.log(this.series.data)
     },
     //loading图
     cancelLoading() {
@@ -715,7 +668,7 @@ export default {
           icon: "circle",
           bottom: 0,
           x: "center",
-          data: ["data1", "data2", "data3", "data4", "data5", "data6"],
+          data: [],
           textStyle: {
             color: "#fff",
           },
@@ -728,12 +681,12 @@ export default {
             roseType: "area",
             center: ["50%", "40%"],
             data: [
-              { value: 10, name: "data1" },
-              { value: 5, name: "data2" },
-              { value: 15, name: "data3" },
-              { value: 25, name: "data4" },
-              { value: 20, name: "data5" },
-              { value: 35, name: "data6" },
+              // {  name: "aa",value: 50 },
+              // { value: 5, name: "data2" },
+              // { value: 15, name: "data3" },
+              // { value: 25, name: "data4" },
+              // { value: 20, name: "data5" },
+              // { value: 35, name: "data6" },
             ],
           },
         ],
@@ -1108,7 +1061,7 @@ a {
   //整体页面背景
   width: 100%;
   height: 100%;
-  background-image: url("../assets/1.png"); //背景图
+  background-image: url("../assets/789.jpg"); //背景图
   background-size: cover; //背景尺寸
   background-position: center center; //背景位置
 }
@@ -1131,6 +1084,30 @@ a {
     height: 50px;
     margin: 0 auto;
   }
+
+  .user_skills{
+    background-color: transparent;
+  }
+  .user_skills  .el-table--fit{
+    padding: 20px;
+  }
+  .user_skills  .el-table, .el-table__expanded-cell {
+    background-color: transparent;
+  }
+
+  .user_skills  .el-table tr {
+    background-color: transparent!important;
+  }
+  .user_skills  .el-table--enable-row-transition .el-table__body td, .el-table .cell{
+    background-color: transparent;
+  }
+  .el-table::before {//去除底部白线
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 0px;
+  }
+
   //顶部左边装饰效果
   .title_right {
     width: 100%;
@@ -1181,6 +1158,7 @@ a {
   .left_box3 {
     height: 310px;
     width: 100%;
+
   }
   //右1模块
   .right_box1 {
@@ -1205,13 +1183,13 @@ a {
     width: 55%;
   }
   //左1模块-圆环图
-  .left_box1_rose_right {
-    height: 85%;
-    width: 55%;
-    position: relative;
-    right: 0;
-    top: 0;
-  }
+  //.left_box1_rose_right {
+  //  height: 85%;
+  //  width: 55%;
+  //  position: relative;
+  //  right: 0;
+  //  top: 0;
+  //}
   //左1模块-文字部分
   .rose_text {
     display: inline-block;
@@ -1261,13 +1239,13 @@ a {
     height: 97%;
     margin-left: 3%;
   }
-  .el-main {
-    padding: 0;
-  }
 
 }
 #index::-webkit-scrollbar {
   width: 0;
 }
+
+
+
 </style>
 
