@@ -297,6 +297,9 @@ export default {
       const {data: res} = await this.$http.get('zyUnit/getUnits', {
         params: this.searchUnit
       })
+      if(res==''){
+        return
+      }
       this.unitList = res.data.records;
       this.total = res.data.total;
     },

@@ -203,6 +203,9 @@ export default {
       const {data: res1} = await this.$http.get("zyBuilding/buildingList", {
         params: this.queryParams
       });
+      if(res==''){
+        return
+      }
       this.total = res1.data.total
       this.buildingList = res1.data.records
     },

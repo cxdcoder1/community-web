@@ -1,11 +1,12 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" v-loading="loading">
     <el-row>
       <el-col :span="12" class="card-box">
         <el-card>
           <div slot="header"><span><i class="el-icon-cpu"></i> CPU</span></div>
           <div class="el-table el-table--enable-row-hover el-table--medium">
-            <table cellspacing="0" style="width: 100%;">
+            <table cellspacing="0"
+                   style="width: 100%;">
               <thead>
                 <tr>
                   <th class="el-table__cell is-leaf"><div class="cell">属性</div></th>
@@ -181,7 +182,8 @@ export default {
   data() {
     return {
       // 服务器信息
-      server: []
+      server: [],
+      loading:true,
     };
   },
   created() {
@@ -193,6 +195,7 @@ export default {
     getList() {
        this.$http.get("system/hardwareInfo").then(response => {
         this.server = response.data;
+        this.loading=false;
        });
     },
     openLoading() {

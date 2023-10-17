@@ -174,7 +174,9 @@ export default {
       const {data: res} = await this.$http.get('zyOwnerRoom/getOwnerRoomAll', {
         params: this.queryParams
       })
-
+      if(res==''){
+        return
+      }
       console.log("res", res)
       this.total = res.data.total
       this.OroomList = res.data.records

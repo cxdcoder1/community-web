@@ -364,7 +364,6 @@ export default {
 
   data() {
     return {
-
       //左侧部门树
       leftDeptTree: [],
       sexList: [
@@ -441,6 +440,7 @@ export default {
         {key: 5, label: `状态`, visible: true},
         {key: 6, label: `创建时间`, visible: true}
       ],
+
       // 表单校验
       rules: {
         userName: [
@@ -526,6 +526,10 @@ export default {
       const {data: res} = await this.$http.get('sysUser/sysUserList', {
         params: this.queryParams
       })
+
+      if(res==''){
+        return
+      }
       this.userList = res.data.records;
       this.total = res.data.total
       console.log(res.data.records, "xxxxxxxxxxxxxx")
@@ -538,7 +542,7 @@ export default {
     },
     //批量删除
     async delUsers() {
-      const confirmResult = await this.$confirm('确认要删除' + '"' + this.ids + '"用户吗?', "警告", {
+      const confirmResult = await this.$confirm('确认要删除' + this.ids + '用户吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -563,7 +567,7 @@ export default {
     },
     //单个删除
     async delUser(row) {
-      const confirmResult = await this.$confirm('确认要删除' + '"' + row.userName + '"吗?', "警告", {
+      const confirmResult = await this.$confirm('确认要删除' + row.userName + '"吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -687,8 +691,7 @@ export default {
     },
     // 用户状态修改
     handleStatusChange(row) {
-
-      this.$confirm('确认要停用' + row.userName + '角色吗?', "警告", {
+      this.$confirm('确认要停用' + row.userName + '吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"

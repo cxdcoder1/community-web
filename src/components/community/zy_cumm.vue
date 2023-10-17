@@ -311,6 +311,9 @@ export default {
       const {data: res} = await this.$http.get('zyCommunity/getCommunityAll', {
         params: this.queryParams
       })
+      if(res==''){
+        return
+      }
       this.total = res.data.total
       this.communityList = res.data.records
       console.log("res",res)

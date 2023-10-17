@@ -21,30 +21,60 @@ Vue.prototype.$echarts = echarts
 Vue.use(dataV)
 echarts.registerMap('china', geoJson);
 
-
+import ElementUI from 'element-ui';
+// import {error} from "@babel/eslint-parser/lib/convert"; //解析class
 
 
 let forIconfont = analyzingIconForIconfont(iconfont)
 
 
-Vue.use(iconPicker, { addIconList:forIconfont.list });
+Vue.use(iconPicker, {addIconList: forIconfont.list}, router,ElementUI);
+
 
 //接口前缀
 axios.defaults.baseURL = 'http://localhost:8080/'
 //请求在到达服务器之前，先会调用use中的这个回调函数来添加请求头信息
-axios.interceptors.request.use(config=>{
-  //为请求头对象，添加token验证的Authorization字段
-  config.headers.Authorization = window.sessionStorage.getItem("token")
-  return config
+axios.interceptors.request.use(config => {
+    //为请求头对象，添加token验证的Authorization字段
+    config.headers.Authorization = window.sessionStorage.getItem("token")
+    return config
+})
+
+//响应拦截器
+axios.interceptors.response.use(function (response) {
+
+    let isMessageBoxDisplayed = false;
+
+    if (response.status == '204' && !isMessageBoxDisplayed) {
+        try {
+            isMessageBoxDisplayed = true;
+            window.sessionStorage.clear();
+            window.localStorage.clear();
+            MessageBox('签名过期,点击重新登录').then(() => {
+                window.location.href = '/login';
+            }).catch(() => {
+                window.location.href = '/login';
+            })
+        }catch {
+            console.log('err')
+            // console.log(error.message)
+        }
+    }
+
+    window.sessionStorage.setItem('token', response.headers.token);
+    console.log(response);
+    return response;
+}, function (error) {
+    return error;
 })
 Vue.prototype.$http = axios
 Vue.config.productionTip = false
 Vue.prototype.$messagebox = MessageBox
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app')
 
 Vue.filter('dateFormat', function(value) {

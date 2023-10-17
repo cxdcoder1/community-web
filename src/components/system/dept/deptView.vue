@@ -10,11 +10,11 @@
     <el-card>
       <el-form :model="deptInfo" ref="queryForm" size="small" :inline="true">
         <el-form-item label="部门名称" prop="deptName">
-          <el-input v-model="deptInfo.deptName" placeholder="请输入部门名称" clearable
+          <el-input v-model.trim="deptInfo.deptName" placeholder="请输入部门名称" clearable
                     @keyup.enter.native="handleQuery"/>
         </el-form-item>
         <el-form-item label="状态" prop="status">
-          <el-select v-model="deptInfo.status" placeholder="部门状态" clearable>
+          <el-select v-model.trim="deptInfo.status" placeholder="部门状态" clearable>
             <el-option
                 v-for="dict in statusPotion"
                 :key="dict.dictValue"
