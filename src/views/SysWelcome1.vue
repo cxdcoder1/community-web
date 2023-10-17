@@ -61,10 +61,10 @@
               <div class="right_box1">
                 <dv-border-box-12>
                   <dv-decoration-7 style="width: 100%; height: 30px"
-                  >小 区 排 行 榜</dv-decoration-7
+                  >小 区 楼 栋 排 行 榜</dv-decoration-7
                   >
                   <dv-scroll-ranking-board
-                      :config="cone"
+                      :config="coneA"
                       style="width: 95%; height: 87%; margin-left: 2%"
                   />
                 </dv-border-box-12>
@@ -226,6 +226,7 @@ export default {
     this.getUserLogin()
     this.getRoom();
     this.getRoomStatus();
+    this.getBuildList();
   },
   methods: {
     //右上角当前日期时间显示：每一秒更新一次最新时间
@@ -257,11 +258,7 @@ export default {
       this.cone = {
         data: keyValuePairs
       };
-
     this.Rose_diagram(keyValuePairs)
-      //   let mapChart={
-      //     series
-      //   }
     },
     async getRoomStatus() {
       const { data: res } = await this.$http.get('zyRoom/getRoomListStatus');
@@ -272,6 +269,19 @@ export default {
         value: item.roomNum
       }));
       this.cones = {
+        data: keyValuePair
+      };
+    },
+
+    async getBuildList() {
+      const { data: res } = await this.$http.get('zyCommunity/getBuildList');
+      const roomDatasA = res.data;
+      // 转换成 key 和 value 的集合
+      const keyValuePair = roomDatasA.map(item => ({
+        name: item.communityName,
+        value: item.buildNum
+      }));
+      this.coneA = {
         data: keyValuePair
       };
     },
