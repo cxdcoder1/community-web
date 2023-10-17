@@ -30,31 +30,11 @@
             <!-- 第一列 -->
             <el-col :span="6">
               <div class="left_box1">
-                <dv-border-box-12>
-                  <div id="Rose_diagram" style="margin-left: 70px"></div>
-<!--                  <dv-active-ring-chart-->
-<!--                      :config="config"-->
-<!--                      class="left_box1_rose_right"-->
-<!--                  />-->
-<!--                  <div-->
-<!--                      class="rose_text"-->
-<!--                      v-for="(item, index) in numberData"-->
-<!--                      :key="index"-->
-<!--                  >-->
-<!--                    <p>-->
-<!--                      <span class="coin">￥</span>-->
-<!--                      <span class="rose_text_nmb">{{-->
-<!--                          item.number.number-->
-<!--                        }}</span>-->
-<!--                    </p>-->
-<!--                    <p>-->
-<!--                      <span>{{ item.text }}</span>-->
-<!--                      <span class="colorYellow">(件)</span>-->
-<!--                    </p>-->
-<!--                  </div>-->
+                <dv-border-box-12 >
+                  <div id="Rose_diagram" style="margin-top: 0px" ></div>
                 </dv-border-box-12>
+
               </div>
-              <!-- 柱状图部分 -->
               <!-- 轮播表格部分 -->
               <div  class="user_skills" >
                 <div class="left_box3">
@@ -271,14 +251,14 @@ export default {
         name: item.communityName,
         value: item.roomNum
       }));
-
       this.cone = {
         data: keyValuePairs
       };
-      this.series={
-        data:keyValuePairs
-      }
-      console.log(this.series.data)
+
+    this.Rose_diagram(keyValuePairs)
+      //   let mapChart={
+      //     series
+      //   }
     },
     //loading图
     cancelLoading() {
@@ -514,44 +494,7 @@ export default {
             },
             data: res, //拿到射线的起始点和结束点
           },
-          //散点图
-          // {
-          //   type: "effectScatter",//散点图
-          //   coordinateSystem: "geo",//这个不能删，删了不显示
-          //   zlevel: 1,
-          //   rippleEffect: {
-          //     //涟漪特效
-          //     period: 4, //动画时间，值越小速度越快
-          //     brushType: "stroke", //波纹绘制方式 stroke, fill
-          //     scale: 4, //波纹圆环最大限制，值越大波纹越大
-          //   },
-          //   //设置文字部分
-          //   label: {
-          //     normal: {
-          //       show: true, //省份名显示隐藏
-          //       position: "right", //省份名显示位置
-          //       offset: [5, 0], //省份名偏移设置
-          //       formatter: function (params) {
-          //         //圆环显示省份名
-          //         return params.name;  //这个名字是根据data中的name来显示的
-          //       },
-          //       fontSize: 12,//文字大小
-          //     },
-          //     emphasis: {
-          //       show: true,
-          //     },
-          //   },
-          //   symbol: "circle",//散点图
-          //   symbolSize: 5,//散点大小
-          //   itemStyle: {//散点样式
-          //     normal: {
-          //       show: true,
-          //       color: "#fff",
-          //     },
-          //   },
-          //   data: data_res, //处理好后的散点图坐标数组
-          // },
-          //点击高亮
+        //点击高亮
           {
             type: "map",
             mapType: "china",
@@ -639,7 +582,7 @@ export default {
       mapChart.setOption(option); //生成图表
     },
     //玫瑰饼图
-    Rose_diagram() {
+    Rose_diagram(keyValuePairs) {
       let mapChart = this.$echarts.init(
           document.getElementById("Rose_diagram")
       ); //图表初始化，china-map是绑定的元素
@@ -668,26 +611,20 @@ export default {
           icon: "circle",
           bottom: 0,
           x: "center",
-          data: [],
+          data: keyValuePairs,
           textStyle: {
             color: "#fff",
           },
         },
         series: [
           {
-            name: "通过率统计",
+            name: "交房率",
             type: "pie",
-            radius: [10, 50],
+            radius: [10, 60],
             roseType: "area",
-            center: ["50%", "40%"],
-            data: [
-              // {  name: "aa",value: 50 },
-              // { value: 5, name: "data2" },
-              // { value: 15, name: "data3" },
-              // { value: 25, name: "data4" },
-              // { value: 20, name: "data5" },
-              // { value: 35, name: "data6" },
-            ],
+            center: ["50%", "50%"],
+
+            data: keyValuePairs,
           },
         ],
       };
@@ -1062,6 +999,7 @@ a {
   width: 100%;
   height: 100%;
   background-image: url("../assets/789.jpg"); //背景图
+  background-attachment: fixed;
   background-size: cover; //背景尺寸
   background-position: center center; //背景位置
 }
@@ -1179,8 +1117,10 @@ a {
   }
   //左1模块-玫瑰饼图
   #Rose_diagram {
-    height: 70%;
-    width: 55%;
+    height: 100%;
+    width: 100%;
+    padding-top: 45px;
+    display: block;
   }
   //左1模块-圆环图
   //.left_box1_rose_right {
@@ -1239,13 +1179,9 @@ a {
     height: 97%;
     margin-left: 3%;
   }
-
 }
 #index::-webkit-scrollbar {
   width: 0;
 }
-
-
-
 </style>
 
