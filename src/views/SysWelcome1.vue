@@ -61,10 +61,10 @@
               <div class="right_box1">
                 <dv-border-box-12>
                   <dv-decoration-7 style="width: 100%; height: 30px"
-                  >小 区 排 行 榜</dv-decoration-7
+                  >小 区 楼 栋 排 行 榜</dv-decoration-7
                   >
                   <dv-scroll-ranking-board
-                      :config="cone"
+                      :config="coneA"
                       style="width: 95%; height: 87%; margin-left: 2%"
                   />
                 </dv-border-box-12>
@@ -226,6 +226,7 @@ export default {
     this.getUserLogin()
     this.getRoom();
     this.getRoomStatus();
+    this.getBuildList();
   },
   methods: {
     //右上角当前日期时间显示：每一秒更新一次最新时间
@@ -257,11 +258,7 @@ export default {
       this.cone = {
         data: keyValuePairs
       };
-
     this.Rose_diagram(keyValuePairs)
-      //   let mapChart={
-      //     series
-      //   }
     },
     async getRoomStatus() {
       const { data: res } = await this.$http.get('zyRoom/getRoomListStatus');
@@ -272,6 +269,19 @@ export default {
         value: item.roomNum
       }));
       this.cones = {
+        data: keyValuePair
+      };
+    },
+
+    async getBuildList() {
+      const { data: res } = await this.$http.get('zyCommunity/getBuildList');
+      const roomDatasA = res.data;
+      // 转换成 key 和 value 的集合
+      const keyValuePair = roomDatasA.map(item => ({
+        name: item.communityName,
+        value: item.buildNum
+      }));
+      this.coneA = {
         data: keyValuePair
       };
     },
@@ -304,7 +314,7 @@ export default {
         广东: [113.8668, 22.8076],
         吉林: [126.1746, 43.5938],
         河北: [115.4004, 38.1688],
-        湖北: [112.2363, 30.8572],
+        湖北: [42],
         贵州: [106.6113, 26.6385],
         山东: [118.2402, 36.2307],
         江西: [115.7156, 27.99],
@@ -329,123 +339,11 @@ export default {
       let lineData = [
         {
           val: 32, //数据
-          blat: [86.9023, 41.148], //发射点
-          elon: [87.8695, 31.6846], //接收点
-          bcitysim: "新疆", //发射省的名字
-          ecitysim: "西藏", //接收省的名字
-        },
-        {
-          val: 31,
-          blat: [87.8695, 31.6846],
-          elon: [95.2402, 35.4199],
-          bcitysim: "西藏",
-          ecitysim: "青海",
-        },
-        {
-          val: 33,
-          blat: [86.9023, 41.148],
-          elon: [95.2402, 35.4199],
-          bcitysim: "新疆",
-          ecitysim: "青海",
-        },
-        {
-          val: 33,
-          blat: [116.4551, 40.2539],
-          elon: [119.8586, 32.915],
-          bcitysim: "北京",
-          ecitysim: "江苏",
-        },
-        {
-          val: 33,
-          blat: [120.8254, 23.5986],
-          elon: [109.9512, 19.2041],
-          bcitysim: "台湾",
-          ecitysim: "海南",
-        },
-        {
-          val: 33,
-          blat: [120.498, 29.0918],
-          elon: [115.7156, 27.99],
-          bcitysim: "浙江",
-          ecitysim: "江西",
-        },
-        {
-          val: 33,
-          blat: [117.2461, 31.0361],
-          elon: [119.8586, 32.915],
-          bcitysim: "安徽",
-          ecitysim: "江苏",
-        },
-        {
-          val: 33,
-          blat: [117.2461, 31.0361],
-          elon: [105.9961, 37.1096],
-          bcitysim: "安徽",
-          ecitysim: "宁夏",
-        },
-        {
-          val: 33,
-          blat: [117.2461, 31.0361],
-          elon: [107.7539, 29.8904],
-          bcitysim: "安徽",
-          ecitysim: "重庆",
-        },
-        {
-          val: 33,
-          blat: [117.2461, 31.0361],
-          elon: [123.0438, 41.0889],
-          bcitysim: "安徽",
-          ecitysim: "辽宁",
-        },
-        {
-          val: 33,
-          blat: [119.8586, 32.915],
-          elon: [102.7129, 38.166],
-          bcitysim: "江苏",
-          ecitysim: "甘肃",
-        },
-        {
-          val: 33,
-          blat: [119.8586, 32.915],
-          elon: [128.1445, 46.7156],
-          bcitysim: "江苏",
-          ecitysim: "黑龙江",
-        },
-        {
-          val: 33,
-          blat: [119.8586, 32.915],
-          elon: [110.5977, 41.3408],
-          bcitysim: "江苏",
-          ecitysim: "内蒙古",
-        },
-        {
-          val: 33,
-          blat: [119.8586, 32.915],
-          elon: [101.0652, 24.6807],
-          bcitysim: "江苏",
-          ecitysim: "云南",
-        },
-        {
-          val: 33,
-          blat: [119.8586, 32.915],
-          elon: [86.9023, 41.148],
-          bcitysim: "江苏",
-          ecitysim: "新疆",
-        },
-        {
-          val: 33,
-          blat: [86.9023, 41.148],
-          elon: [110.5977, 41.3408],
-          bcitysim: "新疆",
-          ecitysim: "内蒙古",
-        },
-        {
-          val: 33,
-          blat: [86.9023, 41.148],
-          elon: [102.9199, 30.1904],
-          bcitysim: "新疆",
-          ecitysim: "四川",
-        },
+          blat: [113.8668, 22.8076], //发射点
+          elon: [111.5332, 27.3779], //接收点
+          bcitysim: "广东", //发射省的名字
+          ecitysim: "湖南", //接收省的名字
+        }
       ];
       //循环拿到处理好的数据
       for (var i = 0; i < lineData.length; i++) {
@@ -499,8 +397,6 @@ export default {
             tooltip: {
               formatter: function (param) {
                 return (
-                    param.data.fromName +
-                    ">" +
                     param.data.toName +
                     "<br>数量：" +
                     param.data.count
@@ -552,7 +448,7 @@ export default {
           },
           data: [],
         },
-        //鼠标移上去的弹框
+        // 鼠标移上去的弹框
         tooltip: {
           trigger: "item",
           show: true,
@@ -638,7 +534,6 @@ export default {
             radius: [10, 60],
             roseType: "area",
             center: ["50%", "50%"],
-
             data: keyValuePairs,
           },
         ],

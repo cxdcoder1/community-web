@@ -266,7 +266,11 @@ export default {
     this.getStatus();
   },
    methods: {
-
+     async getStatus() {
+       const {data: res} = await this.$http.get('sysDictType/dictStatusOption')
+       console.log("123",res.data)
+       this.statusPotion=res.data;
+     },
     /**
      * 导出方法
      */
