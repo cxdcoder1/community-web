@@ -38,6 +38,7 @@
               <!-- 轮播表格部分 -->
               <div  class="user_skills" >
                 <div class="left_box3">
+                  <div style="text-align: center">登  录  日  志</div>
                   <dv-border-box-12 style="padding-top: 10px">
                     <dv-scroll-board
                         :config="board_info"
@@ -75,9 +76,10 @@
 <!--                </dv-border-box-12>-->
 <!--              </div>-->
 <!--               部分-->
-              <div class="right_box3">
+              <div  class="right_box3">
+               <div style="text-align: center">房 屋 使 用 情 况</div>
                 <dv-border-box-12 :reverse="true">
-                  <dv-conical-column-chart :config="cone" class="cone_box" />
+                  <dv-conical-column-chart :config="cones" class="cone_box" />
                 </dv-border-box-12>
               </div>
             </el-col>
@@ -91,7 +93,7 @@
 <script>
 import drawMixin from "@/components/utils/drawMixin"; //自适应缩放
 import { formatTime } from "@/components/utils/index.js"; //日期格式转换
-import * as echarts from "echarts";
+// import * as echarts from "echarts";
 export default {
   mixins: [drawMixin],
   data() {
@@ -190,7 +192,7 @@ export default {
         },
       },
       //锥形柱状图
-      cone : {
+      cones : {
         data: [
 
         ],
@@ -223,6 +225,7 @@ export default {
   created() {
     this.getUserLogin()
     this.getRoom();
+    this.getRoomStatus();
   },
   methods: {
     //右上角当前日期时间显示：每一秒更新一次最新时间
@@ -259,6 +262,18 @@ export default {
       //   let mapChart={
       //     series
       //   }
+    },
+    async getRoomStatus() {
+      const { data: res } = await this.$http.get('zyRoom/getRoomListStatus');
+      const roomDatas = res.data;
+      // 转换成 key 和 value 的集合
+      const keyValuePair = roomDatas.map(item => ({
+        name: item.roomStatus,
+        value: item.roomNum
+      }));
+      this.cones = {
+        data: keyValuePair
+      };
     },
     //loading图
     cancelLoading() {
@@ -630,334 +645,6 @@ export default {
       };
       mapChart.setOption(option); //生成图表
     },
-    //柱状图
-    columnar() {
-      let mapChart = this.$echarts.init(document.getElementById("columnar")); //图表初始化，china-map是绑定的元素
-      window.onresize = mapChart.resize; //如果容器变大小，自适应从新构图
-      let option = {
-        title: {
-          text: "",
-        },
-        tooltip: {
-          trigger: "axis",
-          backgroundColor: "rgba(255,255,255,0.1)",
-          axisPointer: {
-            type: "shadow",
-            label: {
-              show: true,
-              backgroundColor: "#7B7DDC",
-            },
-          },
-        },
-        legend: {
-          data: ["已贯通", "计划贯通", "贯通率"],
-          textStyle: {
-            color: "#B4B4B4",
-          },
-          top: "0%",
-        },
-        grid: {
-          x: "8%",
-          width: "95%",
-          y: "4%",
-        },
-        xAxis: {
-          data: [
-            "市区",
-            "万州",
-            "江北",
-            "南岸",
-            "北碚",
-            "綦南",
-            "长寿",
-            "永川",
-            "璧山",
-            "江津",
-            "城口",
-            "大足",
-            "垫江",
-            "丰都",
-            "奉节",
-            "合川",
-            "江津区",
-            "开州",
-            "南川",
-            "彭水",
-            "黔江",
-            "石柱",
-            "铜梁",
-            "潼南",
-            "巫山",
-            "巫溪",
-            "武隆",
-            "秀山",
-            "酉阳",
-            "云阳",
-            "忠县",
-            "川东",
-            "检修",
-          ],
-          axisLine: {
-            lineStyle: {
-              color: "#B4B4B4",
-            },
-          },
-          axisTick: {
-            show: false,
-          },
-        },
-        yAxis: [
-          {
-            splitLine: { show: false },
-            axisLine: {
-              lineStyle: {
-                color: "#B4B4B4",
-              },
-            },
-
-            axisLabel: {
-              formatter: "{value} ",
-            },
-          },
-        ],
-        series: [
-          {
-            name: "已贯通",
-            type: "bar",
-            barWidth: 10,
-            itemStyle: {
-              normal: {
-                barBorderRadius: 5,
-                color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: "#956FD4" },
-                  { offset: 1, color: "#3EACE5" },
-                ]),
-              },
-            },
-            data: [
-              46, 50, 55, 650, 75, 85, 99, 125, 140, 215, 232, 244, 252, 333,
-              46, 50, 55, 65, 75, 85, 99, 225, 140, 215, 85, 99, 125, 140, 215,
-              232, 244, 252, 75,
-            ],
-          },
-          {
-            name: "计划贯通",
-            type: "bar",
-            barGap: "-100%",
-            barWidth: 10,
-            itemStyle: {
-              normal: {
-                barBorderRadius: 5,
-                color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                  { offset: 0, color: "rgba(156,107,211,0.8)" },
-                  { offset: 0.2, color: "rgba(156,107,211,0.5)" },
-                  { offset: 1, color: "rgba(156,107,211,0.2)" },
-                ]),
-              },
-            },
-            z: -12,
-            data: [
-              180, 207, 240, 283, 328, 360, 398, 447, 484, 504, 560, 626, 595,
-              675, 180, 207, 240, 283, 328, 360, 398, 447, 484, 504, 360, 398,
-              447, 484, 504, 500, 326, 495, 328,
-            ],
-          },
-        ],
-      };
-      mapChart.setOption(option); //生成图表
-    },
-    //折线图
-    line_center_diagram() {
-      let mapChart = this.$echarts.init(
-          document.getElementById("line_center_diagram")
-      ); //图表初始化，china-map是绑定的元素
-      window.onresize = mapChart.resize; //如果容器变大小，自适应从新构图
-      let option = {
-        xAxis: {
-          type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-          position: "bottom",
-          axisLine: true,
-          axisLabel: {
-            color: "rgba(255,255,255,.8)",
-            fontSize: 12,
-          },
-        },
-        yAxis: {
-          type: "value",
-          name: "年度生产量",
-          nameLocation: "end",
-          nameGap: 24,
-          nameTextStyle: {
-            color: "rgba(255,255,255,.5)",
-            fontSize: 14,
-          },
-          splitNumber: 4,
-          axisLine: {
-            lineStyle: {
-              opacity: 0,
-            },
-          },
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: "#fff",
-              opacity: 0.1,
-            },
-          },
-          axisLabel: {
-            color: "rgba(255,255,255,.8)",
-            fontSize: 12,
-          },
-        },
-        grid: {
-          left: 50,
-          right: 10,
-          bottom: 25,
-          top: "18%",
-        },
-        series: [
-          {
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-            type: "line",
-            smooth: true,
-            symbol: "emptyCircle",
-            symbolSize: 8,
-            itemStyle: {
-              normal: {
-                color: "#fff",
-              },
-            },
-            //线的颜色样式
-            lineStyle: {
-              normal: {
-                color: this.colorList.linearBtoG,
-                width: 3,
-              },
-            },
-            //填充颜色样式
-            areaStyle: {
-              normal: {
-                color: this.colorList.areaBtoG,
-              },
-            },
-          },
-        ],
-      };
-      mapChart.setOption(option); //生成图表
-    },
-    //右侧虚线柱状图图
-    dotter_bar() {
-      let mapChart = this.$echarts.init(document.getElementById("dotter_bar")); //图表初始化，china-map是绑定的元素
-      window.onresize = mapChart.resize; //如果容器变大小，自适应从新构图
-      // Generate data
-      let category = [];
-      let dottedBase = +new Date();
-      let lineData = [];
-      let barData = [];
-      for (let i = 0; i < 20; i++) {
-        let date = new Date((dottedBase += 3600 * 24 * 1000));
-        category.push(
-            [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-")
-        );
-        let b = Math.random() * 200;
-        let d = Math.random() * 200;
-        barData.push(b);
-        lineData.push(d + b);
-      }
-      // option
-      let option = {
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "shadow",
-          },
-        },
-        grid: {
-          left: 50,
-          right: 10,
-          bottom: 25,
-          top: "18%",
-        },
-        legend: {
-          data: ["line", "bar"],
-          textStyle: {
-            color: "#ccc",
-          },
-        },
-        xAxis: {
-          data: category,
-          axisLine: {
-            lineStyle: {
-              color: "#ccc",
-            },
-          },
-        },
-        yAxis: {
-          splitLine: { show: false },
-          axisLine: {
-            lineStyle: {
-              color: "#ccc",
-            },
-          },
-        },
-        series: [
-          {
-            name: "line",
-            type: "line",
-            smooth: true,
-            showAllSymbol: true,
-            symbol: "emptyCircle",
-            symbolSize: 15,
-            data: lineData,
-          },
-          {
-            name: "bar",
-            type: "bar",
-            barWidth: 10,
-            itemStyle: {
-              borderRadius: 5,
-              // color: "#14c8d4",
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: "#14c8d4" },
-                { offset: 1, color: "#43eec6" },
-              ]),
-            },
-            data: barData,
-          },
-          {
-            name: "line",
-            type: "bar",
-            barGap: "-100%",
-            barWidth: 10,
-            itemStyle: {
-              // color: "rgba(20,200,212,0.5)",
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: "rgba(20,200,212,0.5)" },
-                { offset: 0.2, color: "rgba(20,200,212,0.2)" },
-                { offset: 1, color: "rgba(20,200,212,0)" },
-              ]),
-            },
-            z: -12,
-            data: lineData,
-          },
-          {
-            name: "dotted",
-            type: "pictorialBar",
-            symbol: "rect",
-            itemStyle: {
-              color: "#0f375f",
-            },
-            symbolRepeat: true,
-            symbolSize: [12, 4],
-            symbolMargin: 1,
-            z: -10,
-            data: lineData,
-          },
-        ],
-      };
-      mapChart.setOption(option); //生成图表
-    },
   },
 };
 </script>
@@ -1068,6 +755,8 @@ a {
   //时间日期
   .title_time {
     text-align: center;
+    color:  #008cff;
+    margin-top: 10px;
   }
   //中国地图
   #china-map {
