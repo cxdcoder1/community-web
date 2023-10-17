@@ -266,11 +266,7 @@ export default {
     this.getStatus();
   },
    methods: {
-     async getStatus() {
-       const {data: res} = await this.$http.get('sysDictType/dictStatusOption')
-       console.log("123",res.data)
-       this.statusPotion=res.data;
-     },
+
     /**
      * 导出方法
      */
@@ -303,7 +299,9 @@ export default {
       const {data: res} = await this.$http.get('sysDictType/selectDictType', {
         params: this.queryParams
       })
-
+      if(res==''){
+        return
+      }
       this.typeList = res.data.records;
       this.total = res.data.total
       console.log("总条数" + this.total)

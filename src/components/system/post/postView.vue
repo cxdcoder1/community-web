@@ -307,6 +307,9 @@ export default {
           const {data: res} = await this.$http.get('sysPost/postList', {
             params: this.queryParams
           })
+          if(res==''){
+            return
+          }
           this.postList = res.data.records;
           this.total = res.data.total
           const {data:res1}=await this.$http.get("sysDictData/getStatus")

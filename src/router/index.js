@@ -78,9 +78,21 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login')
         return next();
     //获取token
-    const tokenStr = window.sessionStorage.getItem('token');
-    if (!tokenStr)
+    // const tokenStr = window.sessionStorage.getItem("token");
+
+    let tokenStr = window.sessionStorage.getItem('token');
+    // let tokenStartTime = window.sessionStorage.getItem('tokenStartTime');
+    //
+    // let date = new Date().getTime()
+    // let timeOver=3000;
+    // if (date-tokenStartTime>timeOver){
+    //     tokenStr=null;
+    // }
+
+    if (!tokenStr){
         return next('/login');
+    }
+
     next();
 
 });

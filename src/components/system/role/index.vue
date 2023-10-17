@@ -404,6 +404,9 @@ export default {
       const {data: res} = await this.$http.get('sysRole/list', {
         params: this.queryParams
       })
+      if(res==''){
+        return
+      }
       this.roleList = res.data.records;
       this.total = res.data.total
       // console.log(this.roleList)

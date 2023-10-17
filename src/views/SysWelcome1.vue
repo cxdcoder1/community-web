@@ -754,9 +754,12 @@ a {
   }
   //时间日期
   .title_time {
+    position: relative;
+    top: 10px;
+    width: 100%;
     text-align: center;
-    color:  #008cff;
-    margin-top: 10px;
+    color: #008cff;
+    z-index: 1000;
   }
   //中国地图
   #china-map {

@@ -486,6 +486,9 @@ export default {
       this.communityPotion = res.community
       this.roomStatusList = res.roomStatus
       this.houseTypeList = res.houseType
+      if(res==''){
+        return
+      }
       this.$http.get('zyRoom/getUnit').then(res2 => {
         this.unitPotionEdit = res2.data.unit11
       })

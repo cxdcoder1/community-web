@@ -364,7 +364,6 @@ export default {
 
   data() {
     return {
-
       //左侧部门树
       leftDeptTree: [],
       sexList: [
@@ -441,6 +440,7 @@ export default {
         {key: 5, label: `状态`, visible: true},
         {key: 6, label: `创建时间`, visible: true}
       ],
+
       // 表单校验
       rules: {
         userName: [
@@ -526,6 +526,10 @@ export default {
       const {data: res} = await this.$http.get('sysUser/sysUserList', {
         params: this.queryParams
       })
+
+      if(res==''){
+        return
+      }
       this.userList = res.data.records;
       this.total = res.data.total
       console.log(res.data.records, "xxxxxxxxxxxxxx")

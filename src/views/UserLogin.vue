@@ -108,7 +108,9 @@ export default {
       //保存当前登录的用户
       //window.sessionStorage.setItem('user', JSON.stringify(res.user));
       window.sessionStorage.setItem('user', JSON.stringify(res.user));
-      //保存token
+      //token创建时间
+      window.sessionStorage.setItem('tokenStartTime',new Date().getTime());
+//保存token
 
       window.sessionStorage.setItem('token', res.JWT);
 
