@@ -103,7 +103,7 @@
           :total="total">
       </el-pagination>
       <el-dialog :title="title" :visible.sync="opens" width="500px" append-to-body>
-        <el-form ref="form" :model="form" label-width="80px">
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="备注" prop="remark">
             <el-input v-model.trim="form.remark" type="textarea" placeholder="请输入回复内容"/>
           </el-form-item>
@@ -159,6 +159,11 @@ export default {
       //小区集合
       zyCommunityList: {},
 
+      rules: {
+        remark:[
+          {required: true, message: "回复不能为空", trigger: "blur"},
+        ]
+      },
 
       images: [],
 
@@ -236,6 +241,12 @@ export default {
         this.$message.error(res.msg)
       }
     },
+    //重置表单信息
+    resetForm(refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields();
+      }
+    },
     //回复
     update(row) {
       this.opens = true;
@@ -248,6 +259,7 @@ export default {
     },
     //重置表单
     reset() {
+      this.resetForm("form");
       this.form = {
         remark: undefined
       };

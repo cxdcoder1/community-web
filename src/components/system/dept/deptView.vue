@@ -79,7 +79,7 @@
       </el-table>
 
       <!--      新增修改表单-->
-      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+      <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body @close="cancel()">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-row>
             <el-col :span="24">
@@ -236,8 +236,14 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+      this.resetForm("form")
     },
-
+    //重置信息
+    resetForm(refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields();
+      }
+    },
     getRowKeys(row) {
       return row.deptId
     },
@@ -275,14 +281,6 @@ export default {
 
     //新增修改表单提交
     async submitForm() {
-      if (this.form.deptId < this.form.parentId) {
-        return this.$message.error("大部门不能移到小部门");
-      }
-      if (this.form.deptName == null || this.form.deptName.length > 10) {
-        // name 字段为空或长度超过 10，提示用户输入正确的值
-        this.$message.error('请输入正确长度的姓名');
-        return;
-      }
       this.$refs.form.validate(async valid => {
         if (valid) {
           // 在表单验证通过时执行的代码

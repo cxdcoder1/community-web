@@ -328,32 +328,19 @@ export default {
     },
     async saveMenu() {
 
-      if (!this.form.menuName) {
-        // 部门名称为空，提示用户输入值
-        this.$message.error('菜单名称不能为空');
-        return;
-      }
-      if (!this.form.orderNum) {
-        // 部门名称为空，提示用户输入值
-        this.$message.error('菜单顺序不能为空');
-        return;
-      }
-      if (!this.form.path.trim()) {
-        // 部门名称为空，提示用户输入值
-        this.$message.error('路由不能为空');
-        return;
-      }
-      let res;
-      if (this.form.menuId == null || this.form.menuId == 0) {
-        res = await this.$http.post('sysMenu/addMenu', this.form);
-        console.log(res)
-      } else {
-        res = await this.$http.put('sysMenu/updateMenu', this.form);
-      }
-      if (res.data.status == 200) {
-        this.updateSysMenuShow = false
-        this.$message.success("保存成功")
-        location.reload()
+      this.$refs["menusInfoRef"].validate(async valid => {
+        if (valid) {
+          let res;
+          if (this.form.menuId == null || this.form.menuId == 0) {
+            res = await this.$http.post('sysMenu/addMenu', this.form);
+            console.log(res)
+          } else {
+            res = await this.$http.put('sysMenu/updateMenu', this.form);
+          }
+          if (res.data.status == 200) {
+            this.updateSysMenuShow = false
+            this.$message.success("保存成功")
+            location.reload()
 
       } else if (res.data.status==201) {
         this.updateSysMenuShow = true
@@ -361,7 +348,7 @@ export default {
       }else {
         this.$message.warning("权限不足!")
         this.updateSysMenuShow = false
-      }
+      }}})
     },
     update(r) {
 
@@ -409,12 +396,18 @@ export default {
       this.menusInfo.isFrame = 1
     },
     closeLog() {
-      this.$refs.form.resetFields()
+      this.resetForm("menusInfoRef")
       this.updateSysMenuShow = false
       this.form = {
         menuType: 'M',
       }
 
+    },
+    //重置信息
+    resetForm(refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields();
+      }
     },
     reset() {
       this.menusInfo = {

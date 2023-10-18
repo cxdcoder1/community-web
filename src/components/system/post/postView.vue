@@ -124,7 +124,7 @@
           :total="total">
       </el-pagination>
       <!-- 添加或修改岗位对话框 -->
-      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+      <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body @close="cancel()">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-form-item label="岗位名称" prop="postName">
             <el-input v-model.trim="form.postName" placeholder="请输入岗位名称"/>
@@ -240,17 +240,17 @@ export default {
     },
     //新增修改提交
     async submitForm() {
-      console.log(this.form);
-      if (this.form.postName == null || this.form.postName.length > 10) {
-        // name 字段为空或长度超过 10，提示用户输入正确的值
-        this.$message.error('请输入正确长度的姓名');
-        return;
-      }
-      if (this.form.postCode == null) {
-        // name 字段为空或长度超过 10，提示用户输入正确的值
-        this.$message.error('请输入岗位编码');
-        return;
-      }
+      // console.log(this.form);
+      // if (this.form.postName == null || this.form.postName.length > 10) {
+      //   // name 字段为空或长度超过 10，提示用户输入正确的值
+      //   this.$message.error('请输入正确长度的姓名');
+      //   return;
+      // }
+      // if (this.form.postCode == null) {
+      //   // name 字段为空或长度超过 10，提示用户输入正确的值
+      //   this.$message.error('请输入岗位编码');
+      //   return;
+      // }
       this.$refs.form.validate(async valid => {
         if (valid) {
           let res;
@@ -411,6 +411,14 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+
+      this.resetForm("form")
+    },
+    //重置信息
+    resetForm(refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields();
+      }
     },
     // 表单重置
     reset() {

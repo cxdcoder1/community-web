@@ -125,7 +125,7 @@
     </el-pagination>
 
     <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="cancel">
+    <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="cancel" @close="cancel()">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-form-item label="id" prop="communityId" hidden="hidden" v-if="form.communityId != '0'" :style="{ opacity: '0.5' }"
@@ -423,6 +423,13 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+      this.resetForm("form")
+    },
+    //重置信息
+    resetForm(refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields();
+      }
     },
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {
@@ -503,54 +510,59 @@ export default {
     async saveRole() {
       // this.form.status = this.form.status == "正常" ? '0' : '1';
       // 判断是否是null
-      if (this.form.communityName == 0 || this.form.communityDetailedAddress == 0 ||
-          this.form.communityDetailedAddress == null || this.form.communityName == null) {
-        this.$message.error("请输入参数")
-        return
-      }
-      //this.form.communityId不为0：修改
-      if (this.form.communityId != 0) {
-        //获取省市级信息
-        this.form.communityProvenceCode=this.selectedOptions[0];
-        this.form.communityCityCode=this.selectedOptions[1];
-        this.form.communityTownCode=this.selectedOptions[2];
+      // if (this.form.communityName == 0 || this.form.communityDetailedAddress == 0 ||
+      //     this.form.communityDetailedAddress == null || this.form.communityName == null) {
+      //   this.$message.error("请输入参数")
+      //   return
+      // }
+      this.$refs["form"].validate(async valid => {
+        if (valid) {
+          //this.form.communityId不为0：修改
+          if (this.form.communityId != 0) {
+            //获取省市级信息
+            this.form.communityProvenceCode = this.selectedOptions[0];
+            this.form.communityCityCode = this.selectedOptions[1];
+            this.form.communityTownCode = this.selectedOptions[2];
 
-        let res = await this.$http.put("zyCommunity/updCommunity",this.form);
-        if (res.data.status === 200) {
-          this.open = false;
-          this.$message.success("修改成功")
-          this.getCommunityList();
-        } else {
-          this.$message.error(res.data.msg);
+            let res = await this.$http.put("zyCommunity/updCommunity", this.form);
+            if (res.data.status === 200) {
+              this.open = false;
+              this.$message.success("修改成功")
+              this.getCommunityList();
+            } else {
+              this.$message.error(res.data.msg);
+            }
+          }
+          //this.form.communityId为0：新增
+          if (this.form.communityId == 0) {
+            this.form.communityId = Date.now()
+            this.form.communityCode = 'COMMUNITY_' + Date.now()
+
+            this.form.communityProvenceCode = this.selectedOptions[0];
+            this.form.communityCityCode = this.selectedOptions[1];
+            this.form.communityTownCode = this.selectedOptions[2];
+
+            let res = await this.$http.post("zyCommunity/insCommunity", this.form);
+            if (res.data.status === 200) {
+              this.open = false;
+              this.$message.success("新增成功")
+              this.form = {
+                communityName: undefined,
+                remark: undefined,
+                communityDetailedAddress: undefined,
+                communityProvenceCode: "",
+                communityCityCode: "",
+                communityTownCode: ""
+              };
+              this.getCommunityList();
+            } else {
+              this.form.communityId = 0
+              this.$message.error(res.data.msg);
+            }
+          }
         }
-      }
-      //this.form.communityId为0：新增
-      if (this.form.communityId == 0 ) {
-        this.form.communityId=Date.now()
-        this.form.communityCode='COMMUNITY_'+Date.now()
+      })
 
-        this.form.communityProvenceCode=this.selectedOptions[0];
-        this.form.communityCityCode=this.selectedOptions[1];
-        this.form.communityTownCode=this.selectedOptions[2];
-
-        let res = await this.$http.post("zyCommunity/insCommunity",this.form);
-        if (res.data.status === 200) {
-          this.open = false;
-          this.$message.success("新增成功")
-          this.form = {
-            communityName: undefined,
-            remark: undefined,
-            communityDetailedAddress:undefined,
-            communityProvenceCode:"",
-            communityCityCode:"",
-            communityTownCode:""
-          };
-          this.getCommunityList();
-        } else {
-          this.form.communityId = 0
-          this.$message.error(res.data.msg);
-        }
-      }
     },
   }
 }

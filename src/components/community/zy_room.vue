@@ -210,7 +210,7 @@
         :total="total">
     </el-pagination>
     </el-card>
-    <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="handleClose">
+    <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="handleClose" @close="cancel()">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-form-item label="小区" prop="communityId" v-if="!form.roomId">
@@ -570,8 +570,14 @@ export default {
     cancel() {
       this.open = false;
       this.reset()
-    }
-    ,
+      this.resetForm("form")
+    },
+    //重置信息
+    resetForm(refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields();
+      }
+    },
     //查询
     handleQuery() {
       this.queryParams.current = 1

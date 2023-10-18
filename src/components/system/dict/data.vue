@@ -143,7 +143,7 @@
     </el-pagination>
 
     <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body @close="cancel()">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="字典类型">
           <el-input v-model="form.dictType" :disabled="true"/>
@@ -320,6 +320,13 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+      this.resetForm("form")
+    },
+    //重置信息
+    resetForm(refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields();
+      }
     },
     // 表单重置
     reset() {

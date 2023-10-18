@@ -203,7 +203,7 @@
     </el-row>
 
     <!-- 添加或修改用户配置对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body @close="cancel()">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
@@ -440,7 +440,6 @@ export default {
         {key: 5, label: `状态`, visible: true},
         {key: 6, label: `创建时间`, visible: true}
       ],
-
       // 表单校验
       rules: {
         userName: [
@@ -723,6 +722,13 @@ export default {
     cancel() {
       this.open = false;
       this.reset();
+      this.resetForm("form");
+    },
+    //重置信息
+    resetForm(refName) {
+      if (this.$refs[refName]) {
+        this.$refs[refName].resetFields();
+      }
     },
     // 表单重置
     reset() {
@@ -868,7 +874,6 @@ export default {
       // this.form.status = this.form.status == "正常" ? '0' : '1';
 
       this.$refs["form"].validate(valid => {
-        console.log(this.form, "ccccccccccc")
         if (valid) {
           if (this.form.userId != undefined) {
             this.$http.put("sysUser/updateUser", this.form).then(response => {
