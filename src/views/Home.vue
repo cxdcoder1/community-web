@@ -37,8 +37,12 @@
             router
             style="margin-left: -45px;">
           <!-- 一级菜单 -->
+          <el-menu-item class="el-menu-item" :index="'/home'">
+            <i class="el-icon-odometer"></i>
+            <template slot="title">系统首页</template>
+          </el-menu-item>
           <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id"
-                      :disabled="item.status==1">
+                      :disabled="item.status===1">
             <template slot="title">
               <i :class="'icon iconfont icon-'+item.icon">&nbsp;&nbsp;</i>
               <span>{{ item.menuName }}</span>
@@ -47,8 +51,8 @@
             <template v-for="item2 in item.children">
               <el-submenu @click="saveNavState('/'+item.path)"
                           :index="'/' + item.path"
-                          v-if="item2.menuId == 108"
-                          :key="item2.menuId" :disabled="item2.status==1" style="padding-left: 5px"
+                          v-if="item2.menuId === 108"
+                          :key="item2.menuId" :disabled="item2.status===1" style="padding-left: 5px"
               >
                 <template slot="title">
                   <i :class="'icon iconfont icon-'+item2.icon">&nbsp;&nbsp;</i>

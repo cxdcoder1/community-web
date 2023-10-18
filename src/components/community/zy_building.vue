@@ -44,8 +44,9 @@
       </el-form>
       <el-button
           type="primary"
+          plain
           icon="el-icon-plus"
-          size="small"
+          size="mini"
           @click="add()"
       >新增
       </el-button>
@@ -203,7 +204,7 @@ export default {
       const {data: res1} = await this.$http.get("zyBuilding/buildingList", {
         params: this.queryParams
       });
-      if(res==''){
+      if(res1===''){
         return
       }
       this.total = res1.data.total

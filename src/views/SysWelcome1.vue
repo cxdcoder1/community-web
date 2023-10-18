@@ -38,7 +38,7 @@
               <!-- 轮播表格部分 -->
               <div  class="user_skills" >
                 <div class="left_box3">
-                  <div style="text-align: center">登  录  日  志</div>
+                  <div style="text-align: center">小 区 热 帖</div>
                   <dv-border-box-12 style="padding-top: 10px">
                     <dv-scroll-board
                         :config="board_info"
@@ -54,6 +54,11 @@
             <el-col :span="12">
               <!-- 中国地图 -->
               <div id="china-map"></div>
+              <div class="line_center"  style="width: 1322px">
+                <dv-border-box-8>
+                  <div id="line_center_diagram"></div>
+                </dv-border-box-8>
+              </div>
             </el-col>
             <!-- 第三列 -->
             <el-col :span="6">
@@ -61,7 +66,7 @@
               <div class="right_box1">
                 <dv-border-box-12>
                   <dv-decoration-7 style="width: 100%; height: 30px"
-                  >小 区 楼 栋 排 行 榜</dv-decoration-7
+                  >社 区 资 产 </dv-decoration-7
                   >
                   <dv-scroll-ranking-board
                       :config="coneA"
@@ -69,15 +74,9 @@
                   />
                 </dv-border-box-12>
               </div>
-              <!-- 虚线柱状图部分 -->
-<!--              <div class="right_box2">-->
-<!--                <dv-border-box-12 :reverse="true">-->
-<!--                  <div id="dotter_bar"></div>-->
-<!--                </dv-border-box-12>-->
-<!--              </div>-->
 <!--               部分-->
               <div  class="right_box3">
-               <div style="text-align: center">房 屋 使 用 情 况</div>
+               <div style="text-align: center">小 区 房 屋 使 用 情 况</div>
                 <dv-border-box-12 :reverse="true">
                   <dv-conical-column-chart :config="cones" class="cone_box" />
                 </dv-border-box-12>
@@ -196,7 +195,7 @@ export default {
         data: [
 
         ],
-        showValue: true,
+        showValue  : true,
       },
 
     };
@@ -209,14 +208,14 @@ export default {
     this.cancelLoading();
     //中国地图
     this.china_map();
-    //左侧玫瑰饼图
-    this.Rose_diagram();
-    //左侧柱状图
-    this.columnar();
+    // //左侧玫瑰饼图
+    // this.Rose_diagram();
+    // //左侧柱状图
+    // this.columnar();
     //中间折线图
     this.line_center_diagram();
-    //虚线柱状图
-    this.dotter_bar();
+    // //虚线柱状图
+    // this.dotter_bar();
   },
   beforeDestroy() {
     //离开时删除计时器
@@ -227,6 +226,7 @@ export default {
     this.getRoom();
     this.getRoomStatus();
     this.getBuildList();
+    this.getMonthList();
   },
   methods: {
     //右上角当前日期时间显示：每一秒更新一次最新时间
@@ -241,9 +241,9 @@ export default {
       }, 1000);
     },
     async getUserLogin(){
-      const {data: res} = await this.$http.get('sysLogininfor/getLoginUser');
+      const {data: res} = await this.$http.get('zyComplaintSuggest/getZyComplaintSuggest');
       this.board_info={
-      header:['用户名','登录地址','操作状态'],
+      header:['发帖人','&nbsp;','发帖内容'],
        data:res.data
         }
     },
@@ -266,13 +266,12 @@ export default {
       // 转换成 key 和 value 的集合
       const keyValuePair = roomDatas.map(item => ({
         name: item.roomStatus,
-        value: item.roomNum
+        value: item.roomNum,
       }));
       this.cones = {
         data: keyValuePair
       };
     },
-
     async getBuildList() {
       const { data: res } = await this.$http.get('zyCommunity/getBuildList');
       const roomDatasA = res.data;
@@ -285,11 +284,106 @@ export default {
         data: keyValuePair
       };
     },
+
     //loading图
     cancelLoading() {
       setTimeout(() => {
         this.loading = false;
       }, 500);
+    },
+    async getMonthList() {
+      const { data: res } = await this.$http.get('zyRoom/monthList');
+      const roomDatasB = res.data;
+      // 转换成 key 和 value 的集合
+      const keyValuePair = roomDatasB.map(item => ({
+        name: item.month,
+        value: item.num
+      }));
+      const names = keyValuePair.map(item => item.name+'月');
+      const values = keyValuePair.map(item => item.value);
+      this.line_center_diagram(names,values)
+
+
+    },
+    //折线图
+     line_center_diagram(names,values) {
+      let mapChart = this.$echarts.init(
+          document.getElementById("line_center_diagram")
+      ); //图表初始化，china-map是绑定的元素
+      window.onresize = mapChart.resize; //如果容器变大小，自适应从新构图
+      let option = {
+        xAxis: {
+          type: "category",
+          data:names,
+          position: "bottom",
+          axisLine: true,
+          axisLabel: {
+            color: "rgba(255,255,255,.8)",
+            fontSize: 12,
+          },
+        },
+        yAxis: {
+          type: "value",
+          name: "现年度销售率",
+          nameLocation: "end",
+          nameGap: 24,
+          nameTextStyle: {
+            color: "rgba(255,255,255,.5)",
+            fontSize: 14,
+          },
+          splitNumber: 4,
+          axisLine: {
+            lineStyle: {
+              opacity: 0,
+            },
+          },
+          splitLine: {
+            show: true,
+            lineStyle: {
+              color: "#fff",
+              opacity: 0.1,
+            },
+          },
+          axisLabel: {
+            color: "rgba(255,255,255,.8)",
+            fontSize: 12,
+          },
+        },
+        grid: {
+          left: 50,
+          right: 10,
+          bottom: 25,
+          top: "18%",
+        },
+        series: [
+          {
+            data: values,
+            type: "line",
+            smooth: true,
+            symbol: "emptyCircle",
+            symbolSize: 8,
+            itemStyle: {
+              normal: {
+                color: "#fff",
+              },
+            },
+            //线的颜色样式
+            lineStyle: {
+              normal: {
+                color: this.colorList.linearBtoG,
+                width: 3,
+              },
+            },
+            //填充颜色样式
+            areaStyle: {
+              normal: {
+                color: this.colorList.areaBtoG,
+              },
+            },
+          },
+        ],
+      };
+      mapChart.setOption(option); //生成图表
     },
     //中国地图
     china_map() {
@@ -314,7 +408,7 @@ export default {
         广东: [113.8668, 22.8076],
         吉林: [126.1746, 43.5938],
         河北: [115.4004, 38.1688],
-        湖北: [42],
+        湖北: [112.2363, 30.8572],
         贵州: [106.6113, 26.6385],
         山东: [118.2402, 36.2307],
         江西: [115.7156, 27.99],
@@ -335,30 +429,6 @@ export default {
         香港: [114.6178, 22.3242],
         澳门: [113.5547, 21.6484],
       };
-      //后台给的数据模拟
-      let lineData = [
-        {
-          val: 32, //数据
-          blat: [113.8668, 22.8076], //发射点
-          elon: [111.5332, 27.3779], //接收点
-          bcitysim: "广东", //发射省的名字
-          ecitysim: "湖南", //接收省的名字
-        }
-      ];
-      //循环拿到处理好的数据
-      for (var i = 0; i < lineData.length; i++) {
-        province.push(lineData[i].bcitysim); //存进去每个省的名字
-        province.push(lineData[i].ecitysim); //存进去每个省的名字
-        res.push({
-          fromName: lineData[i].bcitysim, //发射的省名，保存用于弹框显示
-          toName: lineData[i].ecitysim, //接收的省名，保存用于弹框显示
-          coords: [
-            lineData[i].blat, //发射
-            lineData[i].elon, //接收
-          ],
-          count: lineData[i].val, //数据
-        });
-      }
       let index_data = new Set(province); //把省的名字去重
       let data_res = []; //定义一个新的变量存放省的坐标
 
@@ -397,6 +467,8 @@ export default {
             tooltip: {
               formatter: function (param) {
                 return (
+                    param.data.fromName +
+                    ">" +
                     param.data.toName +
                     "<br>数量：" +
                     param.data.count
@@ -405,6 +477,7 @@ export default {
             },
             data: res, //拿到射线的起始点和结束点
           },
+
         //点击高亮
           {
             type: "map",
@@ -448,7 +521,7 @@ export default {
           },
           data: [],
         },
-        // 鼠标移上去的弹框
+        //鼠标移上去的弹框
         tooltip: {
           trigger: "item",
           show: true,
@@ -534,6 +607,7 @@ export default {
             radius: [10, 60],
             roseType: "area",
             center: ["50%", "50%"],
+
             data: keyValuePairs,
           },
         ],
@@ -580,7 +654,7 @@ a {
   //整体页面背景
   width: 100%;
   height: 100%;
-  background-image: url("../assets/789.jpg"); //背景图
+  background-image: url("../assets/888.png"); //背景图
   background-attachment: fixed;
   background-size: cover; //背景尺寸
   background-position: center center; //背景位置
@@ -665,6 +739,7 @@ a {
   .line_center {
     width: 100%;
     height: 288px;
+    margin-left: -332px;
   }
   //左1模块
   .left_box1 {

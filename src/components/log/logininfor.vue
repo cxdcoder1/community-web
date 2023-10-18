@@ -9,7 +9,8 @@
       <el-breadcrumb-item>登录日志</el-breadcrumb-item>
     </el-breadcrumb>
     <br>
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-card>
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px" style="margin-left: 30px">
       <el-form-item label="登录地址" prop="ipaddr">
         <el-input
             v-model="queryParams.ipaddr"
@@ -60,8 +61,9 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
-    <el-row :gutter="10" class="mb8">
+    </el-card>
+    <el-card>
+    <el-row :gutter="10" class="mb8" style="margin-left: 20px">
       <el-col :span="1.5">
         <el-button
             type="danger"
@@ -147,7 +149,9 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
+    </el-card>
   </div>
+
 </template>
 
 <script>
