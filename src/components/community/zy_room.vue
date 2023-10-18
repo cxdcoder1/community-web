@@ -548,6 +548,7 @@ export default {
         // if (this.queryParams.current==0 || this.queryParams.current <0 ){
         //   this.queryParams.current=1
         // }
+        console.log(res,"cccccccccccc")
         if (res.data.data == 1) {
           this.$message.success("删除成功")
           this.getRoomList();

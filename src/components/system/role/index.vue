@@ -246,7 +246,7 @@ export default {
       menuCheckStrictly1: false, //父子联动(默认开启)
 
       //tree是否展开
-      expandOrFold: true,
+      expandOrFold: false,
 
       // 菜单列表
       menuOptions: [],

@@ -76,12 +76,13 @@ export default {
       this.$refs["form"].validate(async valid => {
         if (valid) {
           const {data: res} = await this.$http.put('sysUser/updataUser', user)
+          this.$message.success("修改成功");
           // location.reload();
           // console.log(111)
           // console.log(res)
         } else {
-          alert("修改失败")
-          return ""
+          this.$message.error("修改失败")
+          return ;
         }
       })
     },

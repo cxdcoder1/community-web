@@ -379,6 +379,8 @@ export default {
       } else if (res.status == 201) {
         //导出失败
         this.$message.error(res.msg)
+      }else {
+        this.$message.warning("权限不足")
       }
     },
     // //把选中的那条记录的roleId属性放到deriveList中

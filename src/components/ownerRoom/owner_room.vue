@@ -3,7 +3,7 @@
     <br>
     <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-left: 20px">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>业主审核</el-breadcrumb-item>
+      <el-breadcrumb-item>小区管理 / 业主审核</el-breadcrumb-item>
     </el-breadcrumb>
     <br>
     <el-card>
