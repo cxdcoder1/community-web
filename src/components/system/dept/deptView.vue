@@ -4,7 +4,7 @@
     <br>
     <el-breadcrumb separator-class="el-icon-arrow-right" style="margin-left: 20px">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item >部门管理</el-breadcrumb-item>
+      <el-breadcrumb-item>部门管理</el-breadcrumb-item>
     </el-breadcrumb>
     <br>
     <el-card>
@@ -35,7 +35,7 @@
           @click="Add"
       >新增
       </el-button>
-      <el-button  class="el-button el-button--info el-button--mini is-plain" @click="toggleRowExpansion">
+      <el-button class="el-button el-button--info el-button--mini is-plain" @click="toggleRowExpansion">
         <i class="el-icon-sort"></i>
         <span>展开/折叠</span>
       </el-button>
@@ -69,8 +69,8 @@
         </el-table-column>
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
           <template slot-scope="scope" v-if="scope.row.deptName!='智慧社区'">
-            <el-button  size="mini" type="text" icon="el-icon-plus"  @click="updateDept(scope.row)">修改</el-button>
-            <el-button size="mini" type="text" icon="el-icon-plus"  @click="Add(scope.row)">新增</el-button>
+            <el-button size="mini" type="text" icon="el-icon-plus" @click="updateDept(scope.row)">修改</el-button>
+            <el-button size="mini" type="text" icon="el-icon-plus" @click="Add(scope.row)">新增</el-button>
             <el-button size="mini" type="text" icon="el-icon-delete"
                        @click="deleteDept(scope.row)">删除
             </el-button>
@@ -78,11 +78,11 @@
         </el-table-column>
       </el-table>
 
-<!--      新增修改表单-->
+      <!--      新增修改表单-->
       <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-row>
-            <el-col :span="24" >
+            <el-col :span="24">
               <el-form-item label="上级菜单" prop="parentId">
                 <treeselect
                     placeholder='选择上级菜单'
@@ -96,31 +96,31 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="部门名称" prop="deptName">
-                <el-input v-model.trim="form.deptName" placeholder="请输入部门名称" />
+                <el-input v-model.trim="form.deptName" placeholder="请输入部门名称"/>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="显示排序" prop="orderNum">
-                <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
+                <el-input-number v-model="form.orderNum" controls-position="right" :min="0"/>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="负责人" prop="leader">
-                <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20" />
+                <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20"/>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="联系电话" prop="phone">
-                <el-input v-model="form.phone" placeholder="请输入联系电话" maxlength="11" />
+                <el-input v-model="form.phone" placeholder="请输入联系电话" maxlength="11"/>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="邮箱" prop="email">
-                <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
+                <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50"/>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -150,13 +150,14 @@
 //表单树形结构导包
 import Treeselect from "@riophae/vue-treeselect";
 import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+
 export default {
   //表单树形结构导包
   components: {Treeselect},
 
   data() {
     return {
-      statusPotion:[],
+      statusPotion: [],
 
       //查询条件
       deptInfoTree: {
@@ -165,7 +166,7 @@ export default {
       },
       // 表单参数
       form: {
-        deptId:"",
+        deptId: "",
         parentId: "",
         ancestors: "",
         leader: "",
@@ -176,13 +177,13 @@ export default {
       //表单验证
       rules: {
         parentId: [
-          { required: true, message: "上级部门不能为空", trigger: "blur" }
+          {required: true, message: "上级部门不能为空", trigger: "blur"}
         ],
         deptName: [
-          { required: true, message: "部门名称不能为空", trigger: "blur" }
+          {required: true, message: "部门名称不能为空", trigger: "blur"}
         ],
         orderNum: [
-          { required: true, message: "显示排序不能为空", trigger: "blur" }
+          {required: true, message: "显示排序不能为空", trigger: "blur"}
         ],
         email: [
           {
@@ -200,7 +201,7 @@ export default {
         ]
       },
       //表单显示默认为关闭
-      open:false,
+      open: false,
       // 要展开的行，数值的元素是row的key值
       expands: [],
       //部门树形数组
@@ -229,7 +230,7 @@ export default {
 
     async getStatus() {
       const {data: res} = await this.$http.get('sysDept/deptStatusOption')
-      this.statusPotion=res.data;
+      this.statusPotion = res.data;
     },
     //新增修改表单取消
     cancel() {
@@ -258,13 +259,13 @@ export default {
       try {
         this.deptInfo.deptName = this.deptInfo.deptName.trim();
         const {data: res} = await this.$http.post("sysDept/getDeptList", this.deptInfo);
-        const {data: res2} = await this.$http.post("sysDept/treeDeptList",this.deptInfoTree);
+        const {data: res2} = await this.$http.post("sysDept/treeDeptList", this.deptInfoTree);
         // console.log("cxdccccc",res.menuList)
         this.deptList = res.menuList;
 
-        this.treeList=res2.menuList
+        this.treeList = res2.menuList
         //给表单from赋值
-        this.form=res2.menuList
+        this.form = res2.menuList
 
       } catch (error) {
         // console.error(error);
@@ -295,39 +296,42 @@ export default {
             this.open = false;
             this.$message.success("操作成功");
             this.search();
-          } else {
+          } else if (res.data.status == 201) {
             this.$message.error(res.data.msg);
+          } else {
+            this.$message.warning('权限不足!');
+            this.open = false;
           }
-        }else {
-          this.$message.error('请输入正确信息');
         }
-      });
+      })
     },
     //新增按钮
     Add(row) {
       this.open = true;
       this.title = "添加部门";
       // this.form
-      this.form={
-        status:'0',
-        orderNum:'1',
-        parentId:'100'
+      this.form = {
+        status: '0',
+        orderNum: '1',
+        parentId: '100'
       }
       // console.log(row.deptId)
       // this.form.parentId=row.parentId
-      if (row.deptId!=null){
-       this.form.parentId=row.deptId
+      if (row.deptId != null) {
+        this.form.parentId = row.deptId
       }
-    },
+    }
+    ,
     //修改按钮
-    updateDept(row){
-      this.open=true
+    updateDept(row) {
+      this.open = true
       this.title = "修改菜单";
       this.form = structuredClone(row)
-      if (row.parentId===0){
-        this.form.parentId=100
+      if (row.parentId === 0) {
+        this.form.parentId = 100
       }
-    },
+    }
+    ,
     //表单中的树形结构
     normalizer(node) {
       if (node.children && !node.children.length) {
@@ -338,7 +342,8 @@ export default {
         label: node.deptName,
         children: node.children
       };
-    },
+    }
+    ,
     //重置方法
     reset() {
       this.deptInfo = {
@@ -346,12 +351,13 @@ export default {
         status: ''
       };
       this.search();
-    },
+    }
+    ,
     //下拉状态
     //删除方法
     async deleteDept(dept) {
       console.log(dept);
-      const confirmResult = await this.$confirm('确认要删除'+dept.deptName+'吗?', "警告", {
+      const confirmResult = await this.$confirm('确认要删除' + dept.deptName + '吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -366,6 +372,8 @@ export default {
           this.search();
         } else if (res.data.status == 201) {
           this.$message.error(res.data.msg)
+        }else {
+          this.$message.warning("权限不足!")
         }
       })
     }

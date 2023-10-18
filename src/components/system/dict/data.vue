@@ -401,8 +401,11 @@ export default {
                 this.$message.success("修改成功");
                 this.open = false;
                 this.getList();
-              } else {
+              } else if (response.data.data ==0) {
                 this.$message.error("字典标签重名,请继续操作!");
+              }else {
+                this.$message.warning("权限不足!")
+                this.open = false;
               }
             });
           } else {
@@ -413,8 +416,11 @@ export default {
                 this.$message.success("新增成功");
                 this.open = false;
                 this.getList();
-              } else {
+              } else if (response.data.data==0) {
                 this.$message.error("字典标签重名,请继续操作!");
+              }else {
+                this.$message.warning("权限不足!")
+                this.open = false;
               }
             });
           }
@@ -440,9 +446,13 @@ export default {
       }
       // eslint-disable-next-line no-unused-vars
       await this.$http.delete("sysDictData/delete/" + dictCodes).then(res => {
-        console.log(res)
+        console.log(res,"cccccccccc")
         if (this.queryParams.current > Math.ceil((this.total - 1) / this.queryParams.size)) {
           this.queryParams.current = this.queryParams.current - 1;
+        }
+        if (res.data.errorCode==10){
+          this.$message.warning("权限不足!")
+          return;
         }
         this.$message.success("删除成功!")
         this.getList();

@@ -8,7 +8,8 @@
       <el-breadcrumb-item>房屋管理</el-breadcrumb-item>
     </el-breadcrumb>
     <br>
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="`showSearch`">
+    <el-card>
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="`showSearch`" style="margin-left: 30px">
       <!--      <el-form-item label="单元/楼栋" prop="value">-->
       <!--        <el-cascader-->
       <!--            v-model="value"-->
@@ -75,47 +76,49 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item>
+      <el-form-item style="margin-left: 30px">
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5" style="margin-left: 60px">
+          <el-button
+              type="primary"
+              plain
+              icon="el-icon-plus"
+              size="mini"
+              @click="Add"
+          >新增
+          </el-button>
+        </el-col>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-            type="primary"
-            plain
-            icon="el-icon-plus"
-            size="mini"
-            @click="Add"
-        >新增
-        </el-button>
-      </el-col>
+        <el-col :span="1.5">
+          <el-button
+              type="danger"
+              plain
+              icon="el-icon-delete"
+              size="mini"
+              :disabled="multiple"
+              @click="delRooms"
+          >删除
+          </el-button>
+        </el-col>
 
-      <el-col :span="1.5">
-        <el-button
-            type="danger"
-            plain
-            icon="el-icon-delete"
-            size="mini"
-            :disabled="multiple"
-            @click="delRooms"
-        >删除
-        </el-button>
-      </el-col>
+        <el-col :span="1.5">
+          <el-button
+              type="warning"
+              plain
+              icon="el-icon-download"
+              size="mini"
+              @click="derive()"
+          >导出
+          </el-button>
+        </el-col>
+      </el-row>
+    </el-card>
+    <el-card>
 
-      <el-col :span="1.5">
-        <el-button
-            type="warning"
-            plain
-            icon="el-icon-download"
-            size="mini"
-            @click="derive()"
-        >导出
-        </el-button>
-      </el-col>
-    </el-row>
     <!--渲染表格-->
     <el-table :data="roomList" @selection-change="handleSelectionChange" ref="list">
       <el-table-column type="selection" width="55" align="center"/>
@@ -206,7 +209,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total">
     </el-pagination>
-
+    </el-card>
     <el-dialog :title="title" :visible.sync="open" width="680px" append-to-body :before-close="handleClose">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>

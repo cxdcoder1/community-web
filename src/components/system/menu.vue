@@ -355,9 +355,12 @@ export default {
         this.$message.success("保存成功")
         location.reload()
 
-      } else {
+      } else if (res.data.status==201) {
         this.updateSysMenuShow = true
         this.$message.error(res.data.msg)
+      }else {
+        this.$message.warning("权限不足!")
+        this.updateSysMenuShow = false
       }
     },
     update(r) {
@@ -484,7 +487,12 @@ export default {
         menuId: menuId,
         parentId: parentId
       }).then(res => {
-        this.$message.success(res.data.data)
+        console.log(res,"cccccccccccc")
+        if (res.data.data!=1){
+          this.$message.warning("权限不足!")
+          return;
+        }
+        this.$message.success(res.data.msg)
         setTimeout(()=>{
           location.reload()
         },500)

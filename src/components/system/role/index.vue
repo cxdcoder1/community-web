@@ -242,10 +242,10 @@ export default {
       },
       //树形控件区域
       checked: false, //checkbox的值
-      menuCheckStrictly1: true, //父子联动(默认开启)
+      menuCheckStrictly1: false, //父子联动(默认开启)
 
       //tree是否展开
-      expandOrFold: false,
+      expandOrFold: true,
 
       // 菜单列表
       menuOptions: [],
@@ -254,7 +254,7 @@ export default {
 
       //选取的菜单下拉框
       selectMenuOptions: [],
-      menuCheckStrictly: false,
+      menuCheckStrictly: true,
       defaultMenu: [],
 
       // 表单参数
@@ -325,6 +325,8 @@ export default {
       } else if (res.status == 201) {
         //导出失败
         this.$message.error(res.msg)
+      }else {
+        this.$message.warning("权限不足!")
       }
 
     },
@@ -362,6 +364,8 @@ export default {
           this.getRoleList();
         } else if (res.data.status == 201) {
           this.$message.error(res.data.msg)
+        }else {
+          this.$message.warning("权限不足!")
         }
       })
 
@@ -426,7 +430,16 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        return this.$http.put('sysRole/upDataStatus?status=' + row.status + '&roleId=' + row.roleId);
+        return this.$http.put('sysRole/upDataStatus?status=' + row.status + '&roleId=' + row.roleId).then(res=>{
+              console.log(res,"ccccc")
+              if (res.data.errorCode==10) {
+                this.$message.warning("权限不足！")
+                this.getRoleList()
+                return;
+              }else {
+                this.getRoleList()
+              }
+        })
       }).catch(() => {
         row.status = row.status === "0" ? "1" : "0";
       });
@@ -473,10 +486,13 @@ export default {
           this.$message.success("修改成功")
           this.getRoleList();
           this.menuOptions = {}
-        } else {
+        } else if (res.data.status==201) {
           this.$message.error(res.data.msg);
           // this.open = false;
           // this.form = {};
+        }else {
+          this.$message.warning("权限不足!")
+          this.open = false;
         }
       } else {
         let res = await this.$http.post("sysRole/insertRole", this.form);
@@ -484,10 +500,13 @@ export default {
           this.open = false;
           this.$message.success("新增成功")
           this.getRoleList();
-        } else {
+        } else if (res.data.status==201){
           this.$message.error(res.data.msg);
           // this.open = false;
           // this.form = {};
+        }else {
+          this.$message.warning("权限不足!")
+          this.open = false;
         }
       }
     },
@@ -584,6 +603,9 @@ export default {
     handleCheckChange() {
       // 当勾选状态变化时，将选中的节点保存在 selectedItems 数组中
       this.selectMenuOptions = this.$refs.menu.getCheckedNodes();
+      // 半选中的菜单节点
+      let halfCheckedKeys = this.$refs.menu.getHalfCheckedNodes();
+      this.selectMenuOptions.unshift.apply(this.selectMenuOptions, halfCheckedKeys);
     },
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {

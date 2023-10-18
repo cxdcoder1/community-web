@@ -290,11 +290,13 @@ export default {
           this.getOperLogList();
           // 清空选中的数据
           this.ids = [];
-        } else {
+        } else if (res.data.status==201){
           this.$message.error(res.data.msg);
           // 清空选中的数据
           this.getOperLogList();
           this.ids = [];
+        }else {
+          this.$message.warning("权限不足!")
         }
       })
     },
@@ -360,6 +362,8 @@ export default {
       } else if (res.status == 201) {
         //清空失败
         this.$message.error(res.msg)
+      }else {
+        this.$message.warning("权限不足！")
       }
     },
     //导出数据
@@ -373,6 +377,8 @@ export default {
       } else if (res.status == 201) {
         //导出失败
         this.$message.error(res.msg)
+      }else {
+        this.$message.warning("权限不足!")
       }
     },
   }

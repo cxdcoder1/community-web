@@ -510,10 +510,10 @@ export default {
   methods: {
     selectCheckDept(node, instanceId) {
       // alert(node.ancestors.length)
-      if (node.ancestors.length<6) {
+      if (node.ancestors.length < 6) {
         this.showEdit = true;
         return this.$message.error("无法选择部门以上的单位！请重新选择")
-      }else {
+      } else {
         this.showEdit = false;
       }
     },
@@ -527,7 +527,7 @@ export default {
         params: this.queryParams
       })
 
-      if(res==''){
+      if (res == '') {
         return
       }
       this.userList = res.data.records;
@@ -562,6 +562,8 @@ export default {
           this.getList();
         } else if (res.data.status == 201) {
           this.$message.error(res.data.msg)
+        }else {
+          this.$message.warning("权限不足！")
         }
       })
     },
@@ -584,6 +586,8 @@ export default {
           this.getList();
         } else if (res.data.status == 201) {
           this.$message.error(res.data.msg)
+        }else {
+          this.$message.warning("权限不足！")
         }
       })
     },
@@ -600,8 +604,10 @@ export default {
       console.log(res)
       if (res.status == 201) {
         this.$message.error(res.msg);
-      } else {
+      } else if (res.status == 200) {
         this.$message.success(res.msg);
+      }else {
+        this.$message.warning("权限不足!");
       }
 
     },
@@ -690,13 +696,23 @@ export default {
       this.handleQuery();
     },
     // 用户状态修改
-    handleStatusChange(row) {
+    handleStatusChange: function (row) {
       this.$confirm('确认要停用' + row.userName + '吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        return this.$http.put('sysUser/updateUserStatus?status=' + row.status + '&id=' + row.userId);
+        this.$http.put('sysUser/updateUserStatus?status=' + row.status + '&id=' + row.userId).then(res=>{
+          console.log(res,"ccccc")
+          if (res.data.errorCode==10){
+            this.$message.warning("权限不足！")
+            this.getList();
+            return;
+          }else {
+            this.getList()
+            return;
+          }
+        })
       }).catch(() => {
         row.status = row.status === "0" ? "1" : "0";
       });
@@ -787,11 +803,18 @@ export default {
         inputErrorMessage: "用户密码长度必须介于 5 和 20 之间"
       }).then(({value}) => {
         console.log(value)
-        this.$http.put("sysUser/resetPwd?id=" + row.userId + "&pwd=" + value);
-        this.$message.success('重置密码成功')
-        // 修改成功后重新登录
-        window.sessionStorage.removeItem();
-        this.$router.push('/login');
+        this.$http.put("sysUser/resetPwd?id=" + row.userId + "&pwd=" + value).then(res=>{
+          console.log("ffffffffff",res)
+          if (res.data.data==1){
+            this.$message.success('重置密码成功')
+            // 修改成功后重新登录
+            // window.sessionStorage.clear();
+            // this.$router.push('/login');
+            return;
+          }else {
+            this.$message.warning('权限不足！')
+          }
+        })
       }).catch(() => {
       });
     },
@@ -832,8 +855,10 @@ export default {
           this.$message.success("修改成功");
           this.open = false;
           this.getList();
-        } else {
+        } else if (response.data.data==0) {
           this.$message.error("修改失败，手机号重复!");
+        }else {
+          this.$message.warning("权限不足!");
         }
       });
       this.$refs.upload.submit();
@@ -852,8 +877,11 @@ export default {
                 this.$message.success("修改成功");
                 this.open = false;
                 this.getList();
-              } else {
+              } else if (response.data.data == 0) {
                 this.$message.error("修改失败，手机号重复!");
+              } else {
+                this.$message.warning("权限不足!");
+                this.open=false;
               }
             });
           } else {
@@ -863,8 +891,11 @@ export default {
                 this.$message.success("新增成功");
                 this.open = false;
                 this.getList();
-              } else {
+              } else if (response.data.data == 0) {
                 this.$message.error("新增失败，手机号重复!");
+              } else {
+                this.$message.warning("权限不足!");
+                this.open=false;
               }
             });
           }
@@ -882,6 +913,8 @@ export default {
       } else if (res.status == 201) {
         //导出失败
         this.$message.error(res.msg)
+      }else {
+        this.$message.warning("权限不足!")
       }
     }
     ,

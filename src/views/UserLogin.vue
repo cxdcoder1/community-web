@@ -8,7 +8,7 @@
         <!-- 登录表单 -->
         <el-form :model="loginForm" ref="LoginFormRef" :rules="loginFormRules" label-width="0px" class="login_form">
           <!-- 用户名 -->
-          <el-form-item prop="phonenumber">
+          <el-form-item prop="username">
             <el-input v-model="loginForm.phonenumber" class="input-border-style"
                       prefix-icon="el-icon-user-solid"></el-input>
           </el-form-item>

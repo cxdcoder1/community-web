@@ -284,6 +284,8 @@ export default {
       } else if (res.status == 201) {
         //导出失败
         this.$message.error(res.msg)
+      }else {
+        this.$message.warning("权限不足!")
       }
 
     },
@@ -372,10 +374,12 @@ export default {
         return this.$message.info('已取消删除')
       }
       const {data: res} = await this.$http.delete('sysDictType/delType?type='+this.types,{data:this.$refs.list.selection.map(item=>item.dictId)});
-      if (res.status !== 200) {
+      if (res.status == 201) {
         this.$message.error(res.msg);
-      } else {
-        this.$message.success('删除用户成功')
+      } else if (res.status==200) {
+        this.$message.success('删除成功')
+      }else {
+        this.$message.warning('权限不足!')
       }
 
       this.getList();
@@ -395,12 +399,14 @@ export default {
         return this.$message.info('已取消删除')
       }
       const {data: res} = await this.$http.delete('sysDictType/dleDelete?idList=' + row.dictId+'&type='+row.dictType);
-      if (res.status !== 200) {
+      if (res.status == 201) {
         this.$message.error(res.msg);
-      }else{
-        this.$message.success('删除用户成功')
+      }else if (res.status==200){
+        this.$message.success('删除成功')
+      }else {
+        this.$message.warning('权限不足!')
       }
-      this.getList();
+      await this.getList();
     },
 
     /** 导出按钮操作 */
@@ -415,23 +421,24 @@ export default {
       //   this.$modal.msgSuccess("刷新成功");
       //   this.$store.dispatch('dict/cleanDict');
       // });
-    }, async saveRole() {
-
-      console.log(this.form.status)
+    },
+     async saveRole() {
 
       if(this.form.dictType == 0 || this.form.dictName == 0 || this.form.dictType == null || this.form.dictName == null ){
         this.$message.error("请输入参数")
-        return
+        return;
       }
       if (this.form.dictId != 0) {
         let res = await this.$http.put("sysDictType/updType?type="+this.type+"&type2="+this.form.dictType, this.form);
-        console.log(res)
         if (res.data.status === 200) {
           this.open = false;
           this.$message.success("修改成功")
           this.getList();
-        } else {
+        } else if (res.data.status==201) {
           this.$message.error(res.data.msg);
+        }else {
+          this.$message.warning("权限不足!")
+          this.open = false;
         }
       }
       if (this.form.dictId == 0) {
@@ -442,8 +449,11 @@ export default {
           this.$message.success("新增成功")
           this.open = false;
           this.getList();
-        } else {
+        } else if (res.data.status==201) {
           this.$message.error(res.data.msg);
+        }else {
+          this.$message.warning("权限不足!")
+          this.open = false;
         }
       }
     },
