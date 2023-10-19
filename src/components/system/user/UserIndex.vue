@@ -805,10 +805,9 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         closeOnClickModal: false,
-        inputPattern: /^.{5,20}$/,
-        inputErrorMessage: "用户密码长度必须介于 5 和 20 之间"
+        inputPattern: /^[a-zA-Z0-9]{5,20}$/,
+        inputErrorMessage: "长度必须介于 5 和 20 之间且只能是英文或者数字"
       }).then(({value}) => {
-        console.log(value)
         this.$http.put("sysUser/resetPwd?id=" + row.userId + "&pwd=" + value).then(res=>{
           console.log("ffffffffff",res)
           if (res.data.data==1){

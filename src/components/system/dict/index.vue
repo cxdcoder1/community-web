@@ -87,25 +87,16 @@
           >删除
           </el-button>
         </el-col>
-        <el-col :span="1.5">
-          <el-button
-              type="danger"
-              plain
-              icon="el-icon-refresh"
-              size="mini"
-              @click="handleRefreshCache"
-          >刷新缓存
-          </el-button>
-        </el-col>
+
         <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
       </el-row>
 
       <el-table :data="typeList" @selection-change="handleSelectionChange" ref="list">
         <el-table-column type="selection" width="55" align="center"/>
-        <el-table-column label="角色编号" align="center">
+        <el-table-column label="字典编号" align="center">
           <template slot-scope="scope">{{ scope.row.dictId }}</template>
         </el-table-column>
-        <el-table-column label="角色名称" :show-overflow-tooltip="true" width="150">
+        <el-table-column label="字典名称" :show-overflow-tooltip="true" width="150">
           <template slot-scope="scope">{{ scope.row.dictName }}</template>
         </el-table-column>
         <el-table-column label="字典类型" align="center">
@@ -158,7 +149,7 @@
                           :class="{ 'readonly-input': true }">
               <el-input v-model.trim="form.dictId" placeholder="请输入id"  readonly/>
             </el-form-item>
-            <el-form-item label="角色名称" prop="dictName">
+            <el-form-item label="字典名称" prop="dictName">
               <el-input v-model.trim="form.dictName" placeholder="请输入名称"/>
             </el-form-item>
             <el-form-item prop="dictType">
@@ -245,11 +236,11 @@ export default {
       },
       // 表单参数
       form: {
-        dictId: undefined,
-        dictName: undefined,
+        dictId: "",
+        dictName: "",
         dictType: "",
-        status: undefined,
-        remark: undefined
+        status: "",
+        remark: ""
       },
       // 表单校验
       rules: {
@@ -435,10 +426,11 @@ export default {
       // if(this.form.dictType == 0 || this.form.dictName == 0 || this.form.dictType == null || this.form.dictName == null ){
       //   this.$message.error("请输入参数")
       //   return;
-      // }
+      //
+       console.log("this.form.dictId",this.form.dictId)
        this.$refs["form"].validate(async valid => {
          if (valid) {
-           if (this.form.dictId != 0) {
+           if (this.form.dictId != null ) {
              let res = await this.$http.put("sysDictType/updType?type="+this.type+"&type2="+this.form.dictType, this.form);
              if (res.data.status === 200) {
                this.open = false;
@@ -451,7 +443,7 @@ export default {
                this.open = false;
              }
            }
-           if (this.form.dictId == 0) {
+           if (this.form.dictId == null ) {
              let res = await this.$http.post("sysDictType/insDictType", this.form);
              console.log(res)
              if (res.data.status === 200) {

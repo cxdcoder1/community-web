@@ -17,7 +17,9 @@
         </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item><span @click="userInfo1()">个人中心</span></el-dropdown-item>
+            <el-dropdown-item v-if="$route.path !== '/userInfo'">
+              <span @click="userInfo1()">个人中心</span>
+            </el-dropdown-item>
             <el-dropdown-item><span @click="logout()">退出登录</span></el-dropdown-item>
           </el-dropdown-menu>
         </template>
