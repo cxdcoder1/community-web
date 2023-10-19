@@ -180,7 +180,7 @@ export  default {
       const {data: res1} = await this.$http.get("zyVisitor/zyVisitorList", {
         params: this.queryParams
       });
-      if(res==''){
+      if(res1==''){
         return
       }
       this.total = res1.data.total

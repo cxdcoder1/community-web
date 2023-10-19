@@ -7,7 +7,7 @@
       <el-breadcrumb-item>字典数据</el-breadcrumb-item>
     </el-breadcrumb>
     <br>`
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px" style="margin-left: 20px">
       <el-form-item label="字典名称" prop="dictType">
         <el-select v-model="queryParams.dictType">
           <el-option
@@ -43,7 +43,7 @@
       </el-form-item>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row :gutter="10" class="mb8" style="margin-left: 20px">
       <el-col :span="1.5">
         <el-button
             type="primary"
@@ -284,7 +284,7 @@ export default {
     this.getList()
   },
   methods: {
-    async getStatus() {
+     async getStatus() {
       const {data: res} = await this.$http.get('sysDictType/dictStatusOption')
       console.log("123",res.data)
       this.statusPotion=res.data;

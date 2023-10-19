@@ -87,16 +87,7 @@
           >删除
           </el-button>
         </el-col>
-        <el-col :span="1.5">
-          <el-button
-              type="danger"
-              plain
-              icon="el-icon-refresh"
-              size="mini"
-              @click="handleRefreshCache"
-          >刷新缓存
-          </el-button>
-        </el-col>
+
         <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
       </el-row>
 

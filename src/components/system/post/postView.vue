@@ -10,7 +10,7 @@
       <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
         <el-form-item label="岗位编码" prop="postCode">
           <el-input
-              v-model="queryParams.postCode"
+              v-model.trim="queryParams.postCode"
               placeholder="请输入岗位编码"
               clearable
               @keyup.enter.native="handleQuery"
@@ -18,7 +18,7 @@
         </el-form-item>
         <el-form-item label="岗位名称" prop="postName">
           <el-input
-              v-model="queryParams.postName"
+              v-model.trim="queryParams.postName"
               placeholder="请输入岗位名称"
               clearable
               @keyup.enter.native="handleQuery"

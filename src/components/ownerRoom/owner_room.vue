@@ -192,6 +192,7 @@ export default {
       this.queryParams = {
         roomStatus: undefined
       }
+      this.getOwnerRoomList();
     },
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {
