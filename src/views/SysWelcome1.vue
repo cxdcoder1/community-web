@@ -36,19 +36,19 @@
                         :config="board_info"
                         class="carousel_list"
                         oddRowBGC="#fff"
-                        style="width: 96%"
+                        style="width: 94%;height: 96%"
                     />
                   </dv-border-box-12>
                 </div>
               </div>
 
-
-              <div class="left_box1">
+              <div class="left_box1" style="width: 50%">
                 <dv-border-box-12 >
-                  <div id="Rose_diagram" style="margin-top: 0px" ></div>
+                  <div id="Rose_diagram" ></div>
                 </dv-border-box-12>
               </div>
             </el-col>
+
             <!-- 第二列 -->
             <el-col :span="12" >
               <div class="line_center"  style=";margin:320px -25px 0 0;position: absolute;">
@@ -80,7 +80,7 @@
               <div class="right_box3" style="width: 50%;">
                 <!--                <dv-decoration-7 stty >小区房屋使用情况</dv-decoration-7>-->
                 <dv-border-box-12 :reverse="true"  >
-                  <dv-conical-column-chart :config="cones" class="cone_box" style="width: 93%;margin-top: 2px;margin-left: 3%" />
+                  <dv-conical-column-chart :config="cones" class="cone_box" style="width: 93%;margin-top: 1px;margin-left: 3%;height: 97%" />
                 </dv-border-box-12>
               </div>
             </el-col>
@@ -195,8 +195,10 @@ export default {
       },
       //锥形柱状图
       cones : {
-        data: [
-
+        data: [{
+          name:"",
+          value:"",
+        }
         ],
         showValue  : true,
       },
@@ -723,6 +725,7 @@ export default {
   list-style-type: none;
   outline: none;
   box-sizing: border-box;
+
 }
 html {
   margin: 0;
@@ -736,6 +739,7 @@ body {
   margin: 0;
   padding: 0;
   position: absolute;
+
 }
 a {
   color: #343440;
@@ -746,15 +750,14 @@ a {
 //  padding-left: 0;
 //}
 .bg {
+  overflow: hidden;
   transform: scale(1); /* 初始缩放因子为1 */
   transition: transform 0.3s ease; /* 添加过渡效果，使缩放平滑 */
   //整体页面背景
   width: 100%;
   height: 861px;
   float: left;
-  background-image: url("../assets/666.jpg"); //背景图
-  overflow: auto;
-  background-size: cover; //背景尺寸
+  background-image: url("../assets/666.jpg"); //背景图background-size: cover; //背景尺寸
   background-position: center center; //背景位置
 
 }
@@ -831,10 +834,10 @@ a {
     z-index: 1000;
   }
   //中国地图
-  //#china-map {
-  //  height: 660px;
-  //  width: 100%;
-  //}
+  #china-map {
+    height: 660px;
+    width: 100%;
+  }
   //中间折线图
   .line_center {
     width: 50%;

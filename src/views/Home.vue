@@ -37,10 +37,10 @@
             router
             style="margin-left: -45px;">
           <!-- 一级菜单 -->
-          <el-menu-item class="el-menu-item" :index="'/home'">
-            <i class="el-icon-odometer"></i>
-            <template slot="title">系统首页</template>
-          </el-menu-item>
+<!--          <el-menu-item class="el-menu-item" :index="'/home'">-->
+<!--            <i class="el-icon-odometer"></i>-->
+<!--            <template slot="title">系统首页</template>-->
+<!--          </el-menu-item>-->
           <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id"
                       :disabled="item.status===1">
             <template slot="title">
