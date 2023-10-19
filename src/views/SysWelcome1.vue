@@ -249,6 +249,9 @@ export default {
     },
     async getUserLogin(){
       const {data: res} = await this.$http.get('zyComplaintSuggest/getZyComplaintSuggest');
+      if(res==''){
+        return
+      }
       this.board_info={
         header:['发帖人','&nbsp;','发帖内容'],
         data:res.data
@@ -257,6 +260,9 @@ export default {
 
     async getRoom() {
       const { data: res } = await this.$http.get('zyCommunity/getRoom');
+      if(res==''){
+        return
+      }
       const roomData = res.data;
       // 转换成 key 和 value 的集合
       const keyValuePairs = roomData.map(item => ({
@@ -270,6 +276,9 @@ export default {
     },
     async getRoomStatus() {
       const { data: res } = await this.$http.get('zyRoom/getRoomListStatus');
+      if(res==''){
+        return
+      }
       const roomDatas = res.data;
       // 转换成 key 和 value 的集合
       const keyValuePair = roomDatas.map(item => ({
@@ -282,6 +291,9 @@ export default {
     },
     async getBuildList() {
       const { data: res } = await this.$http.get('zyCommunity/getBuildList');
+      if(res==''){
+        return
+      }
       const roomDatasA = res.data;
       // 转换成 key 和 value 的集合
       const keyValuePair = roomDatasA.map(item => ({
@@ -301,6 +313,9 @@ export default {
     },
     async getMonthList() {
       const { data: res } = await this.$http.get('zyRoom/monthList');
+      if(res==''){
+        return
+      }
       const roomDatasB = res.data;
       // 转换成 key 和 value 的集合
       const keyValuePair = roomDatasB.map(item => ({
@@ -313,6 +328,9 @@ export default {
     },
     async getDeptLis(){
       const {data: res} = await this.$http.get('sysDept/getDeptLis');
+      if(res==''){
+        return
+      }
       const roomDatasC = res.data;
       // 转换成 key 和 value 的集合
       const keyValuePairS = roomDatasC

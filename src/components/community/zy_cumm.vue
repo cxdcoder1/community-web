@@ -135,9 +135,7 @@
           <el-form-item label="小区名称" prop="communityName">
             <el-input v-model.trim="form.communityName" placeholder="请输入名称"/>
           </el-form-item>
-          <el-form-item label="详细地址" prop="communityDetailedAddress">
-            <el-input v-model.trim="form.communityDetailedAddress" placeholder="请输入名称"/>
-          </el-form-item>
+
           <el-form-item label="所属区域" prop="selectedOptions">
             <el-cascader
                 size="large"
@@ -145,6 +143,9 @@
                 v-model="selectedOptions"
                 @change="handleChange">
             </el-cascader>
+          </el-form-item>
+          <el-form-item label="详细地址" prop="communityDetailedAddress">
+            <el-input v-model.trim="form.communityDetailedAddress" placeholder="请输入名称"/>
           </el-form-item>
           <el-form-item label="备注">
             <el-input v-model.trim="form.remark" type="textarea" placeholder="请输入内容"></el-input>

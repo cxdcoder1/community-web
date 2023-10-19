@@ -426,11 +426,10 @@ export default {
       // if(this.form.dictType == 0 || this.form.dictName == 0 || this.form.dictType == null || this.form.dictName == null ){
       //   this.$message.error("请输入参数")
       //   return;
-      //
-       console.log("this.form.dictId",this.form.dictId)
+      // }
        this.$refs["form"].validate(async valid => {
          if (valid) {
-           if (this.form.dictId != null ) {
+           if (this.form.dictId != null) {
              let res = await this.$http.put("sysDictType/updType?type="+this.type+"&type2="+this.form.dictType, this.form);
              if (res.data.status === 200) {
                this.open = false;
@@ -443,7 +442,7 @@ export default {
                this.open = false;
              }
            }
-           if (this.form.dictId == null ) {
+           if (this.form.dictId == null) {
              let res = await this.$http.post("sysDictType/insDictType", this.form);
              console.log(res)
              if (res.data.status === 200) {

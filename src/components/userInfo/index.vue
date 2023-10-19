@@ -110,7 +110,7 @@ export default {
     handleAvatarSuccess(res, file) {
       //调用接口修改数据库
       // console.log(res)
-      this.$http.put('sysUser/updataUser', {
+      this.$http.put('sysUser/updataUserAvatar', {
         userId: this.userId1,
         avatar: res
       })

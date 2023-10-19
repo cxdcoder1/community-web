@@ -359,6 +359,20 @@ export default {
         roomName: [
           {required: true, message: "商品房名字不能为空", trigger: "blur"}
         ],
+        roomLevel: [
+          {
+            pattern: /^[^A-Za-z\u4e00-\u9fa5]+$/,
+            message: '不允许输入中文和英文',
+            trigger: 'change'
+          },
+        ],
+        roomAcreage: [
+          {
+            pattern: /^[^A-Za-z\u4e00-\u9fa5]+$/,
+            message: '不允许输入中文和英文',
+            trigger: 'change'
+          },
+        ],
         roomStatus: [
           {required: true, message: "房屋状态不能为空", trigger: "blur"}
         ],

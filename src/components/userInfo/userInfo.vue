@@ -1,16 +1,16 @@
 <template>
-  <el-form ref="form" :model="user" :rules="rules" label-width="80px">
+  <el-form ref="form" :model="userInfo" :rules="rules" label-width="80px">
     <el-form-item label="用户昵称" prop="nickName">
-      <el-input v-model.trim="user.nickName" maxlength="30" onkeyup="this.value=this.value.replace(/[, ]/g,'')"/>
+      <el-input v-model.trim="userInfo.nickName" maxlength="30" onkeyup="this.value=this.value.replace(/[, ]/g,'')"/>
     </el-form-item>
     <el-form-item label="手机号码" prop="phonenumber">
-      <el-input v-model.trim="user.phonenumber" maxlength="11" onkeyup="this.value=this.value.replace(/[, ]/g,'')"/>
+      <el-input v-model.trim="userInfo.phonenumber" maxlength="11" onkeyup="this.value=this.value.replace(/[, ]/g,'')"/>
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
-      <el-input v-model.trim="user.email" maxlength="50" onkeyup="this.value=this.value.replace(/[, ]/g,'')"/>
+      <el-input v-model.trim="userInfo.email" maxlength="50" onkeyup="this.value=this.value.replace(/[, ]/g,'')"/>
     </el-form-item>
     <el-form-item label="性别">
-      <el-radio-group v-model="user.sex">
+      <el-radio-group v-model="userInfo.sex">
         <el-radio    v-for="dict in userInfoSex"
                      :key="dict.dictValue"
                      :label="dict.dictValue"
@@ -20,7 +20,7 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" size="mini" @click="submit(user)">保存</el-button>
+      <el-button type="primary" size="mini" @click="submit(userInfo)">保存</el-button>
       <el-button type="danger" size="mini" @click="close" >关闭</el-button>
     </el-form-item>
   </el-form>
@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       userInfoSex:[],
+      userInfo:{},
       // 表单校验
       rules: {
         nickName: [
@@ -64,6 +65,7 @@ export default {
   },
   created() {
     this.getSexs();
+    this.userInfo = structuredClone(this.user)
   },
   methods: {
     async getSexs() {
@@ -71,11 +73,10 @@ export default {
       this.userInfoSex=res.data;
       console.log(this.userInfoSex)
     },
-    submit: function (user) {
-      console.log(user)
+    submit: function () {
       this.$refs["form"].validate(async valid => {
         if (valid) {
-          const {data: res} = await this.$http.put('sysUser/updataUser', user)
+          const {data: res} = await this.$http.put('sysUser/updataUser', this.userInfo)
           this.$message.success("修改成功");
           // location.reload();
           // console.log(111)

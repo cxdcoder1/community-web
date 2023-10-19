@@ -326,7 +326,7 @@ export default {
       } else if (res.status == 201) {
         //导出失败
         this.$message.error(res.msg)
-      }else {
+      } else {
         this.$message.warning("权限不足!")
       }
 
@@ -365,7 +365,7 @@ export default {
           this.getRoleList();
         } else if (res.data.status == 201) {
           this.$message.error(res.data.msg)
-        }else {
+        } else {
           this.$message.warning("权限不足!")
         }
       })
@@ -437,15 +437,15 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        return this.$http.put('sysRole/upDataStatus?status=' + row.status + '&roleId=' + row.roleId).then(res=>{
-              console.log(res,"ccccc")
-              if (res.data.errorCode==10) {
-                this.$message.warning("权限不足！")
-                this.getRoleList()
-                return;
-              }else {
-                this.getRoleList()
-              }
+        return this.$http.put('sysRole/upDataStatus?status=' + row.status + '&roleId=' + row.roleId).then(res => {
+          console.log(res, "ccccc")
+          if (res.data.errorCode == 10) {
+            this.$message.warning("权限不足！")
+            this.getRoleList()
+            return;
+          } else {
+            this.getRoleList()
+          }
         })
       }).catch(() => {
         row.status = row.status === "0" ? "1" : "0";
@@ -480,7 +480,7 @@ export default {
     //新增或修改角色
     async saveRole() {
       this.$refs["form"].validate(async valid => {//传入所选中的Id
-        if(valid){
+        if (valid) {
           //传入所选中的Id
           this.form.menuIds = [];
           if (this.selectMenuOptions.length > 0) {
@@ -495,11 +495,11 @@ export default {
               this.$message.success("修改成功")
               this.getRoleList();
               this.menuOptions = {}
-            } else if (res.data.status==201) {
+            } else if (res.data.status == 201) {
               this.$message.error(res.data.msg);
               // this.open = false;
               // this.form = {};
-            }else {
+            } else {
               this.$message.warning("权限不足!")
               this.open = false;
             }
@@ -509,16 +509,17 @@ export default {
               this.open = false;
               this.$message.success("新增成功")
               this.getRoleList();
-            } else if (res.data.status==201){
+            } else if (res.data.status == 201) {
               this.$message.error(res.data.msg);
               // this.open = false;
               // this.form = {};
-            }else {
+            } else {
               this.$message.warning("权限不足!")
               this.open = false;
             }
           }
-        }})
+        }
+      })
 
     },
     /** 根据角色ID查询菜单树结构 */
