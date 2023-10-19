@@ -2,6 +2,7 @@
   <div id="index">
     <div class="bg">
       <dv-loading v-show="loading">Loading...</dv-loading>
+
       <div class="host-body">
         <div>
           <!-- 顶部title部分 -->
@@ -13,12 +14,9 @@
             /></el-col>
             <el-col :span="12"
             ><div class="title_text">智 慧 社 区 数 据 可 视 化 大  屏</div>
-              <dv-decoration-5
-                  class="title_center"
-                  :color="['#008CFF', '#00ADDD']"
-              /></el-col>
-            <el-col :span="6"
-            ><div class="title_time">{{ dateYear + dateWeek + dateDay }}</div>
+              <dv-decoration-5 class="title_center" :color="['#008CFF', '#00ADDD']"/></el-col>
+            <el-col :span="6">
+              <div class="title_time">{{ dateYear + dateWeek + dateDay }}</div>
               <dv-decoration-8
                   :reverse="true"
                   class="title_left"
@@ -26,62 +24,67 @@
               /></el-col>
           </el-row>
           <!-- 主体部分 -->
-          <el-row>
+          <el-row style="width: 100%;margin:0 auto">
             <!-- 第一列 -->
-            <el-col :span="6">
-              <div class="left_box1">
-                <dv-border-box-12 >
-                  <div id="Rose_diagram" style="margin-top: 0px" ></div>
-                </dv-border-box-12>
-
-              </div>
+            <el-col :span="6" style="display: flex;width: 50%">
               <!-- 轮播表格部分 -->
-              <div  class="user_skills" >
+              <div  class="user_skills" style="width: 50%" >
                 <div class="left_box3">
-                  <div style="text-align: center">小 区 热 帖</div>
-                  <dv-border-box-12 style="padding-top: 10px">
+                  <!--                  <div style="text-align: center">小 区 热 帖</div>-->
+                  <dv-border-box-12 style="padding-top: 10px;">
                     <dv-scroll-board
                         :config="board_info"
                         class="carousel_list"
                         oddRowBGC="#fff"
+                        style="width: 96%"
                     />
                   </dv-border-box-12>
                 </div>
               </div>
 
+
+              <div class="left_box1">
+                <dv-border-box-12 >
+                  <div id="Rose_diagram" style="margin-top: 0px" ></div>
+                </dv-border-box-12>
+              </div>
             </el-col>
             <!-- 第二列 -->
-            <el-col :span="12">
-              <!-- 中国地图 -->
-              <div id="china-map"></div>
-              <div class="line_center"  style="width: 1322px">
-                <dv-border-box-8>
+            <el-col :span="12" >
+              <div class="line_center"  style=";margin:320px -25px 0 0;position: absolute;">
+                <dv-border-box-8 >
                   <div id="line_center_diagram"></div>
                 </dv-border-box-8>
               </div>
             </el-col>
+            <div class="right_center"  style="margin:320px 25px 0 0;position: absolute;">
+              <dv-border-box-8 >
+                <div id="right_center_diagram"></div>
+              </dv-border-box-8>
+            </div>
+
+
             <!-- 第三列 -->
-            <el-col :span="6">
+            <el-col :span="6" style="display: flex;width: 50%">
               <!-- 轮播排行榜部分 -->
-              <div class="right_box1">
+              <div class="right_box1" style="width: 50%" >
                 <dv-border-box-12>
-                  <dv-decoration-7 style="width: 100%; height: 30px"
-                  >社 区 资 产 </dv-decoration-7
-                  >
                   <dv-scroll-ranking-board
                       :config="coneA"
                       style="width: 95%; height: 87%; margin-left: 2%"
                   />
                 </dv-border-box-12>
+
               </div>
-<!--               部分-->
-              <div  class="right_box3">
-               <div style="text-align: center">小 区 房 屋 使 用 情 况</div>
-                <dv-border-box-12 :reverse="true">
-                  <dv-conical-column-chart :config="cones" class="cone_box" />
+              <!-- 其他部分 -->
+              <div class="right_box3" style="width: 50%;">
+                <!--                <dv-decoration-7 stty >小区房屋使用情况</dv-decoration-7>-->
+                <dv-border-box-12 :reverse="true"  >
+                  <dv-conical-column-chart :config="cones" class="cone_box" style="width: 93%;margin-top: 2px;margin-left: 3%" />
                 </dv-border-box-12>
               </div>
             </el-col>
+
           </el-row>
         </div>
       </div>
@@ -214,6 +217,7 @@ export default {
     // this.columnar();
     //中间折线图
     this.line_center_diagram();
+    this.right_center_diagram();
     // //虚线柱状图
     // this.dotter_bar();
   },
@@ -227,6 +231,7 @@ export default {
     this.getRoomStatus();
     this.getBuildList();
     this.getMonthList();
+    this.getDeptLis();
   },
   methods: {
     //右上角当前日期时间显示：每一秒更新一次最新时间
@@ -243,10 +248,11 @@ export default {
     async getUserLogin(){
       const {data: res} = await this.$http.get('zyComplaintSuggest/getZyComplaintSuggest');
       this.board_info={
-      header:['发帖人','&nbsp;','发帖内容'],
-       data:res.data
-        }
+        header:['发帖人','&nbsp;','发帖内容'],
+        data:res.data
+      }
     },
+
     async getRoom() {
       const { data: res } = await this.$http.get('zyCommunity/getRoom');
       const roomData = res.data;
@@ -258,7 +264,7 @@ export default {
       this.cone = {
         data: keyValuePairs
       };
-    this.Rose_diagram(keyValuePairs)
+      this.Rose_diagram(keyValuePairs)
     },
     async getRoomStatus() {
       const { data: res } = await this.$http.get('zyRoom/getRoomListStatus');
@@ -302,11 +308,102 @@ export default {
       const names = keyValuePair.map(item => item.name+'月');
       const values = keyValuePair.map(item => item.value);
       this.line_center_diagram(names,values)
-
-
+    },
+    async getDeptLis(){
+      const {data: res} = await this.$http.get('sysDept/getDeptLis');
+      const roomDatasC = res.data;
+      // 转换成 key 和 value 的集合
+      const keyValuePairS = roomDatasC
+          .filter(item => item !== null)
+          .map(item => ({
+            name: item.deptName,
+            value: item.deptNum
+          }));
+      const names = keyValuePairS.map(item => item.name);
+      const values = keyValuePairS.map(item => item.value);
+      this.right_center_diagram(names,values)
     },
     //折线图
-     line_center_diagram(names,values) {
+    right_center_diagram(name,value) {
+      let mapChart = this.$echarts.init(
+          document.getElementById("right_center_diagram")
+      ); //图表初始化，china-map是绑定的元素
+      window.onresize = mapChart.resize; //如果容器变大小，自适应从新构图
+      let option = {
+        xAxis: {
+          type: "category",
+          data:name,
+          position: "bottom",
+          axisLine: true,
+          axisLabel: {
+            color: "rgba(255,255,255,.8)",
+            fontSize: 12,
+          },
+        },
+        yAxis: {
+          type: "value",
+          name: "公司员工数量",
+          nameLocation: "end",
+          nameGap: 24,
+          nameTextStyle: {
+            color: "rgba(255,255,255,.5)",
+            fontSize: 14,
+          },
+          splitNumber: 4,
+          axisLine: {
+            lineStyle: {
+              opacity: 0,
+            },
+          },
+          splitLine: {
+            show: true,
+            lineStyle: {
+              color: "#fff",
+              opacity: 0.1,
+            },
+          },
+          axisLabel: {
+            color: "rgba(255,255,255,.8)",
+            fontSize: 12,
+          },
+        },
+        grid: {
+          left: 50,
+          right: 10,
+          bottom: 25,
+          top: "18%",
+        },
+        series: [
+          {
+            data:value,
+            type: "line",
+            smooth: true,
+            symbol: "emptyCircle",
+            symbolSize: 8,
+            itemStyle: {
+              normal: {
+                color: "#fff",
+              },
+            },
+            //线的颜色样式
+            lineStyle: {
+              normal: {
+                color: this.colorList.linearBtoG,
+                width: 3,
+              },
+            },
+            //填充颜色样式
+            areaStyle: {
+              normal: {
+                color: this.colorList.areaBtoG,
+              },
+            },
+          },
+        ],
+      };
+      mapChart.setOption(option); //生成图表
+    },
+    line_center_diagram(names,values) {
       let mapChart = this.$echarts.init(
           document.getElementById("line_center_diagram")
       ); //图表初始化，china-map是绑定的元素
@@ -478,7 +575,7 @@ export default {
             data: res, //拿到射线的起始点和结束点
           },
 
-        //点击高亮
+          //点击高亮
           {
             type: "map",
             mapType: "china",
@@ -653,11 +750,13 @@ a {
   transition: transform 0.3s ease; /* 添加过渡效果，使缩放平滑 */
   //整体页面背景
   width: 100%;
-  height: 100%;
-  background-image: url("../assets/888.png"); //背景图
-  background-attachment: fixed;
+  height: 861px;
+  float: left;
+  background-image: url("../assets/666.jpg"); //背景图
+  overflow: auto;
   background-size: cover; //背景尺寸
   background-position: center center; //背景位置
+
 }
 //页面样式部分！！！！
 #index {
@@ -672,6 +771,7 @@ a {
   left: 50%;
   transform: translate(-50%, -50%);
   overflow: hidden;
+
   //顶部右边装饰效果
   .title_left {
     width: 100%;
@@ -731,16 +831,22 @@ a {
     z-index: 1000;
   }
   //中国地图
-  #china-map {
-    height: 660px;
-    width: 100%;
-  }
+  //#china-map {
+  //  height: 660px;
+  //  width: 100%;
+  //}
   //中间折线图
   .line_center {
-    width: 100%;
+    width: 50%;
     height: 288px;
     margin-left: -332px;
   }
+  .right_center {
+    width: 50%;
+    height: 288px;
+    margin-left: -332px;
+  }
+
   //左1模块
   .left_box1 {
     height: 310px;
@@ -775,14 +881,13 @@ a {
   //右3模块
   .right_box3 {
     height: 310px;
-    width: 100%;
   }
   //左1模块-玫瑰饼图
   #Rose_diagram {
     height: 100%;
     width: 100%;
-    padding-top: 45px;
-    display: block;
+    padding-top: -100px;
+    top: -31px;
   }
   //左1模块-圆环图
   //.left_box1_rose_right {
@@ -802,10 +907,12 @@ a {
   .coin {
     font-size: 20px;
     color: #ffc107;
+
   }
   //左1模块-（件）样式
   .colorYellow {
     color: yellowgreen;
+
   }
   //左1模块-数字样式
   .rose_text_nmb {
@@ -824,10 +931,15 @@ a {
     height: 100%;
     width: 100%;
   }
+
+  //折线图
+  #right_center_diagram {
+    height: 100%;
+    width: 100%;
+  }
+
   //轮播表格
   .carousel_list {
-    width: 96%;
-    height: 98%;
     margin-left: 10px;
   }
   //虚线柱状图
@@ -837,13 +949,13 @@ a {
   }
   //锥形图
   .cone_box {
-    width: 95%;
-    height: 97%;
-    margin-left: 3%;
+    margin-top: -5%;
   }
 }
 #index::-webkit-scrollbar {
   width: 0;
 }
+
+
 </style>
 
