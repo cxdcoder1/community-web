@@ -300,6 +300,10 @@ export default {
       if (res == '') {
         return
       }
+      if (res.errorCode==10){
+        this.$router.push('/home')
+        return
+      }
       this.typeList = res.data.records;
       this.total = res.data.total
       console.log("总条数" + this.total)

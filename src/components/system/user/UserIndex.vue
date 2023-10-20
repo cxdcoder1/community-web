@@ -529,6 +529,10 @@ export default {
       if (res == '') {
         return
       }
+      if (res.errorCode==10){
+        this.$router.push('/home')
+        return
+      }
       this.userList = res.data.records;
       this.total = res.data.total
       console.log(res.data.records, "xxxxxxxxxxxxxx")

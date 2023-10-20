@@ -315,6 +315,10 @@ export default {
       if (res == '') {
         return
       }
+      if (res.errorCode==10){
+        this.$router.push('/home')
+        return
+      }
       this.postList = res.data.records;
       this.total = res.data.total
       const {data: res1} = await this.$http.get("sysDictData/getStatus")

@@ -267,7 +267,15 @@ export default {
         const {data: res} = await this.$http.post("sysDept/getDeptList", this.deptInfo);
         const {data: res2} = await this.$http.post("sysDept/treeDeptList", this.deptInfoTree);
         // console.log("cxdccccc",res.menuList)
+        if (res == '') {
+          return
+        }
+        if (res.errorCode==10){
+          this.$router.push('/home')
+          return
+        }
         this.deptList = res.menuList;
+
 
         this.treeList = res2.menuList
         //给表单from赋值

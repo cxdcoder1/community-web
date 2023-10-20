@@ -39,12 +39,11 @@
             router
             style="margin-left: -45px;">
           <!-- 一级菜单 -->
-<!--          <el-menu-item class="el-menu-item" :index="'/home'">-->
-<!--            <i class="el-icon-odometer"></i>-->
-<!--            <template slot="title">系统首页</template>-->
-<!--          </el-menu-item>-->
-          <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id"
-                      :disabled="item.status===1">
+          <!--          <el-menu-item class="el-menu-item" :index="'/home'">-->
+          <!--            <i class="el-icon-odometer"></i>-->
+          <!--            <template slot="title">系统首页</template>-->
+          <!--          </el-menu-item>-->
+          <el-submenu  :index="item.menuId+''" v-for="item in menuList" :key="item.id" :disabled="checkDisabled(item)">
             <template slot="title">
               <i :class="'icon iconfont icon-'+item.icon">&nbsp;&nbsp;</i>
               <span>{{ item.menuName }}</span>
@@ -118,6 +117,8 @@ export default {
   },
   data() {
     return {
+      userName:"",
+
       collapse: true,   // 菜单收缩状态
       // 被激活的链接地址
       activePath: '',
@@ -138,6 +139,13 @@ export default {
     this.getMenuList();
   },
   methods: {
+    checkDisabled(item) {
+      if (this.userName === 'admin') {
+        return false; // 当 this.userName=admin 时，不禁用，返回 false
+      } else {
+        return item.status == 1; // 当 this.userName 不等于 admin 时，执行 item.status 的判断
+      }
+    },
     userInfo1: function () {
       this.$router.push(
           {path: '/userInfo'},
@@ -164,6 +172,15 @@ export default {
     async getMenuList() {
       let res = await this.$http.get('sysMenu/getTreeMenu/' + this.res.userId);
       this.menuList = res.data.data;
+
+      let user = window.sessionStorage.getItem("user");
+      if (user==''||user==null){
+        return;
+      }
+      const jsonData = JSON.parse(user);
+      this.userName = jsonData.userName;
+
+
     },
     index() {
       this.$router.push("/index")
