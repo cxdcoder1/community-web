@@ -643,7 +643,6 @@ export default {
           } else {
             this.form.roomId = Date.now();
             this.$http.put("zyRoom/addRoom", this.form).then(res => {
-              console.log(res, "ccccccc")
               if (res.data.status === 200) {
                 this.open = false;
                 this.$message.success("新增成功")
@@ -711,14 +710,12 @@ export default {
     },
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {
-      console.log('asda' + val)
       // 更新每页展示数据size
       this.queryParams.size = val
       this.getRoomList();
     },
     // @current-change页码点击事件
     handleCurrentChange(val) {
-      console.log('asda' + val)
       // 更新当前页数是第几页
       this.queryParams.current = val
       this.getRoomList();

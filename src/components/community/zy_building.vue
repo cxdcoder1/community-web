@@ -263,7 +263,6 @@ export default {
         },
         data: this.format,
       })
-      console.log(res)
       if (res.status == 201) {
         this.$message.error(res.msg);
       } else if (res.status == 200) {
@@ -274,7 +273,6 @@ export default {
     },
     //上传前
     beforeAvatarUpload(file) {
-      console.log("文件", file)
       const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
       const whiteList = ["xls", "xlsx"];
 
@@ -292,7 +290,6 @@ export default {
       let formData = new FormData();
       formData.append('file', file)
       this.format = formData
-      console.log("from", formData)
     },
     /** 下载模板操作 */
     async importTemplate() {
@@ -321,7 +318,6 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$http.put("excel/intoS", this).then(response => {
-        // console.log("cccc",response)
         if (response.data.data == 1) {
           this.$message.success("修改成功");
           this.open = false;
@@ -482,7 +478,6 @@ export default {
           // 清空选中的数据
           this.ids = [];
         } else {
-          console.log(res,"xxxxxxx")
           this.$message.error(res.data.msg);
           // 清空选中的数据
           this.getBuildingList();

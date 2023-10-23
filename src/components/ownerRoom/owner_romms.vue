@@ -217,7 +217,6 @@ export  default {
        const {data: res1} = await this.$http.get("zyOwner/zyOwnerList", {
          params: this.queryParams
        });
-       console.log(res1)
        this.total = res1.data.total
        this.zyOwnerRoomList = res1.data.records
      },

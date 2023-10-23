@@ -354,7 +354,6 @@ export default {
     async getUserList() {
       const {data: res} = await this.$http.post("zyRepair/getUserList/" + this.queryParams.communityId);
       this.userList = res.data;
-      console.log(this.userList)
     },
     async getZyRepairList() {
       const {data: res1} = await this.$http.get("zyRepair/zyRepairDtoList", {
@@ -401,13 +400,7 @@ export default {
       //给查看详情表单赋值
       this.open = true;
       this.numbers = this.number
-
-
       this.form = structuredClone(row)
-
-      console.log("", this.form.assignmentTime)
-
-
       let res = await this.$http.post("zyRepair/getNumber?name=" + this.form.completeName);
       this.number = res.data.data
     },

@@ -406,7 +406,6 @@ export default {
     },
     //修改按钮
     updateUnit(row) {
-      console.log(row)
       this.title = "修改单元"
       this.open = true;
       this.resetForm("form")
@@ -445,7 +444,6 @@ export default {
     },
     //批量删除
     async delUnits() {
-      console.log(this.ids)
       const confirmResult = await this.$confirm('确认要批量删除吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -510,7 +508,6 @@ export default {
     async searchStatus() {
       const {data: res} = await this.$http.get(`zyUnit/getElevatorStatus/${27}`)
       this.statusOptions = res.statusList
-      console.log(this.statusOptions)
     },
 
   },

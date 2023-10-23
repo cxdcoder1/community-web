@@ -177,10 +177,9 @@ export default {
       if(res==''){
         return
       }
-      console.log("res", res)
+
       this.total = res.data.total
       this.OroomList = res.data.records
-      console.log("total", this.total);
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -196,14 +195,12 @@ export default {
     },
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {
-      console.log('asda' + val)
       // 更新每页展示数据size
       this.queryParams.size = val
       this.getOwnerRoomList();
     },
     // @current-change页码点击事件
     handleCurrentChange(val) {
-      console.log('asda' + val)
       // 更新当前页数是第几页
       this.queryParams.current = val
       this.getOwnerRoomList();
@@ -216,7 +213,6 @@ export default {
       if(r.roomStatus == 1){
         this.open = true;
         let res = await  this.$http.get('zyOwnerRoom/getRoomRecordList?name='+r.ownerRealName);
-        console.log("111",res.data.data)
         this.OroomrecordList=res.data.data
       }
     },
@@ -238,12 +234,10 @@ export default {
       this.form.recordAuditOpinion=this.inputData;
       this.form.createTime=year + "-" + month + "-" + day+" "+hour+":"+minute+":"+second;
       this.form.updateTime=year + "-" + month + "-" + day+" "+hour+":"+minute+":"+second;
-      console.log(res.createBy)
       this.form.createBy=res.createBy;
       this.form.recordAuditType='Web';      // 同意或拒绝决定
       this.form.roomStatus=i;
 
-      console.log(this.form.ownerRoomId)
       // 将数据和决定发送到后端
       // 使用axios发送POST请求的示例
       this.$http.post('zyOwnerRoom/insetRoomRecordList', this.form)

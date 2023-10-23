@@ -266,7 +266,6 @@ export default {
         this.deptInfo.deptName = this.deptInfo.deptName.trim();
         const {data: res} = await this.$http.post("sysDept/getDeptList", this.deptInfo);
         const {data: res2} = await this.$http.post("sysDept/treeDeptList", this.deptInfoTree);
-        // console.log("cxdccccc",res.menuList)
         if (res == '') {
           return
         }
@@ -321,8 +320,6 @@ export default {
         orderNum: '1',
         parentId: '100'
       }
-      // console.log(row.deptId)
-      // this.form.parentId=row.parentId
       if (row.deptId != null) {
         this.form.parentId = row.deptId
       }
@@ -362,7 +359,6 @@ export default {
     //下拉状态
     //删除方法
     async deleteDept(dept) {
-      console.log(dept);
       const confirmResult = await this.$confirm('确认要删除' + dept.deptName + '吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -372,7 +368,6 @@ export default {
         return this.$message.info('已经取消删除')
       }
       await this.$http.delete('sysDept/delete/' + dept.deptId).then(res => {
-        console.log(res)
         if (res.data.status == 200) {
           this.$message.success(res.data.msg)
           this.search();

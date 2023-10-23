@@ -414,8 +414,6 @@ export default {
       }
       this.total = res.data.total
       this.communityList = res.data.records
-      console.log("res",res)
-      console.log("total",this.total);
       const {data: res2} = await this.$http.post("sysDept/treeDeptLists",this.deptInfoTree);
       this.deptList = res2.menuList;
 
@@ -472,7 +470,6 @@ export default {
      */
     async derive() {
       // this.$refs.list.selection.map(item=>item.dictId)
-      console.log("list",this.$refs.list.selection.map(item=>item.communityId))
       const {data: res} = await this.$http.post('excel/Communitylist', this.$refs.list.selection.map(item=>item.communityId))
       if (res.status == 200) {
         //成功导出
@@ -495,7 +492,6 @@ export default {
 
     /** 删除按钮操作 */
     async handleDelete() {
-      console.log(this.$refs.list.selection.map(item => item.communityId))
       const confirmResult = await this.$confirm(
           '此操作将永久删除该数据, 是否继续?',
           '提示',
@@ -531,14 +527,12 @@ export default {
     },
     // @size-change页码展示数量点击事件
     handleSizeChange(val) {
-      console.log('asda' + val)
       // 更新每页展示数据size
       this.queryParams.size = val
       this.getCommunityList();
     },
     // @current-change页码点击事件
     handleCurrentChange(val) {
-      console.log('asda' + val)
       // 更新当前页数是第几页
       this.queryParams.current = val
       this.getCommunityList();
@@ -555,26 +549,20 @@ export default {
       this.dialogVisible = true;
       this.form2.communityId=r.communityId
       this.form2.deptId=r.deptId
-      console.log("deptId",r.deptId)
-      console.log("123",this.form2.communityId)
     },
     //获取选择的编号信息
     updReal(r){
       this.form2.dept=r.deptId
-      console.log("234",this.form2.dept)
       // 高亮显示逻辑
     },
     //确定选择
     async updReplaCement(){
-      console.log("123", this.form2.dept)
-      console.log("123", this.form2.deptId)
       if(this.form2.dept  === this.form2.deptId || this.form2.dept==""){
         this.dialogVisible = false
         this.$message.success('更改成功')
         return
       }
         let res = await this.$http.put("zyCommunity/replacement?communityId="+this.form2.communityId+"&deptId="+this.form2.dept);
-        console.log(res)
         this.dialogVisible = false;
         this.$message.success('更改成功')
         this.getCommunityList()
@@ -614,7 +602,6 @@ export default {
         },
         data: this.format,
       })
-      console.log(res)
       if (res.status == 201) {
         this.$message.error(res.msg);
       } else if (res.status == 200) {
@@ -626,7 +613,6 @@ export default {
     },
     //上传前
     beforeAvatarUpload(file) {
-      console.log("文件", file)
       const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
       const whiteList = ["xls", "xlsx"];
 
@@ -644,7 +630,6 @@ export default {
       let formData = new FormData();
       formData.append('file', file)
       this.format = formData
-      console.log("from", formData)
     },
     /** 导入按钮操作 */
     handleImport() {
@@ -679,7 +664,6 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$http.put("ExcelImport/importCommunity", this).then(response => {
-        // console.log("cccc",response)
         if (response.data.data == 1) {
           this.$message.success("修改成功");
           this.open = false;
