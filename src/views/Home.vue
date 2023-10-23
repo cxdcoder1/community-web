@@ -43,7 +43,7 @@
           <!--            <i class="el-icon-odometer"></i>-->
           <!--            <template slot="title">系统首页</template>-->
           <!--          </el-menu-item>-->
-          <el-submenu  :index="item.menuId+''" v-for="item in menuList" :key="item.id" :disabled="checkDisabled(item)">
+          <el-submenu :index="item.menuId+''" v-for="item in menuList" :key="item.id" :disabled="checkDisabled(item)">
             <template slot="title">
               <i :class="'icon iconfont icon-'+item.icon">&nbsp;&nbsp;</i>
               <span>{{ item.menuName }}</span>
@@ -174,6 +174,7 @@ export default {
       this.menuList = res.data.data;
 
       let user = window.sessionStorage.getItem("user");
+
       if (user==''||user==null){
         return;
       }

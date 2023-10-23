@@ -422,6 +422,11 @@ export default {
         this.$router.push('/home')
         return
       }
+      if (res.errorCode==10){
+        this.$router.push('/home')
+        return
+      }
+      console.log(res)
       this.roleList = res.data.records;
       this.total = res.data.total
       // console.log(this.roleList)
