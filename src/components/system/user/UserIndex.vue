@@ -648,6 +648,7 @@ export default {
     /** 查询部门下拉树结构 */
     getDeptTree() {
       this.$http.post("sysUser/getDeptList", {}).then(response => {
+
         console.log("cccccccccc", response.data.menuList)
         this.deptOptions = response.data.menuList;
         // addDisabledProperty(this.deptOptions);
@@ -875,7 +876,6 @@ export default {
     /** 提交按钮 */
     submitForm: function () {
       // this.form.status = this.form.status == "正常" ? '0' : '1';
-
       this.$refs["form"].validate(valid => {
         if (valid) {
           if (this.form.userId != undefined) {
